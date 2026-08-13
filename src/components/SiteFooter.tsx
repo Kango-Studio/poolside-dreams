@@ -8,11 +8,13 @@ export function SiteFooter() {
         <div>
           <div className="flex items-center gap-3">
             <Waves className="h-6 w-6 text-sand" strokeWidth={1.2} />
-            <span className="font-display text-xl tracking-[0.18em] uppercase">Marlowe</span>
+            <span className="font-display text-xl tracking-[0.18em] uppercase">
+              SJ Pools &amp; Landscaping
+            </span>
           </div>
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-silver">
-            Award-winning design/build firm creating custom pools and outdoor living
-            environments across New Jersey and the tri-state area.
+            Award-winning design/build firm creating custom pools and outdoor living environments
+            across North and Central New Jersey and parts of New York.
           </p>
         </div>
 
@@ -39,9 +41,9 @@ export function SiteFooter() {
           <h3 className="eyebrow text-sand">Studio</h3>
           <address className="mt-5 space-y-3 text-sm text-silver not-italic">
             <p>
-              412 Ridgewood Avenue
+              700 Kinderkamack Rd, Ste 310
               <br />
-              Paramus, NJ 07652
+              Oradell, NJ 07649
             </p>
             <p>
               <a href="tel:+12012659555" className="link-underline hover:text-sand">
@@ -49,8 +51,11 @@ export function SiteFooter() {
               </a>
             </p>
             <p>
-              <a href="mailto:studio@marlowepools.com" className="link-underline hover:text-sand">
-                studio@marlowepools.com
+              <a
+                href="mailto:office@sjpoolsandlandscaping.com"
+                className="link-underline hover:text-sand"
+              >
+                office@sjpoolsandlandscaping.com
               </a>
             </p>
           </address>
@@ -72,8 +77,8 @@ export function SiteFooter() {
 
       <div className="border-t border-offwhite/10">
         <div className="mx-auto flex max-w-[1600px] flex-wrap justify-between gap-4 px-6 py-6 text-xs text-silver/70 lg:px-12">
-          <p>&copy; {new Date().getFullYear()} Marlowe Pools &amp; Landscapes. All rights reserved.</p>
-          <p>Licensed &amp; insured · NJ HIC #13VH0000000</p>
+          <p>&copy; {new Date().getFullYear()} SJ Pools &amp; Landscaping. All rights reserved.</p>
+          <p>Licensed &amp; insured · NJ HIC #13VH09118700</p>
         </div>
       </div>
     </footer>

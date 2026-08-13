@@ -3,24 +3,18 @@ import { useState, type FormEvent } from "react";
 import { Mail, MapPin, Phone } from "lucide-react";
 
 import { Reveal } from "@/components/Reveal";
+import { pageMeta } from "@/lib/seo";
 import hero1 from "@/assets/hero-1.jpg";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact | Book a Backyard Consultation — Marlowe" },
-      {
-        name: "description",
-        content:
-          "Request a private site visit and 3D concept for your New Jersey pool, patio or landscape project. Call (201) 265-9555.",
-      },
-      { property: "og:title", content: "Contact Marlowe Pools & Landscapes" },
-      {
-        property: "og:description",
-        content: "Book a site visit and receive a 3D concept of your backyard.",
-      },
-    ],
-  }),
+  head: () =>
+    pageMeta({
+      title: "Contact | Book a Backyard Consultation — SJ Pools & Landscaping",
+      description:
+        "Request a private site visit and 3D concept for your New Jersey pool, patio or landscape project. Call (201) 265-9555.",
+      path: "/contact",
+      image: "/og/contact.jpg",
+    }),
   component: ContactPage,
 });
 
@@ -125,8 +119,8 @@ function ContactPage() {
               {
                 icon: Mail,
                 label: "Email",
-                value: "studio@marlowepools.com",
-                href: "mailto:studio@marlowepools.com",
+                value: "office@sjpoolsandlandscaping.com",
+                href: "mailto:office@sjpoolsandlandscaping.com",
               },
             ].map((item) => (
               <div key={item.label} className="border-t border-border pt-6">
@@ -134,7 +128,10 @@ function ContactPage() {
                   <item.icon className="h-4 w-4 text-sand" strokeWidth={1.4} />
                   <span className="eyebrow text-muted-foreground">{item.label}</span>
                 </div>
-                <a href={item.href} className="link-underline mt-3 inline-block font-display text-2xl">
+                <a
+                  href={item.href}
+                  className="link-underline mt-3 inline-block font-display text-2xl"
+                >
                   {item.value}
                 </a>
               </div>
@@ -146,19 +143,15 @@ function ContactPage() {
                 <span className="eyebrow text-muted-foreground">Studio</span>
               </div>
               <address className="mt-3 font-display text-2xl leading-snug not-italic">
-                412 Ridgewood Avenue
+                700 Kinderkamack Rd, Ste 310
                 <br />
-                Paramus, NJ 07652
+                Oradell, NJ 07649
               </address>
             </div>
 
             <div className="border-t border-border pt-6">
               <span className="eyebrow text-muted-foreground">Hours</span>
-              <p className="mt-3 text-muted-foreground">
-                Monday – Friday · 8am – 6pm
-                <br />
-                Saturday · By appointment
-              </p>
+              <p className="mt-3 text-muted-foreground">Monday – Friday · 8am – 4pm</p>
             </div>
           </Reveal>
         </div>

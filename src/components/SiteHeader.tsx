@@ -31,8 +31,8 @@ export function SiteHeader() {
         <Link to="/" className="flex items-center gap-3 text-offwhite">
           <Waves className="h-6 w-6 text-sand" strokeWidth={1.2} />
           <span className="font-display text-xl leading-none tracking-[0.18em] uppercase">
-            Marlowe
-            <span className="block eyebrow mt-1 text-sand">Pools &amp; Landscapes</span>
+            SJ Pools
+            <span className="block eyebrow mt-1 text-sand">&amp; Landscaping</span>
           </span>
         </Link>
 

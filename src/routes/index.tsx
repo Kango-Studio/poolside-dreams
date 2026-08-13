@@ -4,33 +4,26 @@ import { ArrowUpRight } from "lucide-react";
 import { HeroCarousel } from "@/components/HeroCarousel";
 import { Reveal } from "@/components/Reveal";
 import { services, projects } from "@/lib/site-data";
+import { pageMeta } from "@/lib/seo";
 import aboutImg from "@/assets/about.jpg";
 import p1 from "@/assets/project-1.jpg";
 import p2 from "@/assets/project-2.jpg";
 import p3 from "@/assets/project-3.jpg";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Marlowe Pools & Landscapes | Custom Pool Builders in New Jersey" },
-      {
-        name: "description",
-        content:
-          "Award-winning New Jersey design/build firm creating custom gunite pools, patios and luxury outdoor living environments across the tri-state area.",
-      },
-      { property: "og:title", content: "Marlowe Pools & Landscapes | Custom Pool Builders" },
-      {
-        property: "og:description",
-        content:
-          "Custom gunite pools, patios, outdoor kitchens and landscape design across New Jersey and the tri-state area.",
-      },
-    ],
-  }),
+  head: () =>
+    pageMeta({
+      title: "SJ Pools & Landscaping | Custom Pool Builders in New Jersey",
+      description:
+        "Award-winning New Jersey design/build firm creating custom gunite pools, patios and luxury outdoor living environments across North and Central New Jersey and parts of New York.",
+      path: "/",
+      image: "/og/home.jpg",
+    }),
   component: Home,
 });
 
 const stats = [
-  { value: "20+", label: "Years building" },
+  { value: "18+", label: "Years building" },
   { value: "480", label: "Backyards delivered" },
   { value: "12", label: "Design awards" },
   { value: "100%", label: "In-house crews" },
@@ -53,9 +46,9 @@ function Home() {
           </Reveal>
           <Reveal delay={120} className="flex flex-col justify-end gap-8">
             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Marlowe is a complete outdoor living design/build firm. From the first survey to the
-              final planting, one team handles excavation, gunite, masonry, water and light — so the
-              detail you were shown in 3D is the detail that gets built.
+              SJ Pools & Landscaping is a complete outdoor living design/build firm. From the first
+              survey to the final planting, one team handles excavation, gunite, masonry, water and
+              light — so the detail you were shown in 3D is the detail that gets built.
             </p>
             <Link
               to="/about"
@@ -83,7 +76,7 @@ function Home() {
             <div>
               <p className="eyebrow text-sand">What we build</p>
               <h2 className="mt-6 max-w-2xl font-display text-4xl leading-[1.05] md:text-6xl">
-                Nine disciplines, one crew
+                Ten disciplines, one crew
               </h2>
             </div>
             <Link
@@ -98,9 +91,7 @@ function Home() {
             {services.slice(0, 6).map((s, i) => (
               <Reveal key={s.slug} delay={(i % 3) * 100}>
                 <div className="group h-full bg-navy p-10 transition-colors duration-500 hover:bg-navy-deep lg:p-12">
-                  <span className="eyebrow text-sand/70">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
+                  <span className="eyebrow text-sand/70">{String(i + 1).padStart(2, "0")}</span>
                   <h3 className="mt-6 font-display text-3xl">{s.title}</h3>
                   <p className="mt-4 text-sm leading-relaxed text-silver">{s.text}</p>
                   <span className="mt-8 inline-flex items-center gap-2 eyebrow text-offwhite/50 transition-colors group-hover:text-sand">
@@ -157,7 +148,7 @@ function Home() {
             <div className="surface-3d overflow-hidden">
               <img
                 src={aboutImg}
-                alt="Gunite pool under construction by the Marlowe crew"
+                alt="Gunite pool under construction by the SJ Pools & Landscaping crew"
                 width={1408}
                 height={1008}
                 loading="lazy"

@@ -2,26 +2,19 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { Reveal } from "@/components/Reveal";
 import { services } from "@/lib/site-data";
+import { pageMeta } from "@/lib/seo";
 import { CtaBand } from "./index";
 import hero2 from "@/assets/hero-2.jpg";
 
 export const Route = createFileRoute("/services")({
-  head: () => ({
-    meta: [
-      { title: "Services | Pool Construction & Landscaping — Marlowe" },
-      {
-        name: "description",
-        content:
-          "Gunite pools, patios, outdoor kitchens, retaining walls, drainage, excavation, 3D design and commercial landscape services in New Jersey.",
-      },
-      { property: "og:title", content: "Services | Marlowe Pools & Landscapes" },
-      {
-        property: "og:description",
-        content:
-          "Nine in-house disciplines: pools, patios, kitchens, walls, drainage, excavation, 3D design and more.",
-      },
-    ],
-  }),
+  head: () =>
+    pageMeta({
+      title: "Services | Pool Construction & Landscaping — SJ Pools & Landscaping",
+      description:
+        "Gunite pools, patios, outdoor kitchens, retaining walls, drainage, excavation, snow plowing, 3D design and commercial landscape services in New Jersey.",
+      path: "/services",
+      image: "/og/services.jpg",
+    }),
   component: ServicesPage,
 });
 
@@ -46,8 +39,9 @@ function ServicesPage() {
       <section className="mx-auto max-w-[1600px] px-6 py-24 lg:px-12 lg:py-32">
         <Reveal className="max-w-3xl">
           <p className="text-lg leading-relaxed text-muted-foreground">
-            Everything below is executed by Marlowe crews. Nothing is handed to an unknown third
-            party halfway through your project — which is why our schedules and our finishes hold.
+            Everything below is executed by SJ Pools &amp; Landscaping crews. Nothing is handed to
+            an unknown third party halfway through your project — which is why our schedules and our
+            finishes hold.
           </p>
         </Reveal>
 

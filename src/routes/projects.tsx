@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { Reveal } from "@/components/Reveal";
 import { projects } from "@/lib/site-data";
+import { pageMeta } from "@/lib/seo";
 import { CtaBand } from "./index";
 import hero4 from "@/assets/hero-4.jpg";
 import hero1 from "@/assets/hero-1.jpg";
@@ -10,21 +11,14 @@ import p2 from "@/assets/project-2.jpg";
 import p3 from "@/assets/project-3.jpg";
 
 export const Route = createFileRoute("/projects")({
-  head: () => ({
-    meta: [
-      { title: "Projects | Custom Pool & Backyard Portfolio — Marlowe" },
-      {
-        name: "description",
-        content:
-          "A portfolio of custom New Jersey backyards: vanishing edge pools, outdoor kitchens, stone terraces and full landscape builds.",
-      },
-      { property: "og:title", content: "Projects | Marlowe Pools & Landscapes" },
-      {
-        property: "og:description",
-        content: "Vanishing edge pools, outdoor kitchens and stone terraces across New Jersey.",
-      },
-    ],
-  }),
+  head: () =>
+    pageMeta({
+      title: "Projects | Custom Pool & Backyard Portfolio — SJ Pools & Landscaping",
+      description:
+        "A portfolio of custom New Jersey backyards: vanishing edge pools, outdoor kitchens, stone terraces and full landscape builds.",
+      path: "/projects",
+      image: "/og/projects.jpg",
+    }),
   component: ProjectsPage,
 });
 
