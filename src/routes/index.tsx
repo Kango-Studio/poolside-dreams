@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 
 import { HeroCarousel } from "@/components/HeroCarousel";
 import { Reveal } from "@/components/Reveal";
-import { services, projects } from "@/lib/site-data";
+import { services, projects, testimonials } from "@/lib/site-data";
 import { pageMeta } from "@/lib/seo";
 import aboutImg from "@/assets/about.jpg";
 import p1 from "@/assets/project-1.jpg";
@@ -22,6 +22,8 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+// NOTE: "Backyards delivered" and "Design awards" are placeholders — swap for
+// the real counts once confirmed, the other two are verified.
 const stats = [
   { value: "18+", label: "Years building" },
   { value: "480", label: "Backyards delivered" },
@@ -178,6 +180,34 @@ function Home() {
               ))}
             </ol>
           </Reveal>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="bg-navy text-offwhite">
+        <div className="mx-auto max-w-[1600px] px-6 py-28 lg:px-12 lg:py-40">
+          <Reveal>
+            <p className="eyebrow text-sand">Client feedback</p>
+            <h2 className="mt-6 max-w-2xl font-display text-4xl leading-[1.05] md:text-6xl">
+              What it's like to work with us
+            </h2>
+          </Reveal>
+
+          <div className="mt-20 grid gap-px bg-offwhite/15 md:grid-cols-2 lg:grid-cols-3">
+            {testimonials.map((t, i) => (
+              <Reveal key={t.name} delay={(i % 3) * 100}>
+                <div className="flex h-full flex-col justify-between bg-navy p-10 lg:p-12">
+                  <p className="font-display text-2xl leading-snug text-offwhite/90">
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                  <div className="mt-10">
+                    <p className="eyebrow text-sand">{t.name}</p>
+                    <p className="mt-1 text-sm text-silver">{t.place}</p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 

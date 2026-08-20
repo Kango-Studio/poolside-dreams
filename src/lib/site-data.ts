@@ -51,6 +51,8 @@ export const services = [
   },
 ];
 
+// NOTE: placeholder projects — swap for real project names, towns and scope
+// once photos are picked and the actual jobs to feature are confirmed.
 export const projects = [
   {
     title: "Ridge House Infinity",
@@ -71,5 +73,72 @@ export const projects = [
     title: "Hillcrest Spa Spillover",
     place: "Franklin Lakes, NJ",
     scope: "Pool & spa · Sun shelf · Paver patio",
+  },
+];
+
+// Real, verified customer feedback (Facebook/Google reviews). Only one review
+// with full public text could be confirmed — add more here once you can pull
+// exact quotes from the Google Business Profile or Facebook page.
+export const testimonials = [
+  {
+    quote:
+      "They did my previous house backyard 6 years ago and now did my new house. Both times the results and the service were great. I highly recommend them.",
+    name: "Guy Avtalion",
+    place: "Facebook review",
+  },
+];
+
+// Sourced from the FAQ section of sjpoolsandlandscaping.com — trimmed for length,
+// meaning kept intact.
+export const faqs = [
+  {
+    category: "Pool Construction",
+    items: [
+      {
+        q: "Should I include a spa in my pool installation?",
+        a: "A spa is a beautiful focal point and offers real benefits — warm hydrotherapy for sore muscles, improved circulation, better sleep and relaxation. It's also useful for low-impact exercise and for socializing during cooler months.",
+      },
+      {
+        q: "Which pool shape should I choose?",
+        a: "The most popular shape for a gunite spa is circular, since it facilitates conversation and fits more people comfortably. That said, geometric shapes with straight edges — squares, rectangles or triangles — appeal to other homeowners depending on the property and style of the house.",
+      },
+      {
+        q: "Can I build a pool in a small backyard?",
+        a: "Yes. Gunite pools offer the design flexibility to fit tight spaces. We work with your setbacks, local building codes, minimum deck requirements and soil conditions to find a shape and layout that makes the most of the space you have.",
+      },
+      {
+        q: "How much does pool construction cost?",
+        a: "Our basic inground pool and deck starts at around $150,000 and can range up from there depending on size, depth, amenities and materials chosen. Financing is available for qualified buyers.",
+      },
+      {
+        q: "What does the estimate process look like?",
+        a: "Our designers measure your backyard and walk the site with you. We talk through how you'll use the space, pool shape and dimensions, whether to include a spa, and any automation you want — then put together a layout that fits your budget and local codes.",
+      },
+    ],
+  },
+  {
+    category: "Landscaping & Hardscaping",
+    items: [
+      {
+        q: "How can I remove snow without damaging a new installation?",
+        a: "Conventional snow removal methods — shoveling, snow blowing and plowing — are fine for most residential pavers, patios and walkways.",
+      },
+      {
+        q: "Should I seal my patio or walkway?",
+        a: "Sealing is optional. It makes stains easier to remove and enhances the color of the stone, but sealers need to be reapplied every 2–3 years to keep that look.",
+      },
+      {
+        q: "What are the advantages of brick pavers?",
+        a: "Brick pavers have a minimum compressive strength of 8,000 psi and hold up well through New Jersey's freeze/thaw cycles. The joints allow slight movement without cracking, and individual pavers can be lifted and replaced for utility access or repairs — something poured concrete can't do.",
+      },
+      {
+        q: "How much do pavers cost?",
+        a: "Pricing depends on the color and style of paver, the size and complexity of the project, base preparation needed, site accessibility and any extras like planting beds or lighting. Contact us for a free estimate.",
+      },
+      {
+        q: "What's the difference between landscaping and hardscaping?",
+        a: "Landscaping is the umbrella term for both. Hardscaping covers non-living elements — stone, walls, decks and patios. Softscaping covers the living side — planting, grading and mulching.",
+      },
+    ],
   },
 ];

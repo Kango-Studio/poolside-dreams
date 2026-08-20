@@ -1,12 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, Waves } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import sjLogo from "../assets/logos/sj-landscaping-pools-logo-03.png";
 
 const nav = [
   { to: "/", label: "Home" },
   { to: "/services", label: "Services" },
   { to: "/projects", label: "Projects" },
   { to: "/about", label: "About" },
+  { to: "/faq", label: "FAQ" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -28,12 +30,8 @@ export function SiteHeader() {
       }`}
     >
       <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 lg:px-12">
-        <Link to="/" className="flex items-center gap-3 text-offwhite">
-          <Waves className="h-6 w-6 text-sand" strokeWidth={1.2} />
-          <span className="font-display text-xl leading-none tracking-[0.18em] uppercase">
-            SJ Pools
-            <span className="block eyebrow mt-1 text-sand">&amp; Landscaping</span>
-          </span>
+        <Link to="/" className="flex items-center">
+          <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-14 w-auto" />
         </Link>
 
         <nav className="hidden items-center gap-9 lg:flex">

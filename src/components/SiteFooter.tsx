@@ -1,17 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { Waves } from "lucide-react";
+import sjLogo from "../assets/logos/sj-landscaping-pools-logo-03.png";
 
 export function SiteFooter() {
   return (
     <footer className="bg-navy-deep text-offwhite">
       <div className="mx-auto grid max-w-[1600px] gap-12 px-6 py-20 lg:grid-cols-4 lg:px-12">
         <div>
-          <div className="flex items-center gap-3">
-            <Waves className="h-6 w-6 text-sand" strokeWidth={1.2} />
-            <span className="font-display text-xl tracking-[0.18em] uppercase">
-              SJ Pools &amp; Landscaping
-            </span>
-          </div>
+          <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-14 w-auto" />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-silver">
             Award-winning design/build firm creating custom pools and outdoor living environments
             across North and Central New Jersey and parts of New York.
@@ -26,6 +21,7 @@ export function SiteFooter() {
               { to: "/services", label: "Services" },
               { to: "/projects", label: "Projects" },
               { to: "/about", label: "About" },
+              { to: "/faq", label: "FAQ" },
               { to: "/contact", label: "Contact" },
             ].map((l) => (
               <li key={l.to}>
