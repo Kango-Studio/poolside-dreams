@@ -2,10 +2,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
-import hero1 from "@/assets/hero-1.jpg";
-import hero2 from "@/assets/hero-2.jpg";
-import hero3 from "@/assets/hero-3.jpg";
-import hero4 from "@/assets/hero-4.jpg";
+import hero1 from "@/assets/hero-slide/image-gallery-1.webp";
+import hero2 from "@/assets/hero-slide/image-gallery-2.webp";
+import hero3 from "@/assets/hero-slide/image-gallery-3.webp";
+import hero4 from "@/assets/hero-slide/image-gallery-4.webp";
+import hero5 from "@/assets/hero-slide/image-gallery-5.webp";
 
 const slides = [
   {
@@ -20,13 +21,18 @@ const slides = [
   },
   {
     image: hero3,
-    title: "After Sundown",
-    text: "Fire, water and light choreographed so the backyard begins when the day ends.",
+    title: "Rooted in Place",
+    text: "A reflecting pool framed by brick, boxwood and the house it was built to answer.",
   },
   {
     image: hero4,
     title: "Drawn in 3D",
     text: "You walk the design before we ever break ground on your property.",
+  },
+  {
+    image: hero5,
+    title: "After Sundown",
+    text: "Fire, water and light choreographed so the backyard begins when the day ends.",
   },
 ];
 
