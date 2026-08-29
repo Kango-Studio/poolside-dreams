@@ -62,15 +62,20 @@ export const services = [
 //   - canfield    -> "Canfield, ???, NJ"     (2025)
 //   - pike        -> "Pike, ???, NJ"         (2025)
 //   - church      -> "Church, ???, NJ"       (2025)
-//   - margo       -> "Margo, ???, NJ"        (2024, was "12 Margo Ave")
-//   - highwood    -> "Highwood, ???, NJ"     (2024, was "224 Highwood")
-//   - devon       -> "Devon, ???, NJ"        (2024, was "239 Devon")
-//   - hill-hollow -> "Hill Hollow, ???, NJ"  (2024, was "45 Hill Hollow")
-//   - suffolk     -> "Suffolk, ???, NJ"      (2024, was "63 Suffolk")
+//   - margo         -> "Margo, ???, NJ"          (2024, was "12 Margo Ave")
+//   - highwood      -> "Highwood, ???, NJ"       (2024, was "224 Highwood")
+//   - devon         -> "Devon, ???, NJ"          (2024, was "239 Devon")
+//   - hill-hollow   -> "Hill Hollow, ???, NJ"    (2024, was "45 Hill Hollow")
+//   - suffolk       -> "Suffolk, ???, NJ"        (2024, was "63 Suffolk")
+//   - margo-way     -> "Margo Way, ???, NJ"      (2023, was "12 Margo Way" — a
+//                       different property from "margo"/2024 above, just a
+//                       similar street name; confirmed by comparing the photos)
+//   - spring-valley -> "Spring Valley, ???, NJ"  (2023, was "323 Spring Valley")
+//   - kinnelon      -> "Kinnelon, ???, NJ"       (2023, town name doubles as street)
 // Swap the city in once you have it.
 // `year` is the real shoot year, read off the photographer's file timestamps —
-// now that we have both 2025 and 2024 builds, the year filter on the projects
-// page actually does something.
+// now spans 2023, 2024 and 2025, so the year filter on the projects page
+// actually does something.
 export const projects = [
   {
     slug: "miles",
@@ -142,6 +147,28 @@ export const projects = [
     place: "New Jersey",
     year: 2024,
     scope: "Rectangular pool & attached spa · Bluestone terrace · Secondary fire-pit lounge",
+  },
+  {
+    slug: "margo-way",
+    title: "Margo Way",
+    place: "New Jersey",
+    year: 2023,
+    scope: "Linear fire-and-water scupper wall · Outdoor kitchen with pizza oven · Sunken lounge",
+  },
+  {
+    slug: "spring-valley",
+    title: "Spring Valley",
+    place: "New Jersey",
+    year: 2023,
+    scope:
+      "Rectangular pool & cabana pavilion · Bluestone terrace · Spa & layered perennial plantings",
+  },
+  {
+    slug: "kinnelon",
+    title: "Kinnelon",
+    place: "New Jersey",
+    year: 2023,
+    scope: "Vanishing-edge infinity pool · Raised concrete-clad spa platform · Linear fire feature",
   },
 ];
 
