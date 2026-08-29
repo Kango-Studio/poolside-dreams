@@ -57,15 +57,20 @@ export const services = [
 //
 // NOTE: `place` is a placeholder — street numbers are intentionally left out
 // for client privacy, but the town/city for each is still needed from you:
-//   - miles    -> "Miles, ???, NJ"
-//   - tweed    -> "Tweed, ???, NJ"
-//   - canfield -> "Canfield, ???, NJ"
-//   - pike     -> "Pike, ???, NJ"
-//   - church   -> "Church, ???, NJ"
+//   - miles       -> "Miles, ???, NJ"        (2025)
+//   - tweed       -> "Tweed, ???, NJ"        (2025)
+//   - canfield    -> "Canfield, ???, NJ"     (2025)
+//   - pike        -> "Pike, ???, NJ"         (2025)
+//   - church      -> "Church, ???, NJ"       (2025)
+//   - margo       -> "Margo, ???, NJ"        (2024, was "12 Margo Ave")
+//   - highwood    -> "Highwood, ???, NJ"     (2024, was "224 Highwood")
+//   - devon       -> "Devon, ???, NJ"        (2024, was "239 Devon")
+//   - hill-hollow -> "Hill Hollow, ???, NJ"  (2024, was "45 Hill Hollow")
+//   - suffolk     -> "Suffolk, ???, NJ"      (2024, was "63 Suffolk")
 // Swap the city in once you have it.
-// `year` is the real shoot year, read off the photographer's file timestamps
-// (kept even though every current project is 2025 — filtering by year on the
-// projects page only pays off once builds from other years are added).
+// `year` is the real shoot year, read off the photographer's file timestamps —
+// now that we have both 2025 and 2024 builds, the year filter on the projects
+// page actually does something.
 export const projects = [
   {
     slug: "miles",
@@ -101,6 +106,42 @@ export const projects = [
     place: "New Jersey",
     year: 2025,
     scope: "Pool & raised spa with sheer descent · Paver patio · Privacy plantings",
+  },
+  {
+    slug: "margo",
+    title: "Margo",
+    place: "New Jersey",
+    year: 2024,
+    scope:
+      "Rectangular gunite pool & raised spa · Large-format paver terrace · Turf borders & palm landscaping",
+  },
+  {
+    slug: "highwood",
+    title: "Highwood",
+    place: "New Jersey",
+    year: 2024,
+    scope: "Twin fire-and-water scupper bowls · Raised spa · Sunken lounge with fire table",
+  },
+  {
+    slug: "devon",
+    title: "Devon",
+    place: "New Jersey",
+    year: 2024,
+    scope: "Rectangular pool with sun ledge · Bluestone terrace · Wooded privacy landscaping",
+  },
+  {
+    slug: "hill-hollow",
+    title: "Hill Hollow",
+    place: "New Jersey",
+    year: 2024,
+    scope: "Sunken pool & raised spa · Checkerboard paver-and-turf patio · Cabana pergola",
+  },
+  {
+    slug: "suffolk",
+    title: "Suffolk",
+    place: "New Jersey",
+    year: 2024,
+    scope: "Rectangular pool & attached spa · Bluestone terrace · Secondary fire-pit lounge",
   },
 ];
 

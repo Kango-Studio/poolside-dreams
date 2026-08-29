@@ -121,7 +121,7 @@ function Home() {
         </Reveal>
 
         <div className="mt-20 grid gap-10 lg:grid-cols-3">
-          {projects.slice(0, 3).map((project, i) => {
+          {projects.slice(0, 6).map((project, i) => {
             const hero = getProjectImages(project.slug)[0];
             return (
               <Reveal key={project.slug} delay={i * 120}>
@@ -152,6 +152,17 @@ function Home() {
             );
           })}
         </div>
+
+        <Reveal delay={160}>
+          <div className="mt-16 flex justify-center">
+            <Link
+              to="/projects"
+              className="eyebrow inline-flex items-center gap-3 border border-foreground/20 px-10 py-5 transition-all duration-500 hover:border-foreground/40 hover:bg-foreground/[0.03]"
+            >
+              View all projects <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
+            </Link>
+          </div>
+        </Reveal>
       </section>
 
       {/* Process */}

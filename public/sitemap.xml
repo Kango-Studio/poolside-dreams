@@ -41,6 +41,31 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/margo</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/highwood</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/devon</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/hill-hollow</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/suffolk</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sjpoolsandlandscaping.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
