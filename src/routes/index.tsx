@@ -4,11 +4,9 @@ import { ArrowUpRight } from "lucide-react";
 import { HeroCarousel } from "@/components/HeroCarousel";
 import { Reveal } from "@/components/Reveal";
 import { services, projects, testimonials } from "@/lib/site-data";
+import { getProjectImages } from "@/lib/project-images";
 import { pageMeta } from "@/lib/seo";
 import aboutImg from "@/assets/about.jpg";
-import p1 from "@/assets/project-1.jpg";
-import p2 from "@/assets/project-2.jpg";
-import p3 from "@/assets/project-3.jpg";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -123,23 +121,25 @@ function Home() {
         </Reveal>
 
         <div className="mt-20 grid gap-10 lg:grid-cols-3">
-          {[p1, p2, p3].map((img, i) => {
-            const project = projects[i]!;
+          {projects.slice(0, 3).map((project, i) => {
+            const hero = getProjectImages(project.slug)[0];
             return (
-              <Reveal key={project.title} delay={i * 120}>
+              <Reveal key={project.slug} delay={i * 120}>
                 <Link
                   to="/projects"
                   className="surface-3d group block overflow-hidden bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand focus-visible:ring-offset-4"
                 >
                   <div className="aspect-[4/3] overflow-hidden">
-                    <img
-                      src={img}
-                      alt={project.title}
-                      width={1408}
-                      height={1008}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
-                    />
+                    {hero && (
+                      <img
+                        src={hero}
+                        alt={project.title}
+                        width={1408}
+                        height={1008}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+                      />
+                    )}
                   </div>
                   <div className="p-8">
                     <p className="eyebrow text-muted-foreground">{project.place}</p>

@@ -51,28 +51,48 @@ export const services = [
   },
 ];
 
-// NOTE: placeholder projects — swap for real project names, towns and scope
-// once photos are picked and the actual jobs to feature are confirmed.
+// Real client projects, photographed by Jimi Smith Photography Group.
+// `slug` maps to the folder of compressed photos in src/assets/projects/<slug>/
+// (via getProjectImages in lib/project-images.ts).
+//
+// NOTE: `place` is a placeholder — street numbers are intentionally left out
+// for client privacy, but the town/city for each is still needed from you:
+//   - miles    -> "Miles, ???, NJ"
+//   - tweed    -> "Tweed, ???, NJ"
+//   - canfield -> "Canfield, ???, NJ"
+//   - pike     -> "Pike, ???, NJ"
+//   - church   -> "Church, ???, NJ"
+// Swap the city in once you have it.
 export const projects = [
   {
-    title: "Ridge House Infinity",
-    place: "Alpine, NJ",
-    scope: "Vanishing edge pool · Travertine deck · Lighting",
+    slug: "miles",
+    title: "Miles",
+    place: "New Jersey",
+    scope: "Vanishing-edge pool & raised spa · Bluestone terracing · Landscape lighting",
   },
   {
-    title: "Cedar Grove Terrace",
-    place: "Saddle River, NJ",
-    scope: "Outdoor kitchen · Pergola · Fire feature",
+    slug: "tweed",
+    title: "Tweed",
+    place: "New Jersey",
+    scope: "Negative-edge lap pool & spa · Bluestone patio · Panoramic water view",
   },
   {
-    title: "Stonewall Gardens",
-    place: "Ho-Ho-Kus, NJ",
-    scope: "Retaining walls · Steps · Full planting plan",
+    slug: "church",
+    title: "Church",
+    place: "New Jersey",
+    scope: "Reflecting pool · Travertine & wood terrace · Modern outdoor lounge",
   },
   {
-    title: "Hillcrest Spa Spillover",
-    place: "Franklin Lakes, NJ",
-    scope: "Pool & spa · Sun shelf · Paver patio",
+    slug: "canfield",
+    title: "Canfield",
+    place: "New Jersey",
+    scope: "Formal pool & reflecting water feature · Bluestone & brick terrace · Fire feature",
+  },
+  {
+    slug: "pike",
+    title: "Pike",
+    place: "New Jersey",
+    scope: "Pool & raised spa with sheer descent · Paver patio · Privacy plantings",
   },
 ];
 
