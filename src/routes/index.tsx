@@ -13,7 +13,7 @@ import p3 from "@/assets/project-3.jpg";
 export const Route = createFileRoute("/")({
   head: () =>
     pageMeta({
-      title: "SJ Pools & Landscaping | Custom Pool Builders in New Jersey",
+      title: "SJ Pools & Landscaping | Custom Pool Builder in New Jersey",
       description:
         "Award-winning New Jersey design/build firm creating custom gunite pools, patios and luxury outdoor living environments across North and Central New Jersey and parts of New York.",
       path: "/",
@@ -22,14 +22,14 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-// NOTE: "Backyards delivered" and "Design awards" are placeholders — swap for
-// the real counts once confirmed, the other two are verified.
 const stats = [
-  { value: "18+", label: "Years building" },
-  { value: "480", label: "Backyards delivered" },
-  { value: "12", label: "Design awards" },
-  { value: "100%", label: "In-house crews" },
+  { value: "30+", label: "Years building" },
+  { value: "Award-Winning", label: "Recognition" },
+  { value: "30+", label: "Pools built annually" },
+  { value: "One team", label: "From design to build" },
 ];
+
+const featuredServices = ["pools-patios", "landscaping", "3d-design", "commercial"];
 
 function Home() {
   return (
@@ -40,17 +40,19 @@ function Home() {
       <section className="mx-auto max-w-[1600px] px-6 py-28 lg:px-12 lg:py-40">
         <div className="grid gap-16 lg:grid-cols-[0.85fr_1fr]">
           <Reveal>
-            <p className="eyebrow text-muted-foreground">New Jersey Pool Builders</p>
+            <p className="eyebrow text-muted-foreground">New Jersey Pool Builder</p>
             <h2 className="mt-6 font-display text-4xl leading-[1.05] md:text-6xl">
-              A backyard is architecture.
-              <span className="block text-muted-foreground">We treat it that way.</span>
+              It’s more than a pool.
+              <span className="block text-muted-foreground">It’s a lifestyle.</span>
             </h2>
           </Reveal>
           <Reveal delay={120} className="flex flex-col justify-end gap-8">
             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-              SJ Pools & Landscaping is a complete outdoor living design/build firm. From the first
-              survey to the final planting, one team handles excavation, gunite, masonry, water and
-              light — so the detail you were shown in 3D is the detail that gets built.
+              SJ Pools & Landscaping is a full-service outdoor living design-build firm, creating
+              custom pools and landscapes as one seamless vision. From the initial site survey and
+              3D design to construction, masonry, lighting, water features and final landscaping,
+              every detail is thoughtfully coordinated by one team — ensuring the space you envision
+              is the space we bring to life.
             </p>
             <Link
               to="/about"
@@ -64,7 +66,7 @@ function Home() {
         <div className="mt-24 grid grid-cols-2 gap-px border border-border bg-border lg:grid-cols-4">
           {stats.map((s, i) => (
             <Reveal key={s.label} delay={i * 90} className="bg-background p-8 lg:p-12">
-              <p className="font-display text-5xl lg:text-6xl">{s.value}</p>
+              <p className="font-display text-4xl leading-none lg:text-5xl">{s.value}</p>
               <p className="eyebrow mt-4 text-muted-foreground">{s.label}</p>
             </Reveal>
           ))}
@@ -78,7 +80,7 @@ function Home() {
             <div>
               <p className="eyebrow text-sand">What we build</p>
               <h2 className="mt-6 max-w-2xl font-display text-4xl leading-[1.05] md:text-6xl">
-                Ten disciplines, one crew
+                Outdoor spaces, built as one vision
               </h2>
             </div>
             <Link
@@ -89,19 +91,24 @@ function Home() {
             </Link>
           </Reveal>
 
-          <div className="mt-20 grid gap-px bg-offwhite/15 md:grid-cols-2 lg:grid-cols-3">
-            {services.slice(0, 6).map((s, i) => (
-              <Reveal key={s.slug} delay={(i % 3) * 100}>
-                <div className="group h-full bg-navy p-10 transition-colors duration-500 hover:bg-navy-deep lg:p-12">
-                  <span className="eyebrow text-sand/70">{String(i + 1).padStart(2, "0")}</span>
-                  <h3 className="mt-6 font-display text-3xl">{s.title}</h3>
-                  <p className="mt-4 text-sm leading-relaxed text-silver">{s.text}</p>
-                  <span className="mt-8 inline-flex items-center gap-2 eyebrow text-offwhite/50 transition-colors group-hover:text-sand">
-                    Learn more <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
-                  </span>
-                </div>
-              </Reveal>
-            ))}
+          <div className="mt-20 grid border-y border-offwhite/15 md:grid-cols-2 lg:grid-cols-4">
+            {featuredServices.map((slug, i) => {
+              const service = services.find((item) => item.slug === slug)!;
+              return (
+                <Reveal key={service.slug} delay={i * 90}>
+                  <Link
+                    to="/services"
+                    className="group flex min-h-40 items-end justify-between gap-6 border-b border-offwhite/15 py-8 transition-colors hover:text-sand md:border-r md:px-8 lg:min-h-52 lg:border-b-0"
+                  >
+                    <h3 className="font-display text-3xl">{service.title}</h3>
+                    <ArrowUpRight
+                      className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1"
+                      strokeWidth={1.4}
+                    />
+                  </Link>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -111,7 +118,7 @@ function Home() {
         <Reveal>
           <p className="eyebrow text-muted-foreground">Selected work</p>
           <h2 className="mt-6 font-display text-4xl leading-[1.05] md:text-6xl">
-            Recent backyards
+            Some of our projects
           </h2>
         </Reveal>
 
@@ -120,7 +127,10 @@ function Home() {
             const project = projects[i]!;
             return (
               <Reveal key={project.title} delay={i * 120}>
-                <article className="surface-3d group overflow-hidden bg-card">
+                <Link
+                  to="/projects"
+                  className="surface-3d group block overflow-hidden bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand focus-visible:ring-offset-4"
+                >
                   <div className="aspect-[4/3] overflow-hidden">
                     <img
                       src={img}
@@ -136,7 +146,7 @@ function Home() {
                     <h3 className="mt-4 font-display text-2xl">{project.title}</h3>
                     <p className="mt-3 text-sm text-muted-foreground">{project.scope}</p>
                   </div>
-                </article>
+                </Link>
               </Reveal>
             );
           })}
@@ -161,7 +171,7 @@ function Home() {
           <Reveal delay={120} className="flex flex-col justify-center">
             <p className="eyebrow text-muted-foreground">The process</p>
             <h2 className="mt-6 font-display text-4xl leading-[1.05] md:text-5xl">
-              Four steps, no subcontractor roulette
+              From first vision to first swim.
             </h2>
             <ol className="mt-12 space-y-8">
               {[
