@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Expand } from "lucide-react";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
-export function ProjectGallery({ images, title }: { images: string[]; title: string }) {
+export function ProjectGallery({
+  images,
+  title,
+  gridClassName = "grid-cols-3 sm:grid-cols-4 lg:grid-cols-6",
+}: {
+  images: string[];
+  title: string;
+  /** Tailwind grid-cols-* classes for the thumbnail grid — tune per placement. */
+  gridClassName?: string;
+}) {
   const [index, setIndex] = useState<number | null>(null);
   const open = index !== null;
 
@@ -14,11 +23,22 @@ export function ProjectGallery({ images, title }: { images: string[]; title: str
     });
   }
 
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
   if (images.length === 0) return null;
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
+      <div className={`grid gap-2 ${gridClassName}`}>
         {images.map((src, i) => (
           <button
             key={src}

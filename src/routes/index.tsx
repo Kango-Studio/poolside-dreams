@@ -126,7 +126,8 @@ function Home() {
             return (
               <Reveal key={project.slug} delay={i * 120}>
                 <Link
-                  to="/projects"
+                  to="/projects/$slug"
+                  params={{ slug: project.slug }}
                   className="surface-3d group block overflow-hidden bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand focus-visible:ring-offset-4"
                 >
                   <div className="aspect-[4/3] overflow-hidden">

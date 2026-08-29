@@ -63,35 +63,43 @@ export const services = [
 //   - pike     -> "Pike, ???, NJ"
 //   - church   -> "Church, ???, NJ"
 // Swap the city in once you have it.
+// `year` is the real shoot year, read off the photographer's file timestamps
+// (kept even though every current project is 2025 — filtering by year on the
+// projects page only pays off once builds from other years are added).
 export const projects = [
   {
     slug: "miles",
     title: "Miles",
     place: "New Jersey",
+    year: 2025,
     scope: "Vanishing-edge pool & raised spa · Bluestone terracing · Landscape lighting",
   },
   {
     slug: "tweed",
     title: "Tweed",
     place: "New Jersey",
+    year: 2025,
     scope: "Negative-edge lap pool & spa · Bluestone patio · Panoramic water view",
   },
   {
     slug: "church",
     title: "Church",
     place: "New Jersey",
+    year: 2025,
     scope: "Reflecting pool · Travertine & wood terrace · Modern outdoor lounge",
   },
   {
     slug: "canfield",
     title: "Canfield",
     place: "New Jersey",
+    year: 2025,
     scope: "Formal pool & reflecting water feature · Bluestone & brick terrace · Fire feature",
   },
   {
     slug: "pike",
     title: "Pike",
     place: "New Jersey",
+    year: 2025,
     scope: "Pool & raised spa with sheer descent · Paver patio · Privacy plantings",
   },
 ];

@@ -16,6 +16,31 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/miles</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/tweed</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/church</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/canfield</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/pike</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sjpoolsandlandscaping.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
