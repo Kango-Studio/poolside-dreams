@@ -1,0 +1,1 @@
+var e=`/assets/about-qBKD4tIW.jpg`;export{e as t};

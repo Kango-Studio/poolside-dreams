@@ -43,11 +43,10 @@ export default defineConfig(async ({ command, mode }) => {
 
   if (command === "build") {
     const { nitro } = await import("nitro/vite");
-    plugins.push(
-      nitro({
-        preset: "cloudflare-module",
-      }),
-    );
+    // Let Nitro detect the deployment provider. On Vercel this emits the
+    // Build Output API structure in `.vercel/output`; local builds keep the
+    // standard Node output instead of being locked to Cloudflare Workers.
+    plugins.push(nitro());
   }
 
   plugins.push(viteReact());
