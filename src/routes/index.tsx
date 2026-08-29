@@ -75,7 +75,7 @@ function Home() {
 
       {/* Services */}
       <section className="bg-navy text-offwhite">
-        <div className="mx-auto max-w-[1600px] px-6 py-28 lg:px-12 lg:py-40">
+        <div className="relative mx-auto max-w-[1600px] px-6 py-28 lg:px-12 lg:py-40">
           <Reveal className="flex flex-wrap items-end justify-between gap-8">
             <div>
               <p className="eyebrow text-sand">What we build</p>
@@ -153,43 +153,130 @@ function Home() {
         </div>
       </section>
 
-      {/* Process / image split */}
-      <section className="bg-muted">
-        <div className="mx-auto grid max-w-[1600px] gap-16 px-6 py-28 lg:grid-cols-2 lg:px-12 lg:py-40">
-          <Reveal>
-            <div className="surface-3d overflow-hidden">
-              <img
-                src={aboutImg}
-                alt="Gunite pool under construction by the SJ Pools & Landscaping crew"
-                width={1408}
-                height={1008}
-                loading="lazy"
-                className="h-full w-full object-cover"
-              />
-            </div>
-          </Reveal>
-          <Reveal delay={120} className="flex flex-col justify-center">
-            <p className="eyebrow text-muted-foreground">The process</p>
+      {/* Process */}
+      <section className="relative isolate overflow-clip bg-navy-deep text-offwhite">
+        <img
+          src={aboutImg}
+          alt=""
+          width={1408}
+          height={1008}
+          loading="lazy"
+          className="absolute inset-[-2%] -z-20 h-[104%] w-[104%] scale-105 object-cover blur-[4px]"
+        />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster={aboutImg}
+          aria-hidden="true"
+          className="absolute inset-[-2%] -z-20 h-[104%] w-[104%] scale-105 object-cover blur-[3px]"
+        />
+        <div className="absolute inset-0 -z-10 bg-navy-deep/85" />
+
+        <div className="mx-auto max-w-[1600px] px-6 py-28 lg:px-12 lg:py-40">
+          <Reveal className="max-w-4xl">
+            <p className="eyebrow text-sand">The process</p>
             <h2 className="mt-6 font-display text-4xl leading-[1.05] md:text-5xl">
               From first vision to first swim.
             </h2>
-            <ol className="mt-12 space-y-8">
+            <div className="mt-8 max-w-3xl space-y-5 text-base leading-relaxed text-silver md:text-lg">
+              <p>
+                A great outdoor space doesn&apos;t begin with excavation. It begins with
+                understanding the property, the people who live there, and the way the space should
+                feel when it&apos;s finished.
+              </p>
+              <p>
+                Our process brings design and construction together from the beginning, creating a
+                clear path from the first site visit to the moment your outdoor space becomes part
+                of everyday life.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="mt-20 grid gap-16 lg:grid-cols-[minmax(18rem,30rem)_minmax(0,1fr)] lg:items-start lg:gap-20">
+            <div className="self-start lg:sticky lg:top-28">
+              <Reveal>
+                <figure className="relative aspect-[4/5] overflow-hidden shadow-[0_36px_80px_-28px_rgba(0,0,0,0.7)]">
+                  <img
+                    src={aboutImg}
+                    alt="SJ Pools & Landscaping crew building a custom gunite pool"
+                    width={1408}
+                    height={1008}
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-navy-deep/10" />
+                </figure>
+              </Reveal>
+            </div>
+
+            <ol className="min-w-0">
               {[
-                ["Site study", "We survey grade, drainage, sun and sightlines before sketching."],
-                ["3D concept", "You walk the design in full renderings and adjust freely."],
-                ["Build", "Excavation, gunite, masonry, water and light by our own crews."],
-                ["Handover", "Startup, training and a seasonal care plan for the property."],
-              ].map(([title, text], i) => (
-                <li key={title} className="flex gap-6 border-t border-border pt-6">
-                  <span className="eyebrow text-sand">0{i + 1}</span>
-                  <div>
-                    <h3 className="font-display text-2xl">{title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{text}</p>
-                  </div>
-                </li>
+                {
+                  title: "Discover & Site Study",
+                  lead: "We start with the property — and by listening to you.",
+                  paragraphs: [
+                    "Before we design, we study the site and learn how you want to live outside. We evaluate the layout, grade, drainage, sunlight, existing architecture and important sightlines while discussing your goals, priorities and ideas for the space.",
+                    "The result is a design direction grounded in both the property and your lifestyle.",
+                  ],
+                },
+                {
+                  title: "Design & 3D Vision",
+                  lead: "See the space before we build it.",
+                  paragraphs: [
+                    "Your ideas begin to take shape through a detailed 3D concept that brings the entire environment together — pool, patio, elevations, landscape, masonry, lighting and outdoor living features.",
+                    "This is where we refine proportions, materials and details together, giving you the opportunity to experience the design and make thoughtful decisions before construction begins.",
+                  ],
+                },
+                {
+                  title: "Build & Craft",
+                  lead: "The vision becomes real.",
+                  paragraphs: [
+                    "Once the design is approved and the project is ready for construction, our team moves from planning into execution — coordinating the many layers required to build a complete outdoor environment.",
+                    "From excavation, grading and pool construction to masonry, hardscape, water features, lighting and landscaping, every phase is approached with the finished design in mind.",
+                    "Because great craftsmanship isn't just about how something looks on day one. It's about how every detail comes together — and how well it performs for years to come.",
+                  ],
+                },
+                {
+                  title: "Complete & Enjoy",
+                  lead: "The project ends. Your life outside begins.",
+                  paragraphs: [
+                    "As construction comes to completion, we walk through the finished space with you, review its key features and make sure you understand how to care for and enjoy your new environment.",
+                  ],
+                  closing: [
+                    "Then comes the best part:",
+                    "The renderings become real.",
+                    "The construction gives way to living.",
+                    "And a space that once existed only as an idea becomes part of your home.",
+                  ],
+                },
+              ].map((step, i) => (
+                <Reveal key={step.title} delay={(i % 2) * 100}>
+                  <li className="border-t border-offwhite/20 py-12 first:pt-0">
+                    <p className="eyebrow text-sand">
+                      {String(i + 1).padStart(2, "0")} — {step.title}
+                    </p>
+                    <h3 className="mt-5 font-display text-3xl leading-tight md:text-4xl">
+                      {step.lead}
+                    </h3>
+                    <div className="mt-6 space-y-5 leading-relaxed text-silver">
+                      {step.paragraphs.map((paragraph) => (
+                        <p key={paragraph}>{paragraph}</p>
+                      ))}
+                    </div>
+                    {step.closing && (
+                      <div className="mt-7 space-y-2 font-display text-xl leading-snug text-offwhite md:text-2xl">
+                        {step.closing.map((line) => (
+                          <p key={line}>{line}</p>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                </Reveal>
               ))}
             </ol>
-          </Reveal>
+          </div>
         </div>
       </section>
 
@@ -229,18 +316,23 @@ function Home() {
 export function CtaBand() {
   return (
     <section className="bg-navy-deep text-offwhite">
-      <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-10 px-6 py-24 lg:px-12">
-        <Reveal>
+      <div className="mx-auto grid max-w-[1600px] gap-12 px-6 py-24 lg:grid-cols-[1fr_auto] lg:items-end lg:px-12 lg:py-32">
+        <Reveal className="max-w-3xl">
+          <p className="eyebrow text-sand">Get a quote</p>
           <h2 className="max-w-2xl font-display text-4xl leading-[1.05] md:text-5xl">
-            Looking to build a pool or reimagine your backyard?
+            Ready to transform the way you live at home?
           </h2>
+          <p className="mt-7 max-w-2xl leading-relaxed text-silver">
+            From custom pools to complete outdoor environments, we bring your vision to life through
+            thoughtful design, craftsmanship and one seamless process.
+          </p>
         </Reveal>
         <Reveal delay={120}>
           <Link
             to="/contact"
-            className="eyebrow bg-sand px-10 py-5 text-navy-deep transition-all duration-500 hover:bg-offwhite"
+            className="eyebrow inline-flex items-center gap-3 bg-sand px-10 py-5 text-navy-deep transition-all duration-500 hover:bg-offwhite"
           >
-            Get a quote
+            Start your project <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
           </Link>
         </Reveal>
       </div>

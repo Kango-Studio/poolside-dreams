@@ -8,8 +8,9 @@ export function SiteFooter() {
         <div>
           <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-14 w-auto" />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-silver">
-            Award-winning design/build firm creating custom pools and outdoor living environments
-            across North and Central New Jersey and parts of New York.
+            SJ Pools &amp; Landscaping is an award-winning outdoor living design-build firm creating
+            custom pools, landscapes and complete outdoor environments throughout North and Central
+            New Jersey and select areas of New York.
           </p>
         </div>
 
@@ -20,11 +21,24 @@ export function SiteFooter() {
               { to: "/", label: "Home" },
               { to: "/services", label: "Services" },
               { to: "/projects", label: "Projects" },
-              { to: "/about", label: "About" },
-              { to: "/faq", label: "FAQ" },
-              { to: "/contact", label: "Contact" },
+              { to: "/about", label: "About Us" },
             ].map((l) => (
               <li key={l.to}>
+                <Link to={l.to} className="link-underline hover:text-sand">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <Link to="/blog" className="link-underline hover:text-sand">
+                Blog
+              </Link>
+            </li>
+            {[
+              { to: "/contact", label: "Get a Quote" },
+              { to: "/contact", label: "Contact" },
+            ].map((l) => (
+              <li key={l.label}>
                 <Link to={l.to} className="link-underline hover:text-sand">
                   {l.label}
                 </Link>
