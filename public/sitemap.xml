@@ -81,6 +81,26 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/mount-englewood</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/ray</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/anderson</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sjpoolsandlandscaping.com/projects/hillcrest</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sjpoolsandlandscaping.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

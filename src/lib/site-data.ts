@@ -67,14 +67,20 @@ export const services = [
 //   - devon         -> "Devon, ???, NJ"          (2024, was "239 Devon")
 //   - hill-hollow   -> "Hill Hollow, ???, NJ"    (2024, was "45 Hill Hollow")
 //   - suffolk       -> "Suffolk, ???, NJ"        (2024, was "63 Suffolk")
-//   - margo-way     -> "Margo Way, ???, NJ"      (2023, was "12 Margo Way" — a
-//                       different property from "margo"/2024 above, just a
-//                       similar street name; confirmed by comparing the photos)
-//   - spring-valley -> "Spring Valley, ???, NJ"  (2023, was "323 Spring Valley")
-//   - kinnelon      -> "Kinnelon, ???, NJ"       (2023, town name doubles as street)
+//   - margo-way       -> "Margo Way, ???, NJ"       (2023, was "12 Margo Way" — a
+//                         different property from "margo"/2024 above, just a
+//                         similar street name; confirmed by comparing the photos)
+//   - spring-valley   -> "Spring Valley, ???, NJ"   (2023, was "323 Spring Valley")
+//   - kinnelon        -> "Kinnelon, ???, NJ"        (2023, town name doubles as street)
+//   - mount-englewood -> "Mount Englewood, ???, NJ" (2022, was "270 Mnt. Englewood")
+//   - ray             -> "Ray, ???, NJ"             (2022, was "537 Ray Ave.")
+//   - anderson        -> "Anderson, Closter, NJ"    (2022, was "Anderson Closter" —
+//                         guessed this is street "Anderson" in the town of
+//                         Closter, NJ; double-check this one, it's a guess)
+//   - hillcrest       -> "Hillcrest, ???, NJ"       (2022, was "Hillcrest Blvd.")
 // Swap the city in once you have it.
 // `year` is the real shoot year, read off the photographer's file timestamps —
-// now spans 2023, 2024 and 2025, so the year filter on the projects page
+// now spans 2022 through 2025, so the year filter on the projects page
 // actually does something.
 export const projects = [
   {
@@ -169,6 +175,39 @@ export const projects = [
     place: "New Jersey",
     year: 2023,
     scope: "Vanishing-edge infinity pool · Raised concrete-clad spa platform · Linear fire feature",
+  },
+  {
+    slug: "mount-englewood",
+    title: "Mount Englewood",
+    place: "New Jersey",
+    year: 2022,
+    scope:
+      "Fire-and-water scupper feature · Louvered pergola with outdoor TV lounge · Fire pit table",
+  },
+  {
+    slug: "ray",
+    title: "Ray",
+    place: "New Jersey",
+    year: 2022,
+    scope: "Rectangular pool & raised spa · Turf lawn · Covered patio pavilion & privacy hedge",
+  },
+  {
+    slug: "anderson",
+    title: "Anderson",
+    // Best guess from the folder name "Anderson Closter" — Closter is a real NJ
+    // town, so this reads as street "Anderson" in Closter. Confirm with the client.
+    place: "Closter, NJ",
+    year: 2022,
+    scope:
+      "Rectangular pool with tanning ledge · Scupper wall waterfall · Covered outdoor kitchen & fire pit",
+  },
+  {
+    slug: "hillcrest",
+    title: "Hillcrest",
+    place: "New Jersey",
+    year: 2022,
+    scope:
+      "Modern pool house with color-changing LED lighting · Fire pit lounge · Scupper waterfall",
   },
 ];
 
