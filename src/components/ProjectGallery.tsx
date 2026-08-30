@@ -64,16 +64,24 @@ export function ProjectGallery({
       </div>
 
       <Dialog open={open} onOpenChange={(next) => !next && setIndex(null)}>
-        <DialogContent className="max-w-[96vw] border-none bg-navy-deep p-0 sm:max-w-[92vw]">
+        <DialogContent className="isolate max-w-[96vw] overflow-hidden border-none bg-black p-0 sm:max-w-[92vw]">
           <DialogTitle className="sr-only">
             {title} — photo {index !== null ? index + 1 : 0} of {images.length}
           </DialogTitle>
           {index !== null && (
             <div className="relative flex min-h-[50vh] items-center justify-center p-2 sm:p-6">
+              <div className="pointer-events-none absolute -inset-12 -z-10 overflow-hidden" aria-hidden="true">
+                <img
+                  src={images[index]}
+                  alt=""
+                  className="h-full w-full scale-110 object-cover blur-3xl brightness-[0.42] saturate-125"
+                />
+                <div className="absolute inset-0 bg-black/25" />
+              </div>
               <img
                 src={images[index]}
                 alt={`${title} — photo ${index + 1}`}
-                className="max-h-[82vh] w-auto max-w-full object-contain"
+                className="relative z-10 max-h-[82vh] w-auto max-w-full object-contain shadow-2xl"
               />
               {images.length > 1 && (
                 <>
@@ -81,7 +89,7 @@ export function ProjectGallery({
                     type="button"
                     aria-label="Previous photo"
                     onClick={() => go(-1)}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer border border-offwhite/30 bg-navy-deep/60 p-3 text-offwhite transition-colors hover:bg-offwhite hover:text-navy-deep"
+                    className="absolute left-3 top-1/2 z-20 -translate-y-1/2 cursor-pointer border border-offwhite/30 bg-navy-deep/60 p-3 text-offwhite transition-colors hover:bg-offwhite hover:text-navy-deep"
                   >
                     <ArrowLeft className="h-4 w-4" strokeWidth={1.4} />
                   </button>
@@ -89,13 +97,13 @@ export function ProjectGallery({
                     type="button"
                     aria-label="Next photo"
                     onClick={() => go(1)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer border border-offwhite/30 bg-navy-deep/60 p-3 text-offwhite transition-colors hover:bg-offwhite hover:text-navy-deep"
+                    className="absolute right-3 top-1/2 z-20 -translate-y-1/2 cursor-pointer border border-offwhite/30 bg-navy-deep/60 p-3 text-offwhite transition-colors hover:bg-offwhite hover:text-navy-deep"
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={1.4} />
                   </button>
                 </>
               )}
-              <p className="eyebrow absolute bottom-3 left-1/2 -translate-x-1/2 text-offwhite/70">
+              <p className="eyebrow absolute bottom-3 left-1/2 z-20 -translate-x-1/2 text-offwhite/70">
                 {index + 1} / {images.length}
               </p>
             </div>
