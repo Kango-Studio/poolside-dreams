@@ -33,19 +33,22 @@ const craftDetails = [
 function AboutPage() {
   return (
     <>
-      <header className="relative flex min-h-[680px] items-end overflow-hidden bg-navy-deep md:h-[88vh]">
-        <img
-          src={heroAbout}
-          alt="Aerial view of a complete pool, patio and landscape designed as one environment"
-          width={1920}
-          height={1088}
-          className="kenburns absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/35 to-navy-deep/10" />
-        <div className="relative mx-auto grid w-full max-w-[1600px] gap-10 px-6 pb-16 lg:grid-cols-[1fr_auto] lg:items-end lg:px-12 lg:pb-20">
+      <header className="relative isolate min-h-[720px] overflow-hidden bg-navy-deep px-3 pb-3 pt-24 text-offwhite sm:px-5 sm:pb-5 lg:h-[92svh] lg:px-8 lg:pb-8 lg:pt-28">
+        <img src={heroAbout} alt="" aria-hidden="true" className="absolute -inset-10 -z-20 h-[calc(100%+5rem)] w-[calc(100%+5rem)] scale-110 object-cover blur-3xl opacity-60" />
+        <div className="absolute inset-0 -z-10 bg-navy-deep/65" />
+        <div className="relative flex h-full min-h-[610px] items-end overflow-hidden border border-offwhite/15 shadow-[0_42px_110px_-35px_rgba(0,0,0,0.9)]">
+          <img
+            src={heroAbout}
+            alt="Aerial view of a complete pool, patio and landscape designed as one environment"
+            width={1920}
+            height={1088}
+            className="kenburns absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(3,13,24,0.95)_0%,rgba(3,13,24,0.2)_62%,rgba(3,13,24,0.25)_100%)]" />
+          <div className="relative grid w-full gap-10 px-6 pb-12 lg:grid-cols-[1fr_auto] lg:items-end lg:px-12 lg:pb-16">
           <div>
             <p className="eyebrow text-sand">30+ Years of Experience</p>
-            <h1 className="mt-6 max-w-5xl font-display text-5xl leading-[1.01] text-offwhite md:text-7xl lg:text-8xl">
+            <h1 className="mt-6 max-w-[15ch] font-display text-5xl leading-[0.96] tracking-[-0.025em] text-offwhite md:text-7xl lg:text-8xl">
               It&apos;s more than a pool.
               <span className="block text-silver">It&apos;s the way you live outside.</span>
             </h1>
@@ -53,6 +56,7 @@ function AboutPage() {
           <p className="max-w-xs border-t border-sand pt-5 text-sm leading-relaxed text-silver lg:mb-2">
             Outdoor environments designed to be lived in — not simply looked at.
           </p>
+        </div>
         </div>
       </header>
 
@@ -105,6 +109,14 @@ function AboutPage() {
             <h2 className="mt-6 max-w-xl font-display text-4xl leading-[1.06] md:text-6xl">
               Designed as one vision.
             </h2>
+            <figure className="group mt-10 overflow-hidden shadow-[0_30px_70px_-35px_rgba(3,13,24,0.55)]">
+              <img
+                src={homeImg}
+                alt="A completed outdoor environment designed around the home"
+                loading="lazy"
+                className="aspect-[4/3] h-full w-full scale-105 object-cover transition-transform duration-[1000ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-100"
+              />
+            </figure>
           </Reveal>
           <Reveal
             delay={100}
@@ -217,8 +229,11 @@ function AboutPage() {
             <div className="border-t border-border">
               {craftDetails.map((detail, index) => (
                 <Reveal key={detail} delay={(index % 3) * 70}>
-                  <p className="border-b border-border py-6 font-display text-2xl leading-snug md:text-3xl">
-                    {detail}
+                  <p className="group flex items-center gap-5 border-b border-border py-6 font-display text-2xl leading-snug transition-colors duration-200 hover:text-sand md:text-3xl">
+                    <span className="eyebrow w-8 shrink-0 text-muted-foreground transition-colors duration-200 group-hover:text-sand">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span>{detail}</span>
                   </p>
                 </Reveal>
               ))}

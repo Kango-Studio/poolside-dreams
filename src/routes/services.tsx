@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Reveal } from "@/components/Reveal";
+import { projects } from "@/lib/site-data";
+import { getProjectImages } from "@/lib/project-images";
 import { pageMeta } from "@/lib/seo";
 import { CtaBand } from "./index";
 import hero2 from "@/assets/hero-2.jpg";
@@ -121,20 +123,24 @@ const serviceDetails = [
 function ServicesPage() {
   return (
     <>
-      <header className="relative flex h-[68vh] min-h-[520px] items-end overflow-hidden bg-navy-deep">
+      <header className="relative isolate min-h-[680px] overflow-hidden bg-navy-deep px-3 pb-3 pt-24 text-offwhite sm:px-5 sm:pb-5 lg:h-[88svh] lg:px-8 lg:pb-8 lg:pt-28">
+        <img src={hero2} alt="" aria-hidden="true" className="absolute -inset-10 -z-20 h-[calc(100%+5rem)] w-[calc(100%+5rem)] scale-110 object-cover blur-3xl opacity-60" />
+        <div className="absolute inset-0 -z-10 bg-navy-deep/65" />
+        <div className="relative flex h-full min-h-[570px] items-end overflow-hidden border border-offwhite/15 shadow-[0_42px_110px_-35px_rgba(0,0,0,0.9)]">
         <img
           src={hero2}
           alt="Stone coping detail beside pool water"
           width={1920}
           height={1088}
-          className="absolute inset-0 h-full w-full object-cover opacity-70"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.025]"
         />
-        <div className="veil absolute inset-0" />
-        <div className="relative mx-auto w-full max-w-[1600px] px-6 pb-16 lg:px-12 lg:pb-20">
+        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(3,13,24,0.94)_0%,rgba(3,13,24,0.12)_68%)]" />
+        <div className="relative w-full px-6 pb-12 lg:px-12 lg:pb-16">
           <p className="eyebrow text-sand">Services</p>
-          <h1 className="mt-5 max-w-5xl font-display text-5xl leading-[1.02] text-offwhite md:text-7xl">
+          <h1 className="mt-6 max-w-[13ch] font-display text-5xl leading-[0.96] tracking-[-0.025em] text-offwhite md:text-7xl lg:text-8xl">
             Complete outdoor living, designed as one.
           </h1>
+        </div>
         </div>
       </header>
 
@@ -160,6 +166,16 @@ function ServicesPage() {
         </Reveal>
       </section>
 
+      <nav aria-label="Services on this page" className="sticky top-20 z-20 border-y border-offwhite/15 bg-navy-deep/95 text-offwhite backdrop-blur-md lg:top-24">
+        <div className="mx-auto flex max-w-[1600px] gap-8 overflow-x-auto px-6 py-5 lg:px-12">
+          {serviceDetails.map((service, index) => (
+            <a key={service.id} href={`#${service.id}`} className="eyebrow shrink-0 text-offwhite/65 transition-colors duration-200 hover:text-sand focus-visible:outline-none focus-visible:text-sand">
+              {String(index + 1).padStart(2, "0")} {service.title}
+            </a>
+          ))}
+        </div>
+      </nav>
+
       <div>
         {serviceDetails.map((service, index) => (
           <section
@@ -167,7 +183,7 @@ function ServicesPage() {
             id={service.id}
             className={index % 2 === 0 ? "bg-muted" : "bg-background"}
           >
-            <div className="mx-auto grid max-w-[1600px] gap-12 px-6 py-24 lg:grid-cols-[0.65fr_1fr] lg:gap-24 lg:px-12 lg:py-32">
+            <div className="mx-auto grid max-w-[1600px] gap-12 px-6 py-24 lg:grid-cols-[0.8fr_1fr] lg:gap-24 lg:px-12 lg:py-36">
               <Reveal className="self-start lg:sticky lg:top-28">
                 <p className="eyebrow text-sand">
                   {String(index + 1).padStart(2, "0")} — {service.title}
@@ -175,6 +191,20 @@ function ServicesPage() {
                 <h2 className="mt-6 max-w-xl font-display text-4xl leading-[1.08] md:text-5xl">
                   {service.lead}
                 </h2>
+                {getProjectImages(projects[index]!.slug)[0] && (
+                  <figure className="group mt-10 overflow-hidden bg-navy-deep">
+                    <img
+                      src={getProjectImages(projects[index]!.slug)[0]}
+                      alt={`${service.title} by SJ Pools & Landscaping`}
+                      loading="lazy"
+                      className="aspect-[4/3] h-full w-full scale-105 object-cover opacity-90 transition-[transform,opacity] duration-[1000ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-100 group-hover:opacity-100"
+                    />
+                    <figcaption className="flex items-center justify-between border-t border-offwhite/15 bg-navy-deep px-5 py-4 text-offwhite">
+                      <span className="eyebrow text-sand">Selected detail</span>
+                      <span className="text-xs text-silver">{projects[index]!.place}</span>
+                    </figcaption>
+                  </figure>
+                )}
               </Reveal>
 
               <Reveal delay={100} className="min-w-0">
@@ -187,7 +217,7 @@ function ServicesPage() {
                   <p className="font-display text-2xl text-foreground">{service.listIntro}</p>
                   <ul className="mt-7 grid gap-x-10 gap-y-4 sm:grid-cols-2">
                     {service.items.map((item) => (
-                      <li key={item} className="flex items-start gap-4 text-muted-foreground">
+                      <li key={item} className="group flex items-start gap-4 text-muted-foreground transition-colors duration-200 hover:text-foreground">
                         <span aria-hidden="true" className="mt-2 h-px w-5 shrink-0 bg-sand" />
                         <span>{item}</span>
                       </li>
