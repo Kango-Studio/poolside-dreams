@@ -6,7 +6,9 @@ import { Reveal } from "@/components/Reveal";
 import { services, projects, testimonials } from "@/lib/site-data";
 import { getProjectImages } from "@/lib/project-images";
 import { pageMeta } from "@/lib/seo";
-import aboutImg from "@/assets/about.jpg";
+import processBackdrop from "@/assets/projects/margo/05.webp";
+import processPhoto from "@/assets/projects/canfield/01.webp";
+import ctaPhoto from "@/assets/projects/tweed/01.webp";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -211,21 +213,12 @@ function Home() {
       {/* Process */}
       <section className="relative isolate overflow-clip bg-navy-deep text-offwhite">
         <img
-          src={aboutImg}
+          src={processBackdrop}
           alt=""
           width={1408}
           height={1008}
           loading="lazy"
           className="absolute inset-[-2%] -z-20 h-[104%] w-[104%] scale-105 object-cover blur-[4px]"
-        />
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster={aboutImg}
-          aria-hidden="true"
-          className="absolute inset-[-2%] -z-20 h-[104%] w-[104%] scale-105 object-cover blur-[3px]"
         />
         <div className="absolute inset-0 -z-10 bg-navy-deep/85" />
 
@@ -254,8 +247,8 @@ function Home() {
               <Reveal>
                 <figure className="relative aspect-[4/5] overflow-hidden shadow-[0_36px_80px_-28px_rgba(0,0,0,0.7)]">
                   <img
-                    src={aboutImg}
-                    alt="SJ Pools & Landscaping crew building a custom gunite pool"
+                    src={processPhoto}
+                    alt="Canfield outdoor living project by SJ Pools & Landscaping"
                     width={1408}
                     height={1008}
                     loading="lazy"
@@ -338,16 +331,17 @@ function Home() {
       {/* Testimonials */}
       <section className="overflow-hidden bg-sand text-navy-deep">
         <div className="mx-auto max-w-[1600px] px-6 py-28 lg:px-12 lg:py-44">
-          <Reveal className="grid gap-14 lg:grid-cols-[0.55fr_1.2fr] lg:gap-24">
+          <Reveal className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
             <div>
               <p className="eyebrow">Client experience</p>
-              <h2 className="mt-7 max-w-[9ch] font-display text-5xl leading-[0.98] tracking-[-0.02em] md:text-7xl">
-                Built with care. Remembered for years.
+              <h2 className="mt-7 font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.08] tracking-[-0.02em] lg:text-[2rem] xl:text-[2.75rem]">
+                <span className="block">Built with care.</span>
+                <span className="block">Remembered for years.</span>
               </h2>
             </div>
             {testimonials[0] && (
               <blockquote className="border-t border-navy-deep/25 pt-10">
-                <p className="font-display text-3xl leading-[1.18] md:text-5xl">
+                <p className="font-display text-2xl leading-[1.25] md:text-4xl">
                   &ldquo;{testimonials[0].quote}&rdquo;
                 </p>
                 <footer className="mt-10 flex flex-wrap items-center gap-4">
@@ -417,7 +411,7 @@ export function CtaBand({ immersive = false }: { immersive?: boolean } = {}) {
   return (
     <section className="group relative isolate min-h-[70svh] overflow-hidden bg-navy-deep text-offwhite">
       <img
-        src={aboutImg}
+        src={ctaPhoto}
         alt=""
         loading="lazy"
         className="absolute inset-0 -z-20 h-full w-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.025]"

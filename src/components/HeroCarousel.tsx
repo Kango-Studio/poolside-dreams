@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Pause, Play } from "lucide-react";
 
 
 type HeroSlide = {
+  projectSlug: string;
   title: string;
   text: string;
   media: "image" | "video";
@@ -14,11 +15,11 @@ type HeroSlide = {
 
 // A future video slide only needs media: "video", its src and a poster image.
 const slides: HeroSlide[] = [
-  { media: "image", src: getProjectImages("miles")[0]!, title: "A New Horizon", text: "Every line of the vanishing edge is drawn around the view you already own." },
-  { media: "image", src: getProjectImages("tweed")[0]!, title: "Set by Hand", text: "Coping, tile and stone selected and laid one piece at a time — never by the pallet." },
-  { media: "image", src: getProjectImages("church")[0]!, title: "Rooted in Place", text: "A reflecting pool framed by brick, boxwood and the house it was built to answer." },
-  { media: "image", src: getProjectImages("canfield")[0]!, title: "Drawn in 3D", text: "You walk the design before we ever break ground on your property." },
-  { media: "image", src: getProjectImages("pike")[0]!, title: "After Sundown", text: "Fire, water and light choreographed so the backyard begins when the day ends." },
+  { media: "image", projectSlug: "miles", src: getProjectImages("miles")[0]!, title: "A New Horizon", text: "Every line of the vanishing edge is drawn around the view you already own." },
+  { media: "image", projectSlug: "tweed", src: getProjectImages("tweed")[0]!, title: "Set by Hand", text: "Coping, tile and stone selected and laid one piece at a time — never by the pallet." },
+  { media: "image", projectSlug: "church", src: getProjectImages("church")[0]!, title: "Rooted in Place", text: "A reflecting pool framed by brick, boxwood and the house it was built to answer." },
+  { media: "image", projectSlug: "canfield", src: getProjectImages("canfield")[0]!, title: "Drawn in 3D", text: "You walk the design before we ever break ground on your property." },
+  { media: "image", projectSlug: "pike", src: getProjectImages("pike")[0]!, title: "After Sundown", text: "Fire, water and light choreographed so the backyard begins when the day ends." },
 ];
 
 const DURATION = 7000;
@@ -176,7 +177,8 @@ export function HeroCarousel() {
               <p className="max-w-md text-sm leading-relaxed text-offwhite/75 sm:text-base">{active.text}</p>
               <div className="flex flex-wrap gap-2 lg:justify-end">
                 <Link
-                  to="/projects"
+                  to="/projects/$slug"
+                  params={{ slug: active.projectSlug }}
                   className="eyebrow inline-flex items-center gap-4 border border-offwhite/40 bg-navy-deep/25 px-6 py-4 text-offwhite backdrop-blur-sm transition-[background-color,border-color,color] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-offwhite hover:bg-offwhite hover:text-navy-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand sm:px-8"
                 >
                   Explore work <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
