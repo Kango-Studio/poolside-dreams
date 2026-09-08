@@ -205,13 +205,13 @@
     transform: scale(1.14);
   }
   to {
-    opacity: 0.3;
+    opacity: 0.15;
     transform: scale(1.1);
   }
 }
 
 .hero-media.is-active {
-  animation: hero-media-drift 9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation: hero-media-drift 8s ease-in-out infinite alternate;
 }
 
 .hero-progress {
@@ -227,7 +227,7 @@
 }
 
 .hero-ambient {
-  opacity: 0.3;
+  opacity: 0.15;
   animation: hero-ambient-enter 900ms cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
@@ -258,4 +258,33 @@
   .service-preview:hover .service-preview-image {
     animation-play-state: running;
   }
+}
+
+@keyframes services-marquee-scroll {
+  to { transform: translateX(-50%); }
+}
+
+.services-marquee-track {
+  animation: services-marquee-scroll 32s linear infinite;
+}
+
+.services-marquee:focus-within .services-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .services-marquee:hover .services-marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .services-marquee-track { animation: none; width: 100%; }
+  .services-marquee-group { min-width: 0; width: 100%; flex-wrap: wrap; gap: 1.5rem; padding: 0 1.5rem; }
+  .services-marquee-group[aria-hidden="true"] { display: none; }
+}
+
+.framed-hero-image { animation: hero-media-drift 8s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) {
+  .framed-hero-image { animation: none; }
 }

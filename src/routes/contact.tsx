@@ -1,10 +1,12 @@
+import { getProjectImages } from "@/lib/project-images";
+import { FramedHero } from "@/components/FramedHero";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Mail, MapPin, Phone } from "lucide-react";
 
 import { Reveal } from "@/components/Reveal";
 import { pageMeta } from "@/lib/seo";
-import hero1 from "@/assets/hero-1.jpg";
+const hero1 = getProjectImages("canfield")[0];
 
 export const Route = createFileRoute("/contact")({
   head: () =>
@@ -31,20 +33,13 @@ function ContactPage() {
 
   return (
     <>
-      <header className="relative flex h-[52vh] min-h-[360px] items-end overflow-hidden bg-navy-deep">
-        <img
-          src={hero1}
-          alt="Infinity pool at dusk"
-          width={1920}
-          height={1088}
-          className="absolute inset-0 h-full w-full object-cover opacity-70"
-        />
-        <div className="veil absolute inset-0" />
+      <FramedHero src={hero1} alt="Canfield outdoor living project">
+
         <div className="relative mx-auto w-full max-w-[1600px] px-6 pb-16 lg:px-12">
           <p className="eyebrow text-sand">Let's talk</p>
           <h1 className="mt-5 font-display text-5xl text-offwhite md:text-7xl">Contact</h1>
         </div>
-      </header>
+      </FramedHero>
 
       <section className="mx-auto max-w-[1600px] px-6 py-24 lg:px-12 lg:py-32">
         <div className="grid gap-20 lg:grid-cols-[1fr_0.7fr]">

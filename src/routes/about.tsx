@@ -1,9 +1,11 @@
+import { getProjectImages } from "@/lib/project-images";
+import { FramedHero } from "@/components/FramedHero";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Reveal } from "@/components/Reveal";
 import { pageMeta } from "@/lib/seo";
 import { CtaBand } from "./index";
-import heroAbout from "@/assets/hero-4.jpg";
+const heroAbout = getProjectImages("miles")[0];
 import constructionImg from "@/assets/about.jpg";
 import landscapeImg from "@/assets/project-2.jpg";
 import homeImg from "@/assets/hero-1.jpg";
@@ -33,38 +35,26 @@ const craftDetails = [
 function AboutPage() {
   return (
     <>
-      <header className="relative isolate min-h-[720px] overflow-hidden bg-navy-deep px-3 pb-3 pt-24 text-offwhite sm:px-5 sm:pb-5 lg:h-[92svh] lg:px-8 lg:pb-8 lg:pt-28">
-        <img src={heroAbout} alt="" aria-hidden="true" className="absolute -inset-10 -z-20 h-[calc(100%+5rem)] w-[calc(100%+5rem)] scale-110 object-cover blur-[48px] opacity-30" />
-        <div className="absolute inset-0 -z-10 bg-navy-deep/65" />
-        <div className="relative flex h-full min-h-[610px] items-end overflow-hidden border border-offwhite/15 shadow-[0_42px_110px_-35px_rgba(0,0,0,0.9)]">
-          <img
-            src={heroAbout}
-            alt="Aerial view of a complete pool, patio and landscape designed as one environment"
-            width={1920}
-            height={1088}
-            className="kenburns absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(3,13,24,0.95)_0%,rgba(3,13,24,0.2)_62%,rgba(3,13,24,0.25)_100%)]" />
+      <FramedHero src={heroAbout} alt="Miles outdoor living project">
           <div className="relative grid w-full gap-10 px-6 pb-12 lg:grid-cols-[1fr_auto] lg:items-end lg:px-12 lg:pb-16">
           <div>
             <p className="eyebrow text-sand">30+ Years of Experience</p>
-            <h1 className="mt-6 max-w-[15ch] font-display text-5xl leading-[0.96] tracking-[-0.025em] text-offwhite md:text-7xl lg:text-8xl">
-              It&apos;s more than a pool.
-              <span className="block text-silver">It&apos;s the way you live outside.</span>
+            <h1 className="mt-6 font-display text-[clamp(1.875rem,6.5vw,5rem)] leading-[1.02] tracking-[-0.025em] text-offwhite">
+              <span className="block">It’s more than a pool.</span>
+              <span className="block text-silver">It’s a lifestyle.</span>
             </h1>
           </div>
           <p className="max-w-xs border-t border-sand pt-5 text-sm leading-relaxed text-silver lg:mb-2">
             Outdoor environments designed to be lived in — not simply looked at.
           </p>
         </div>
-        </div>
-      </header>
+      </FramedHero>
 
       <section className="overflow-clip bg-background">
         <div className="mx-auto grid max-w-[1600px] gap-16 px-6 py-28 lg:grid-cols-[0.65fr_1fr] lg:gap-24 lg:px-12 lg:py-40">
           <Reveal>
             <h2 className="max-w-xl font-display text-4xl leading-[1.06] md:text-6xl">
-              A complete vision for life outdoors.
+              A complete vision for outdoor living.
             </h2>
           </Reveal>
           <Reveal
@@ -92,36 +82,7 @@ function AboutPage() {
               the space, where they will gather, and how the property will feel years after
               construction is complete.
             </p>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="relative overflow-clip bg-muted">
-        <div
-          className="pointer-events-none absolute -right-8 top-4 font-display text-[12rem] leading-none text-navy/[0.035] md:text-[22rem]"
-          aria-hidden="true"
-        >
-          Life
-        </div>
-        <div className="relative mx-auto grid max-w-[1600px] gap-16 px-6 py-28 lg:grid-cols-[0.75fr_1fr] lg:gap-24 lg:px-12 lg:py-40">
-          <Reveal className="self-start lg:sticky lg:top-28">
-            <p className="eyebrow text-sand">Built around your life</p>
-            <h2 className="mt-6 max-w-xl font-display text-4xl leading-[1.06] md:text-6xl">
-              Designed as one vision.
-            </h2>
-            <figure className="group mt-10 overflow-hidden shadow-[0_30px_70px_-35px_rgba(3,13,24,0.55)]">
-              <img
-                src={homeImg}
-                alt="A completed outdoor environment designed around the home"
-                loading="lazy"
-                className="aspect-[4/3] h-full w-full scale-105 object-cover transition-transform duration-[1000ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-100"
-              />
-            </figure>
-          </Reveal>
-          <Reveal
-            delay={100}
-            className="max-w-3xl space-y-7 text-lg leading-relaxed text-muted-foreground"
-          >
+            <div className="space-y-7 border-t border-border pt-8">
             <p className="font-display text-3xl leading-snug text-foreground">
               No two properties are the same, and neither are the people who live in them.
             </p>
@@ -143,6 +104,7 @@ function AboutPage() {
             <p className="font-display text-5xl leading-none text-sand md:text-6xl">
               Then we build it.
             </p>
+            </div>
           </Reveal>
         </div>
       </section>

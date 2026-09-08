@@ -1,3 +1,4 @@
+import { FramedHero } from "@/components/FramedHero";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
@@ -7,7 +8,7 @@ import { projects } from "@/lib/site-data";
 import { getProjectImages } from "@/lib/project-images";
 import { pageMeta } from "@/lib/seo";
 import { CtaBand } from "../index";
-import hero4 from "@/assets/hero-4.jpg";
+const hero4 = getProjectImages("church")[0];
 
 export const Route = createFileRoute("/projects/")({
   head: () =>
@@ -42,20 +43,13 @@ function ProjectsPage() {
 
   return (
     <>
-      <header className="relative flex h-[62vh] min-h-[420px] items-end overflow-hidden bg-navy-deep">
-        <img
-          src={hero4}
-          alt="Aerial view of a custom backyard pool"
-          width={1920}
-          height={1088}
-          className="absolute inset-0 h-full w-full object-cover opacity-80"
-        />
-        <div className="veil absolute inset-0" />
+      <FramedHero src={hero4} alt="Church outdoor living project">
+
         <div className="relative mx-auto w-full max-w-[1600px] px-6 pb-16 lg:px-12">
           <p className="eyebrow text-sand">Selected work</p>
           <h1 className="mt-5 font-display text-5xl text-offwhite md:text-7xl">Projects</h1>
         </div>
-      </header>
+      </FramedHero>
 
       <section className="mx-auto max-w-[1600px] px-6 py-24 lg:px-12 lg:py-32">
         <Reveal className="flex flex-wrap items-center justify-between gap-6">

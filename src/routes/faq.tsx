@@ -1,3 +1,5 @@
+import { getProjectImages } from "@/lib/project-images";
+import { FramedHero } from "@/components/FramedHero";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Reveal } from "@/components/Reveal";
@@ -10,7 +12,7 @@ import {
 import { faqs } from "@/lib/site-data";
 import { pageMeta } from "@/lib/seo";
 import { CtaBand } from "./index";
-import hero1 from "@/assets/hero-1.jpg";
+const hero1 = getProjectImages("pike")[0];
 
 export const Route = createFileRoute("/faq")({
   head: () =>
@@ -27,20 +29,13 @@ export const Route = createFileRoute("/faq")({
 function FaqPage() {
   return (
     <>
-      <header className="relative flex h-[52vh] min-h-[360px] items-end overflow-hidden bg-navy-deep">
-        <img
-          src={hero1}
-          alt="Custom pool and patio at dusk"
-          width={1920}
-          height={1088}
-          className="absolute inset-0 h-full w-full object-cover opacity-70"
-        />
-        <div className="veil absolute inset-0" />
+      <FramedHero src={hero1} alt="Pike outdoor living project">
+
         <div className="relative mx-auto w-full max-w-[1600px] px-6 pb-16 lg:px-12">
           <p className="eyebrow text-sand">Good to know</p>
           <h1 className="mt-5 font-display text-5xl text-offwhite md:text-7xl">FAQ</h1>
         </div>
-      </header>
+      </FramedHero>
 
       <section className="mx-auto max-w-[1600px] px-6 py-24 lg:px-12 lg:py-32">
         <Reveal className="max-w-3xl">

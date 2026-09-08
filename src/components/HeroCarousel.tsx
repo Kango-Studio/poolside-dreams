@@ -1,12 +1,8 @@
+import { getProjectImages } from "@/lib/project-images";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Pause, Play } from "lucide-react";
 
-import hero1 from "@/assets/hero-slide/image-gallery-1.webp";
-import hero2 from "@/assets/hero-slide/image-gallery-2.webp";
-import hero3 from "@/assets/hero-slide/image-gallery-3.webp";
-import hero4 from "@/assets/hero-slide/image-gallery-4.webp";
-import hero5 from "@/assets/hero-slide/image-gallery-5.webp";
 
 type HeroSlide = {
   title: string;
@@ -18,11 +14,11 @@ type HeroSlide = {
 
 // A future video slide only needs media: "video", its src and a poster image.
 const slides: HeroSlide[] = [
-  { media: "image", src: hero1, title: "A New Horizon", text: "Every line of the vanishing edge is drawn around the view you already own." },
-  { media: "image", src: hero2, title: "Set by Hand", text: "Coping, tile and stone selected and laid one piece at a time — never by the pallet." },
-  { media: "image", src: hero3, title: "Rooted in Place", text: "A reflecting pool framed by brick, boxwood and the house it was built to answer." },
-  { media: "image", src: hero4, title: "Drawn in 3D", text: "You walk the design before we ever break ground on your property." },
-  { media: "image", src: hero5, title: "After Sundown", text: "Fire, water and light choreographed so the backyard begins when the day ends." },
+  { media: "image", src: getProjectImages("miles")[0]!, title: "A New Horizon", text: "Every line of the vanishing edge is drawn around the view you already own." },
+  { media: "image", src: getProjectImages("tweed")[0]!, title: "Set by Hand", text: "Coping, tile and stone selected and laid one piece at a time — never by the pallet." },
+  { media: "image", src: getProjectImages("church")[0]!, title: "Rooted in Place", text: "A reflecting pool framed by brick, boxwood and the house it was built to answer." },
+  { media: "image", src: getProjectImages("canfield")[0]!, title: "Drawn in 3D", text: "You walk the design before we ever break ground on your property." },
+  { media: "image", src: getProjectImages("pike")[0]!, title: "After Sundown", text: "Fire, water and light choreographed so the backyard begins when the day ends." },
 ];
 
 const DURATION = 7000;
@@ -65,7 +61,7 @@ export function HeroCarousel() {
           src={activeBackdrop}
           alt=""
           aria-hidden="true"
-          className="hero-ambient absolute -inset-10 -z-20 h-[calc(100%+5rem)] w-[calc(100%+5rem)] scale-110 object-cover blur-[48px]"
+          className="hero-ambient absolute -inset-10 -z-20 h-[calc(100%+5rem)] w-[calc(100%+5rem)] scale-110 object-cover blur-[32px]"
         />
       )}
       <div className="absolute inset-0 -z-10 bg-navy-deep/50 backdrop-saturate-125" />

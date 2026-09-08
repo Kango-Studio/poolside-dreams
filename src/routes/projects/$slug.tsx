@@ -1,3 +1,4 @@
+import { FramedHero } from "@/components/FramedHero";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -65,15 +66,8 @@ function ProjectDetailPage() {
   return (
     <>
       {/* Full-bleed hero */}
-      <header className="relative flex h-screen min-h-[640px] items-end overflow-hidden bg-navy-deep">
-        {hero && (
-          <img
-            src={hero}
-            alt={project.title}
-            className="kenburns absolute inset-0 h-full w-full object-cover"
-          />
-        )}
-        <div className="veil absolute inset-0" />
+      <FramedHero src={hero} alt={project.title}>
+
 
         <Link
           to="/projects"
@@ -94,7 +88,7 @@ function ProjectDetailPage() {
             {project.year} · {project.place}
           </p>
         </div>
-      </header>
+      </FramedHero>
 
       {/* Detail strip */}
       <section className="border-b border-border bg-background">
