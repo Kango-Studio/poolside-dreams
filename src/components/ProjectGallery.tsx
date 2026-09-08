@@ -64,20 +64,12 @@ export function ProjectGallery({
       </div>
 
       <Dialog open={open} onOpenChange={(next) => !next && setIndex(null)}>
-        <DialogContent className="isolate max-w-[96vw] overflow-hidden border-none bg-black p-0 sm:max-w-[92vw]">
+        <DialogContent className="max-w-[96vw] overflow-hidden border-none bg-transparent p-0 shadow-none sm:max-w-[92vw]">
           <DialogTitle className="sr-only">
             {title} — photo {index !== null ? index + 1 : 0} of {images.length}
           </DialogTitle>
           {index !== null && (
             <div className="relative flex min-h-[50vh] items-center justify-center p-2 sm:p-6">
-              <div className="pointer-events-none absolute -inset-12 -z-10 overflow-hidden" aria-hidden="true">
-                <img
-                  src={images[index]}
-                  alt=""
-                  className="h-full w-full scale-110 object-cover blur-3xl brightness-[0.42] saturate-125"
-                />
-                <div className="absolute inset-0 bg-black/25" />
-              </div>
               <img
                 src={images[index]}
                 alt={`${title} — photo ${index + 1}`}

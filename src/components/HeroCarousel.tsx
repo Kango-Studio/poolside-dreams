@@ -65,7 +65,7 @@ export function HeroCarousel() {
           src={activeBackdrop}
           alt=""
           aria-hidden="true"
-          className="hero-ambient absolute -inset-10 -z-20 h-[calc(100%+5rem)] w-[calc(100%+5rem)] scale-110 object-cover blur-3xl"
+          className="hero-ambient absolute -inset-10 -z-20 h-[calc(100%+5rem)] w-[calc(100%+5rem)] scale-110 object-cover blur-[48px]"
         />
       )}
       <div className="absolute inset-0 -z-10 bg-navy-deep/50 backdrop-saturate-125" />

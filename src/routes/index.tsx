@@ -20,12 +20,14 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+/* Indicators temporarily hidden.
 const stats = [
   { value: "30+", label: "Years building" },
   { value: "Award-Winning", label: "Recognition" },
   { value: "30+", label: "Pools built annually" },
   { value: "One team", label: "From design to build" },
 ];
+*/
 
 const featuredServices = ["pools-patios", "landscaping", "3d-design", "commercial"];
 
@@ -43,8 +45,8 @@ function Home() {
           <div className="grid gap-16 lg:grid-cols-[minmax(0,1.15fr)_minmax(22rem,0.65fr)] lg:gap-24">
             <Reveal>
               <p className="eyebrow text-muted-foreground">New Jersey Pool Builder</p>
-              <h2 className="mt-8 max-w-[12ch] font-display text-5xl leading-[0.98] tracking-[-0.025em] md:text-7xl xl:text-[6.5rem]">
-                It’s more than a pool.
+              <h2 className="mt-8 font-display text-[clamp(1.875rem,8vw,3rem)] leading-[0.98] tracking-[-0.025em] md:text-6xl lg:text-[3.5rem] xl:text-[5rem]">
+                <span className="block lg:whitespace-nowrap">It’s more than a pool.</span>
                 <span className="mt-2 block text-muted-foreground">It’s a lifestyle.</span>
               </h2>
             </Reveal>
@@ -66,6 +68,7 @@ function Home() {
             </Reveal>
           </div>
 
+          {/* Indicators temporarily hidden.
           <div className="mt-28 grid border-y border-border sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((stat, statIndex) => (
               <Reveal
@@ -78,25 +81,21 @@ function Home() {
               </Reveal>
             ))}
           </div>
+          */}
         </div>
       </section>
 
       {/* Services */}
       <section className="bg-navy-deep text-offwhite">
-        <div className="mx-auto max-w-[1600px] px-6 py-28 lg:px-12 lg:py-44">
-          <Reveal className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div className="mx-auto max-w-[1600px] px-6 py-16 lg:px-12 lg:py-20">
+          <Reveal className="grid gap-0 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
               <p className="eyebrow text-sand">What we build</p>
-              <h2 className="mt-7 max-w-[13ch] font-display text-5xl leading-[0.98] tracking-[-0.02em] md:text-7xl">
-                One property. One complete vision.
-              </h2>
             </div>
-            <p className="max-w-sm leading-relaxed text-silver">
-              Water, stone, planting and light considered together from the first line drawn.
-            </p>
+            
           </Reveal>
 
-          <div className="mt-24 border-t border-offwhite/20">
+          <div className="mt-8 grid gap-x-12 md:grid-cols-2 lg:gap-x-16">
             {featuredServices.map((slug, serviceIndex) => {
               const service = services.find((item) => item.slug === slug)!;
               const visual = getProjectImages(projects[serviceIndex]!.slug)[0];
@@ -104,23 +103,23 @@ function Home() {
                 <Reveal key={service.slug} delay={serviceIndex * 60}>
                   <Link
                     to="/services"
-                    className="group grid min-h-44 items-center gap-6 border-b border-offwhite/20 py-7 md:grid-cols-[5rem_minmax(0,1fr)_minmax(15rem,0.7fr)_auto] md:py-9"
+                    className="service-preview group grid h-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-5 border-t border-offwhite/20 py-6"
                   >
                     <span className="eyebrow text-sand">{String(serviceIndex + 1).padStart(2, "0")}</span>
-                    <h3 className="font-display text-4xl leading-none transition-colors duration-200 group-hover:text-sand md:text-5xl">
+                    <h3 className="font-display text-4xl leading-none transition-colors duration-200 group-hover:text-sand lg:text-5xl">
                       {service.title}
                     </h3>
-                    <div className="relative hidden h-28 overflow-hidden md:block">
+                    <div className="relative col-span-3 row-start-2 mx-auto aspect-[3/1] w-full max-w-[36rem] overflow-hidden">
                       {visual && (
                         <img
                           src={visual}
                           alt=""
                           loading="lazy"
-                          className="h-full w-full scale-105 object-cover opacity-55 grayscale transition-[transform,filter,opacity] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-100 group-hover:opacity-100 group-hover:grayscale-0"
+                          className="service-preview-image h-full w-full object-cover opacity-55 grayscale transition-[filter,opacity] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:opacity-100 group-hover:grayscale-0"
                         />
                       )}
                     </div>
-                    <span className="grid h-12 w-12 place-items-center border border-offwhite/25 transition-[background-color,border-color,color] duration-200 group-hover:border-sand group-hover:bg-sand group-hover:text-navy-deep">
+                    <span className="col-start-3 row-start-1 grid h-10 w-10 place-items-center border border-offwhite/25 transition-[background-color,border-color,color] duration-200 group-hover:border-sand group-hover:bg-sand group-hover:text-navy-deep">
                       <ArrowUpRight className="h-5 w-5 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1" strokeWidth={1.4} />
                     </span>
                   </Link>
