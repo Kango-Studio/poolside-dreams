@@ -1,3 +1,4 @@
+import { AchievementsCarousel } from "@/components/AchievementsCarousel";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 
@@ -327,6 +328,8 @@ function Home() {
           </div>
         </div>
       </section>
+
+      <AchievementsCarousel />
 
       {/* Testimonials */}
       <section className="overflow-hidden bg-sand text-navy-deep">
