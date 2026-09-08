@@ -400,7 +400,7 @@ export function CtaBand({ immersive = false }: { immersive?: boolean } = {}) {
           </Reveal>
           <Reveal delay={120}>
             <Link
-              to="/contact"
+              to="/get-a-quote"
               className="eyebrow inline-flex items-center gap-3 bg-sand px-10 py-5 text-navy-deep transition-colors duration-200 hover:bg-offwhite"
             >
               Start your project <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
@@ -433,7 +433,7 @@ export function CtaBand({ immersive = false }: { immersive?: boolean } = {}) {
             </p>
           </div>
           <Link
-            to="/contact"
+            to="/get-a-quote"
             className="eyebrow inline-flex w-fit items-center gap-5 bg-sand px-8 py-5 text-navy-deep transition-colors duration-200 hover:bg-offwhite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offwhite lg:px-10"
           >
             Get a quote <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />

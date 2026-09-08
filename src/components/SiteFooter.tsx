@@ -35,7 +35,7 @@ export function SiteFooter() {
               </Link>
             </li>
             {[
-              { to: "/contact", label: "Get a Quote" },
+              { to: "/get-a-quote", label: "Get a Quote" },
               { to: "/contact", label: "Contact" },
             ].map((l) => (
               <li key={l.label}>
@@ -56,7 +56,11 @@ export function SiteFooter() {
               Oradell, NJ 07649
             </p>
             <p>
-              <a href="https://wa.me/12012659555" aria-label="Contact us on WhatsApp at (201) 265-9555" className="link-underline hover:text-sand">
+              <a
+                href="https://wa.me/12012659555"
+                aria-label="Contact us on WhatsApp at (201) 265-9555"
+                className="link-underline hover:text-sand"
+              >
                 (201) 265-9555
               </a>
             </p>

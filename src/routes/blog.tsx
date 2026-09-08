@@ -28,7 +28,7 @@ function Blog() {
           Project stories, design inspiration and practical guidance are coming soon.
         </p>
         <Link
-          to="/contact"
+          to="/get-a-quote"
           className="eyebrow mt-10 inline-flex items-center gap-3 border-b border-sand pb-2 text-sand"
         >
           Start your project <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />

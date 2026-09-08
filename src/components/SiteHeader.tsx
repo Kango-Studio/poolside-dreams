@@ -47,7 +47,7 @@ export function SiteHeader() {
             </Link>
           ))}
           <Link
-            to="/contact"
+            to="/get-a-quote"
             className="eyebrow border border-offwhite/40 px-6 py-3 text-offwhite transition-all duration-500 hover:border-sand hover:bg-sand hover:text-navy-deep"
           >
             Get a Quote
@@ -76,6 +76,13 @@ export function SiteHeader() {
                 {n.label}
               </Link>
             ))}
+            <Link
+              to="/get-a-quote"
+              onClick={() => setOpen(false)}
+              className="eyebrow mt-6 border border-offwhite/40 px-6 py-4 text-center text-offwhite"
+            >
+              Get a Quote
+            </Link>
           </div>
         </div>
       )}

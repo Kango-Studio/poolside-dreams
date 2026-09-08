@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Pause, Play } from "lucide-react";
 
-
 type HeroSlide = {
   projectSlug: string;
   title: string;
@@ -15,11 +14,41 @@ type HeroSlide = {
 
 // A future video slide only needs media: "video", its src and a poster image.
 const slides: HeroSlide[] = [
-  { media: "image", projectSlug: "miles", src: getProjectImages("miles")[0]!, title: "A New Horizon", text: "Every line of the vanishing edge is drawn around the view you already own." },
-  { media: "image", projectSlug: "tweed", src: getProjectImages("tweed")[0]!, title: "Set by Hand", text: "Coping, tile and stone selected and laid one piece at a time — never by the pallet." },
-  { media: "image", projectSlug: "church", src: getProjectImages("church")[0]!, title: "Rooted in Place", text: "A reflecting pool framed by brick, boxwood and the house it was built to answer." },
-  { media: "image", projectSlug: "canfield", src: getProjectImages("canfield")[0]!, title: "Drawn in 3D", text: "You walk the design before we ever break ground on your property." },
-  { media: "image", projectSlug: "pike", src: getProjectImages("pike")[0]!, title: "After Sundown", text: "Fire, water and light choreographed so the backyard begins when the day ends." },
+  {
+    media: "image",
+    projectSlug: "miles",
+    src: getProjectImages("miles")[0]!,
+    title: "A New Horizon",
+    text: "Every line of the vanishing edge is drawn around the view you already own.",
+  },
+  {
+    media: "image",
+    projectSlug: "tweed",
+    src: getProjectImages("tweed")[0]!,
+    title: "Set by Hand",
+    text: "Coping, tile and stone selected and laid one piece at a time — never by the pallet.",
+  },
+  {
+    media: "image",
+    projectSlug: "church",
+    src: getProjectImages("church")[0]!,
+    title: "Rooted in Place",
+    text: "A reflecting pool framed by brick, boxwood and the house it was built to answer.",
+  },
+  {
+    media: "image",
+    projectSlug: "canfield",
+    src: getProjectImages("canfield")[0]!,
+    title: "Drawn in 3D",
+    text: "You walk the design before we ever break ground on your property.",
+  },
+  {
+    media: "image",
+    projectSlug: "pike",
+    src: getProjectImages("pike")[0]!,
+    title: "After Sundown",
+    text: "Fire, water and light choreographed so the backyard begins when the day ends.",
+  },
 ];
 
 const DURATION = 7000;
@@ -167,14 +196,19 @@ export function HeroCarousel() {
           </div>
 
           <div className="absolute inset-x-0 bottom-0 z-10 px-5 pb-7 sm:px-8 sm:pb-9 lg:px-12 lg:pb-12">
-            <div key={`${index}-${active.title}`} className="hero-copy grid items-end gap-7 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.7fr)_auto] lg:gap-10">
+            <div
+              key={`${index}-${active.title}`}
+              className="hero-copy grid items-end gap-7 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.7fr)_auto] lg:gap-10"
+            >
               <div>
                 <p className="eyebrow mb-4 text-sand">Designed around the way you live</p>
                 <h1 className="max-w-[10ch] font-display text-5xl leading-[0.88] tracking-[-0.025em] text-offwhite sm:text-7xl lg:text-[clamp(5rem,7.4vw,8.5rem)]">
                   {active.title}
                 </h1>
               </div>
-              <p className="max-w-md text-sm leading-relaxed text-offwhite/75 sm:text-base">{active.text}</p>
+              <p className="max-w-md text-sm leading-relaxed text-offwhite/75 sm:text-base">
+                {active.text}
+              </p>
               <div className="flex flex-wrap gap-2 lg:justify-end">
                 <Link
                   to="/projects/$slug"
@@ -184,7 +218,7 @@ export function HeroCarousel() {
                   Explore work <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
                 </Link>
                 <Link
-                  to="/contact"
+                  to="/get-a-quote"
                   className="eyebrow inline-flex items-center bg-sand px-6 py-4 text-navy-deep transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-offwhite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offwhite sm:px-8"
                 >
                   Start your project
