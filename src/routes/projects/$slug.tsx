@@ -1,3 +1,4 @@
+import { NotFoundPage } from "@/components/NotFoundPage";
 import { FramedHero } from "@/components/FramedHero";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -37,23 +38,8 @@ export const Route = createFileRoute("/projects/$slug")({
     });
   },
   component: ProjectDetailPage,
-  notFoundComponent: ProjectNotFound,
+  notFoundComponent: NotFoundPage,
 });
-
-function ProjectNotFound() {
-  return (
-    <section className="mx-auto flex min-h-[60vh] max-w-[1600px] flex-col items-start justify-center px-6 py-32 lg:px-12">
-      <p className="eyebrow text-muted-foreground">Not found</p>
-      <h1 className="mt-5 font-display text-4xl md:text-5xl">This project doesn&apos;t exist.</h1>
-      <Link
-        to="/projects"
-        className="eyebrow mt-10 inline-flex items-center gap-3 border-b border-foreground pb-2 transition-colors hover:border-sand hover:text-sand"
-      >
-        <ArrowLeft className="h-4 w-4" strokeWidth={1.4} /> All projects
-      </Link>
-    </section>
-  );
-}
 
 function ProjectDetailPage() {
   const project = Route.useLoaderData();
