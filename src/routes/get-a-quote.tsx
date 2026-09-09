@@ -43,11 +43,14 @@ function GetAQuotePage() {
         <div className="relative mx-auto w-full max-w-[1600px] px-6 pb-16 lg:px-12">
           <p className="eyebrow text-sand">Get a Quote</p>
           <h1 className="mt-5 max-w-3xl font-display text-5xl leading-[1.02] text-offwhite md:text-7xl">
-            See your backyard, priced in real time.
+            See your backyard,
+            <br />
+            priced in real time.
           </h1>
           <p className="mt-8 max-w-xl text-lg leading-relaxed text-silver">
-            Design your pool with our interactive planner and get an instant estimate — then let our
-            team turn the concept into a finished outdoor environment.
+            Design your pool with our interactive planner and get an instant estimate —
+            <br />
+            then let our team turn the concept into a finished outdoor environment.
           </p>
         </div>
       </FramedHero>
@@ -55,7 +58,7 @@ function GetAQuotePage() {
       <section className="mx-auto max-w-[1600px] px-6 py-24 lg:px-12 lg:py-32">
         <Reveal>
           <p className="eyebrow text-muted-foreground">How it works</p>
-          <h2 className="mt-5 max-w-2xl font-display text-4xl leading-[1.05] md:text-5xl">
+          <h2 className="mt-5 font-display text-4xl leading-[1.05] md:whitespace-nowrap md:text-5xl">
             From sketch to site visit, in three steps.
           </h2>
         </Reveal>
@@ -88,7 +91,7 @@ function GetAQuotePage() {
 
           <Reveal delay={120} className="mt-14">
             <div className="mx-auto max-w-[1440px] overflow-hidden border border-border bg-background shadow-[0_40px_90px_-35px_rgba(0,0,0,0.35)]">
-              <PoolPlansEmbed />
+              <PoolPlansEmbed backgroundSrc={hero1} />
             </div>
           </Reveal>
         </div>

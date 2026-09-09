@@ -64,23 +64,33 @@ export function ProjectGallery({
       </div>
 
       <Dialog open={open} onOpenChange={(next) => !next && setIndex(null)}>
-        <DialogContent className="max-w-[96vw] overflow-hidden border-none bg-transparent p-0 shadow-none sm:max-w-[92vw]">
+        <DialogContent
+          hideClose
+          className="max-w-[96vw] overflow-hidden border-none bg-transparent p-0 shadow-none sm:max-w-[92vw]"
+        >
           <DialogTitle className="sr-only">
             {title} — photo {index !== null ? index + 1 : 0} of {images.length}
           </DialogTitle>
           {index !== null && (
-            <div className="relative flex min-h-[50vh] items-center justify-center p-2 sm:p-6">
+            <div
+              className="relative flex min-h-[50vh] cursor-pointer items-center justify-center p-2 sm:p-6"
+              onClick={() => setIndex(null)}
+            >
               <img
                 src={images[index]}
                 alt={`${title} — photo ${index + 1}`}
-                className="relative z-10 max-h-[82vh] w-auto max-w-full object-contain shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+                className="relative z-10 max-h-[82vh] w-auto max-w-full cursor-default object-contain shadow-2xl"
               />
               {images.length > 1 && (
                 <>
                   <button
                     type="button"
                     aria-label="Previous photo"
-                    onClick={() => go(-1)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      go(-1);
+                    }}
                     className="absolute left-3 top-1/2 z-20 -translate-y-1/2 cursor-pointer border border-offwhite/30 bg-navy-deep/60 p-3 text-offwhite transition-colors hover:bg-offwhite hover:text-navy-deep"
                   >
                     <ArrowLeft className="h-4 w-4" strokeWidth={1.4} />
@@ -88,7 +98,10 @@ export function ProjectGallery({
                   <button
                     type="button"
                     aria-label="Next photo"
-                    onClick={() => go(1)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      go(1);
+                    }}
                     className="absolute right-3 top-1/2 z-20 -translate-y-1/2 cursor-pointer border border-offwhite/30 bg-navy-deep/60 p-3 text-offwhite transition-colors hover:bg-offwhite hover:text-navy-deep"
                   >
                     <ArrowRight className="h-4 w-4" strokeWidth={1.4} />

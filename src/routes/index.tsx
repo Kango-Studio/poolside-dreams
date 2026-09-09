@@ -391,7 +391,9 @@ export function CtaBand({ immersive = false }: { immersive?: boolean } = {}) {
           <Reveal className="max-w-3xl">
             <p className="eyebrow text-sand">Get a quote</p>
             <h2 className="max-w-2xl font-display text-4xl leading-[1.05] md:text-5xl">
-              Ready to transform the way you live at home?
+              Ready to transform the
+              <br />
+              way you live at home?
             </h2>
             <p className="mt-7 max-w-2xl leading-relaxed text-silver">
               From custom pools to complete outdoor environments, we bring your vision to life through
@@ -424,8 +426,10 @@ export function CtaBand({ immersive = false }: { immersive?: boolean } = {}) {
         <Reveal className="grid w-full gap-12 border-t border-offwhite/25 pt-10 lg:grid-cols-[1fr_auto] lg:items-end">
           <div className="max-w-4xl">
             <p className="eyebrow text-sand">Start your project</p>
-            <h2 className="mt-7 max-w-[14ch] font-display text-5xl leading-[0.96] tracking-[-0.02em] md:text-7xl">
-              Ready to transform the way you live at home?
+            <h2 className="mt-7 font-display text-5xl leading-[0.96] tracking-[-0.02em] md:whitespace-nowrap md:text-7xl">
+              Ready to transform the
+              <br />
+              way you live at home?
             </h2>
             <p className="mt-7 max-w-2xl text-lg leading-relaxed text-silver">
               From custom pools to complete outdoor environments, we bring your vision to life through

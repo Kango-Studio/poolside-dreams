@@ -224,16 +224,18 @@ function AboutPage() {
           className="absolute inset-0 -z-20 h-full w-full object-cover"
         />
         <div className="absolute inset-0 -z-10 bg-navy-deep/82" />
-        <div className="mx-auto max-w-[1600px] px-6 py-28 lg:px-12 lg:py-40">
-          <Reveal className="max-w-4xl">
+        <div className="mx-auto max-w-[1600px] px-6 py-28 text-center lg:px-12 lg:py-40">
+          <Reveal className="mx-auto max-w-4xl">
             <p className="eyebrow text-sand">Outdoor spaces worth coming home to</p>
             <h2 className="mt-6 font-display text-5xl leading-[1.02] md:text-7xl">
-              Our goal has never been simply to build pools.
+              Our goal has never been
+              <br />
+              simply to build pools.
             </h2>
             <p className="mt-8 font-display text-4xl text-sand md:text-5xl">
               It&apos;s to create places where life happens.
             </p>
-            <div className="mt-10 max-w-3xl space-y-6 text-lg leading-relaxed text-silver">
+            <div className="mx-auto mt-10 max-w-3xl space-y-6 text-lg leading-relaxed text-silver">
               <p>
                 Places for summer afternoons and late-night conversations. For family dinners,
                 celebrations, quiet weekends and years of memories that haven&apos;t happened yet.

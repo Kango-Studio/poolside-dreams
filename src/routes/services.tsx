@@ -134,6 +134,20 @@ function ServicesPage() {
         </div>
       </FramedHero>
 
+      <nav aria-label="Services on this page" className="services-marquee relative overflow-hidden border-y border-offwhite/15 bg-navy-deep text-offwhite">
+        <div className="services-marquee-track flex w-max py-5">
+          {[0, 1].map((copy) => (
+            <div key={copy} aria-hidden={copy === 1 ? true : undefined} className="services-marquee-group flex min-w-[100vw] shrink-0 items-center justify-around gap-16 pl-8 pr-20">
+              {serviceDetails.map((service, index) => (
+                <a key={service.id} href={`#${service.id}`} tabIndex={copy === 1 ? -1 : undefined} className="eyebrow shrink-0 text-offwhite/80 transition-colors duration-200 hover:text-sand focus-visible:outline-none focus-visible:text-sand">
+                  {String(index + 1).padStart(2, "0")} {service.title}
+                </a>
+              ))}
+            </div>
+          ))}
+        </div>
+      </nav>
+
       <section className="mx-auto max-w-[1600px] px-6 py-24 lg:px-12 lg:py-32">
         <Reveal className="grid gap-8 lg:grid-cols-[0.7fr_1fr] lg:gap-20">
           <p className="font-display text-3xl leading-snug md:text-4xl">
@@ -155,20 +169,6 @@ function ServicesPage() {
           </div>
         </Reveal>
       </section>
-
-      <nav aria-label="Services on this page" className="services-marquee relative overflow-hidden border-y border-offwhite/15 bg-navy-deep text-offwhite">
-        <div className="services-marquee-track flex w-max py-5">
-          {[0, 1].map((copy) => (
-            <div key={copy} aria-hidden={copy === 1 ? true : undefined} className="services-marquee-group flex min-w-[100vw] shrink-0 items-center justify-around gap-16 pl-8 pr-20">
-              {serviceDetails.map((service, index) => (
-                <a key={service.id} href={`#${service.id}`} tabIndex={copy === 1 ? -1 : undefined} className="eyebrow shrink-0 text-offwhite/80 transition-colors duration-200 hover:text-sand focus-visible:outline-none focus-visible:text-sand">
-                  {String(index + 1).padStart(2, "0")} {service.title}
-                </a>
-              ))}
-            </div>
-          ))}
-        </div>
-      </nav>
 
       <div>
         {serviceDetails.map((service, index) => (

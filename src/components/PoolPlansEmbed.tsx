@@ -1,4 +1,4 @@
-import { Maximize2, Minimize2 } from "lucide-react";
+import { Maximize2, Minimize2, Waves } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 // PoolPlans' embed script renders a fixed-size widget and has no responsive
@@ -25,10 +25,11 @@ const EMBED_DOCUMENT = `<!doctype html>
 
 type Layout = { scale: number; offsetX: number; offsetY: number };
 
-export function PoolPlansEmbed() {
+export function PoolPlansEmbed({ backgroundSrc }: { backgroundSrc?: string | undefined }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [layout, setLayout] = useState<Layout | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   const updateScale = useCallback(() => {
     const wrapper = wrapperRef.current;
@@ -100,6 +101,15 @@ export function PoolPlansEmbed() {
             }
       }
     >
+      {backgroundSrc && (
+        <img
+          src={backgroundSrc}
+          alt=""
+          loading="lazy"
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+      )}
+
       {layout && (
         <button
           type="button"
@@ -115,16 +125,11 @@ export function PoolPlansEmbed() {
         </button>
       )}
 
-      {layout === null ? (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-sand border-t-transparent" />
-          <p className="eyebrow text-muted-foreground">Loading pool designer…</p>
-        </div>
-      ) : (
+      {layout && (
         <iframe
           title="Interactive pool designer and instant quote"
           srcDoc={EMBED_DOCUMENT}
-          loading="lazy"
+          onLoad={() => setIframeLoaded(true)}
           className="absolute border-0"
           style={{
             left: layout.offsetX,
@@ -136,6 +141,24 @@ export function PoolPlansEmbed() {
           }}
         />
       )}
+
+      <div
+        aria-hidden={iframeLoaded}
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-navy-deep/45 backdrop-blur-sm transition-opacity duration-700"
+        style={{
+          opacity: iframeLoaded ? 0 : 1,
+          pointerEvents: iframeLoaded ? "none" : "auto",
+        }}
+      >
+        <div className="relative flex h-16 w-16 items-center justify-center">
+          <span className="absolute h-16 w-16 animate-ping rounded-full bg-sand/30 animation-duration-[2.2s]" />
+          <span className="absolute h-11 w-11 animate-ping rounded-full bg-sand/50 [animation-delay:0.4s] animation-duration-[2.2s]" />
+          <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-sand/90">
+            <Waves className="h-4 w-4 text-navy-deep" strokeWidth={1.8} />
+          </span>
+        </div>
+        <p className="eyebrow text-offwhite/85">Loading pool designer…</p>
+      </div>
     </div>
   );
 }
