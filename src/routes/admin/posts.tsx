@@ -5,10 +5,57 @@ import { FileText, Plus, LogOut, ArrowLeft } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
+import sjLogo from "@/assets/logos/sj-landscaping-pools-logo-02.png";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/admin/posts")({
   component: AdminPostsLayout,
 });
+
+function SignOutButton({ onSignOut, iconOnly }: { onSignOut: () => void; iconOnly?: boolean }) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        {iconOnly ? (
+          <button
+            aria-label="Sign out"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
+        ) : (
+          <button className="flex w-full cursor-pointer items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+            <LogOut className="h-4 w-4" /> Sign out
+          </button>
+        )}
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Sign out?</AlertDialogTitle>
+          <AlertDialogDescription>
+            You'll need to sign in again to write or edit posts.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onSignOut} className="cursor-pointer">
+            Sign out
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
 
 function AdminPostsLayout() {
   const navigate = useNavigate();
@@ -51,7 +98,7 @@ function AdminPostsLayout() {
     <div className="flex min-h-screen bg-muted/40">
       <aside className="hidden w-60 shrink-0 flex-col border-r border-border bg-background sm:flex">
         <div className="flex h-16 items-center border-b border-border px-6">
-          <span className="font-display text-xl text-foreground">Blog admin</span>
+          <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-7 w-auto" />
         </div>
         <nav className="flex-1 space-y-1 px-3 py-4">
           {navItems.map((item) => {
@@ -78,18 +125,13 @@ function AdminPostsLayout() {
           >
             <ArrowLeft className="h-4 w-4" /> View site
           </Link>
-          <button
-            onClick={handleSignOut}
-            className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <LogOut className="h-4 w-4" /> Sign out
-          </button>
+          <SignOutButton onSignOut={handleSignOut} />
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-16 items-center justify-between border-b border-border bg-background px-4 sm:hidden">
-          <span className="font-display text-lg text-foreground">Blog admin</span>
+          <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-6 w-auto" />
           <div className="flex items-center gap-1">
             <Link
               to="/admin/posts/new"
@@ -97,12 +139,7 @@ function AdminPostsLayout() {
             >
               <Plus className="h-4 w-4" />
             </Link>
-            <button
-              onClick={handleSignOut}
-              className="flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
+            <SignOutButton onSignOut={handleSignOut} iconOnly />
           </div>
         </header>
         <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-10">

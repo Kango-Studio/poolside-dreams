@@ -1,11 +1,12 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import sjLogo from "@/assets/logos/sj-landscaping-pools-logo-02.png";
 
 export const Route = createFileRoute("/admin/login")({
   component: AdminLoginPage,
@@ -27,6 +28,7 @@ function AdminLoginPage() {
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (!lockedUntil) return;
@@ -68,8 +70,8 @@ function AdminLoginPage() {
         <ArrowLeft className="h-4 w-4" /> Back to home
       </Link>
 
-      <h1 className="font-display text-3xl text-foreground">Blog admin</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Sign in to write and manage posts.</p>
+      <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-auto w-auto" />
+      <p className="mt-4 text-sm text-muted-foreground">Sign in to write and manage posts.</p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <div className="space-y-1.5">
@@ -86,15 +88,26 @@ function AdminLoginPage() {
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            disabled={isLocked}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              required
+              disabled={isLocked}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute inset-y-0 right-0 flex w-9 cursor-pointer items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
         </div>
         {error && <p className="text-sm text-destructive">{error}</p>}
         <Button type="submit" className="w-full" disabled={loading || isLocked}>

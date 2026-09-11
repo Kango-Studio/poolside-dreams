@@ -211,62 +211,6 @@ export const projects = [
   },
 ];
 
-// Placeholder blog posts — layout scaffolding only. Real posts will be
-// authored through the admin editor once the CMS/CRUD is built; content and
-// cover images here just stand in so the template can be reviewed. `cover`
-// reuses an existing project-photo slug from src/assets/projects/<slug>/ via
-// getProjectImages — swap for real uploaded post images later.
-export const blogPosts = [
-  {
-    slug: "planning-a-vanishing-edge-pool",
-    title: "Planning a Vanishing-Edge Pool: What Actually Matters",
-    category: "Design",
-    date: "2026-08-04",
-    author: "SJ Pools & Landscaping",
-    cover: "miles",
-    excerpt:
-      "A vanishing edge lives or dies on grade, sightlines and the catch basin behind it. Here's what we walk every client through before drawing one.",
-    content: [
-      "A vanishing-edge — or negative-edge — pool reads as a single sheet of water dissolving into the horizon, but the effect only works when the site, the grade and the mechanical room behind it are planned together from day one.",
-      "The first question is always sightline: where is the eye standing when it sees the pool, and what's beyond the edge? A vanishing edge aimed at a fence or a neighbor's roofline wastes the effect. The best ones are placed to catch a tree line, a valley or open sky.",
-      "Behind the scenes, a catch basin collects the water spilling over the edge and a pump returns it — so the illusion depends on plumbing most guests will never see. Getting that basin sized and hidden correctly is most of the engineering work.",
-      "We model every vanishing edge in 3D before excavation starts, so the client is looking at the real sightline from their actual patio furniture height — not a rendering shot from a drone.",
-    ],
-  },
-  {
-    slug: "pavers-vs-poured-concrete",
-    title: "Pavers vs. Poured Concrete: Choosing a Patio Surface",
-    category: "Hardscaping",
-    date: "2026-07-18",
-    author: "SJ Pools & Landscaping",
-    cover: "church",
-    excerpt:
-      "Poured concrete is cheaper up front. Pavers cost more and outlast it. Here's how we help clients weigh the trade-off for New Jersey winters.",
-    content: [
-      "The freeze-thaw cycle is the real deciding factor in New Jersey. Poured concrete is a single rigid slab — when the ground beneath it heaves in winter, it cracks, and a crack in concrete is permanent and visible.",
-      "Pavers are individual units set in sand or a compacted base, so they can move slightly with the ground without cracking. Joints act like expansion joints across the entire surface.",
-      "Pavers also mean any single unit can be lifted for a utility repair or replaced if it stains or chips — something a poured slab can't do without a visible patch.",
-      "Concrete does cost less initially and installs faster, which matters for tighter budgets or larger square footage. We walk every client through both costs over a 15-year horizon, not just the installation invoice.",
-    ],
-  },
-  {
-    slug: "getting-a-pool-permit-in-nj",
-    title: "What to Expect When Permitting a Pool in New Jersey",
-    category: "Guides",
-    date: "2026-06-02",
-    author: "SJ Pools & Landscaping",
-    cover: "canfield",
-    excerpt:
-      "Setbacks, fencing codes and soil tests all shape what you can build before a single shovel goes in the ground. A rundown of the process.",
-    content: [
-      "Every New Jersey municipality has its own setback rules for pool placement relative to property lines, septic fields and the house itself — this is usually the first constraint we check before drawing a layout.",
-      "Fencing and barrier codes are non-negotiable and vary by town: self-latching gates, minimum fence heights and pool alarms are common requirements that need to be designed in from the start, not added after the fact.",
-      "A soil test determines what kind of foundation work the pool shell needs, and in some towns, whether a drainage plan has to be filed alongside the permit.",
-      "We handle the permit filing directly with the township as part of the build, but knowing the timeline in advance — typically several weeks — helps clients plan a realistic groundbreaking date.",
-    ],
-  },
-];
-
 // Real, verified customer feedback (Facebook/Google reviews). Only one review
 // with full public text could be confirmed — add more here once you can pull
 // exact quotes from the Google Business Profile or Facebook page.

@@ -1,10 +1,10 @@
 import { FramedHero } from "@/components/FramedHero";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ImageOff } from "lucide-react";
 
 import { Reveal } from "@/components/Reveal";
-import { blogPosts } from "@/lib/site-data";
+import { listPublishedPosts } from "@/lib/posts";
 import { getProjectImages } from "@/lib/project-images";
 import { pageMeta } from "@/lib/seo";
 import { CtaBand } from "../index";
@@ -12,6 +12,7 @@ import { CtaBand } from "../index";
 const hero = getProjectImages("margo")[0];
 
 export const Route = createFileRoute("/blog/")({
+  loader: () => listPublishedPosts(),
   head: () =>
     pageMeta({
       title: "Blog | SJ Pools & Landscaping",
@@ -40,15 +41,15 @@ function formatDate(iso: string) {
 }
 
 function BlogPage() {
+  const posts = Route.useLoaderData();
   const categories = useMemo(
-    () => Array.from(new Set(blogPosts.map((p) => p.category))).sort(),
-    [],
+    () => Array.from(new Set(posts.map((p) => p.category))).sort(),
+    [posts],
   );
   const [categoryFilter, setCategoryFilter] = useState<string | "all">("all");
   const filtered = useMemo(
-    () =>
-      categoryFilter === "all" ? blogPosts : blogPosts.filter((p) => p.category === categoryFilter),
-    [categoryFilter],
+    () => (categoryFilter === "all" ? posts : posts.filter((p) => p.category === categoryFilter)),
+    [posts, categoryFilter],
   );
 
   return (
@@ -67,70 +68,81 @@ function BlogPage() {
       </FramedHero>
 
       <section className="mx-auto max-w-[1600px] px-6 py-24 lg:px-12 lg:py-32">
-        <Reveal className="flex flex-wrap items-center justify-between gap-6">
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={() => setCategoryFilter("all")}
-              className={pillClass(categoryFilter === "all")}
-            >
-              All
-            </button>
-            {categories.map((category) => (
-              <button
-                key={category}
-                type="button"
-                onClick={() => setCategoryFilter(category)}
-                className={pillClass(categoryFilter === category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-          <p className="eyebrow text-muted-foreground">
-            {filtered.length} post{filtered.length === 1 ? "" : "s"}
-          </p>
-        </Reveal>
-
-        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((post, i) => {
-            const cover = getProjectImages(post.cover)[0];
-            return (
-              <Reveal key={post.slug} delay={(i % 3) * 100}>
-                <Link
-                  to="/blog/$slug"
-                  params={{ slug: post.slug }}
-                  className="surface-3d group relative block aspect-[3/4] overflow-hidden bg-navy-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand focus-visible:ring-offset-4"
+        {posts.length === 0 ? (
+          <Reveal className="py-16 text-center">
+            <p className="eyebrow text-muted-foreground">More stories are on the way.</p>
+          </Reveal>
+        ) : (
+          <>
+            <Reveal className="flex flex-wrap items-center justify-between gap-6">
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => setCategoryFilter("all")}
+                  className={pillClass(categoryFilter === "all")}
                 >
-                  {cover && (
-                    <img
-                      src={cover}
-                      alt={post.title}
-                      loading="lazy"
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
-                    />
-                  )}
-                  <div className="veil absolute inset-0 opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
-                  <span className="eyebrow absolute left-6 top-6 text-offwhite/70">
-                    {post.category}
-                  </span>
-                  <div className="absolute inset-x-0 bottom-0 p-6 lg:p-8">
-                    <p className="eyebrow text-sand">{formatDate(post.date)}</p>
-                    <h3 className="mt-3 font-display text-3xl text-offwhite lg:text-4xl">
-                      {post.title}
-                    </h3>
-                    <p className="mt-2 max-w-xs text-sm leading-relaxed text-silver line-clamp-2">
-                      {post.excerpt}
-                    </p>
-                    <span className="eyebrow mt-6 inline-flex items-center gap-2 text-offwhite/60 opacity-0 transition-all duration-500 group-hover:translate-x-1 group-hover:opacity-100">
-                      Read story <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
+                  All
+                </button>
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => setCategoryFilter(category)}
+                    className={pillClass(categoryFilter === category)}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+              <p className="eyebrow text-muted-foreground">
+                {filtered.length} post{filtered.length === 1 ? "" : "s"}
+              </p>
+            </Reveal>
+
+            <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((post, i) => (
+                <Reveal key={post.id} delay={(i % 3) * 100}>
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: post.slug }}
+                    className="surface-3d group relative block aspect-[3/4] overflow-hidden bg-navy-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand focus-visible:ring-offset-4"
+                  >
+                    {post.cover_url ? (
+                      <img
+                        src={post.cover_url}
+                        alt={post.title}
+                        loading="lazy"
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center bg-navy-deep">
+                        <ImageOff className="h-6 w-6 text-offwhite/30" />
+                      </div>
+                    )}
+                    <div className="veil absolute inset-0 opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
+                    <span className="eyebrow absolute left-6 top-6 text-offwhite/70">
+                      {post.category}
                     </span>
-                  </div>
-                </Link>
-              </Reveal>
-            );
-          })}
-        </div>
+                    <div className="absolute inset-x-0 bottom-0 p-6 lg:p-8">
+                      <p className="eyebrow text-sand">
+                        {post.published_at && formatDate(post.published_at)}
+                      </p>
+                      <h3 className="mt-3 font-display text-3xl text-offwhite lg:text-4xl">
+                        {post.title}
+                      </h3>
+                      <p className="mt-2 max-w-xs text-sm leading-relaxed text-silver line-clamp-2">
+                        {post.excerpt}
+                      </p>
+                      <span className="eyebrow mt-6 inline-flex items-center gap-2 text-offwhite/60 opacity-0 transition-all duration-500 group-hover:translate-x-1 group-hover:opacity-100">
+                        Read story <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
+                      </span>
+                    </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </>
+        )}
       </section>
 
       <CtaBand />
