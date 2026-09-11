@@ -12,6 +12,7 @@ import { type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
+import { Toaster } from "@/components/ui/sonner";
 import { SITE_NAME, localBusinessSchema } from "../lib/seo";
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
@@ -118,6 +119,7 @@ function RootComponent() {
         <Outlet />
       </main>
       <SiteFooter />
+      <Toaster />
     </QueryClientProvider>
   );
 }
