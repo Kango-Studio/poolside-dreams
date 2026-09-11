@@ -3,6 +3,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useEffect } from "react";
+import { toast } from "sonner";
 import {
   Bold,
   Italic,
@@ -19,7 +20,7 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { uploadCoverImage } from "@/lib/posts";
+import { uploadImage } from "@/lib/posts";
 
 function ToolbarButton({
   onClick,
@@ -56,8 +57,12 @@ function Toolbar({ editor }: { editor: Editor }) {
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
-      const url = await uploadCoverImage(file);
-      editor.chain().focus().setImage({ src: url }).run();
+      try {
+        const url = await uploadImage(file);
+        editor.chain().focus().setImage({ src: url }).run();
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "Couldn't upload the image.");
+      }
     };
     input.click();
   }

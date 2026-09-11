@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useBlocker, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Trash2 } from "lucide-react";
+import { Trash2, Eye, ImageOff } from "lucide-react";
 
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { Button } from "@/components/ui/button";
@@ -27,18 +27,23 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { slugify } from "@/lib/utils";
 import {
   createPost,
   deletePost,
   updatePost,
-  uploadCoverImage,
+  uploadImage,
   type Post,
   type PostInput,
   type PostStatus,
 } from "@/lib/posts";
 
 const emptyContent = { type: "doc", content: [{ type: "paragraph" }] };
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+}
 
 export function PostEditor({ post }: { post?: Post }) {
   const navigate = useNavigate();
@@ -58,19 +63,29 @@ export function PostEditor({ post }: { post?: Post }) {
   });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  const blocker = useBlocker({
+    shouldBlockFn: () => isDirty,
+    enableBeforeUnload: () => isDirty,
+    withResolver: true,
+  });
 
   function handleTitleChange(value: string) {
     setTitle(value);
     if (!slugTouched) setSlug(slugify(value));
+    setIsDirty(true);
   }
 
   async function handleCoverChange(file: File) {
     setCoverUploading(true);
     try {
-      const url = await uploadCoverImage(file);
+      const url = await uploadImage(file);
       setCoverUrl(url);
-    } catch {
-      toast.error("Couldn't upload the cover image.");
+      setIsDirty(true);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Couldn't upload the cover image.");
     } finally {
       setCoverUploading(false);
     }
@@ -94,11 +109,12 @@ export function PostEditor({ post }: { post?: Post }) {
     setSaving(true);
     try {
       if (post) {
-        await updatePost(post.id, input, post.status === "published");
+        await updatePost(post.id, input, post);
       } else {
         await createPost(input);
       }
       toast.success("Post saved.");
+      setIsDirty(false);
       navigate({ to: "/admin/posts" });
     } catch {
       toast.error("Couldn't save the post. Check the slug isn't already taken.");
@@ -111,8 +127,9 @@ export function PostEditor({ post }: { post?: Post }) {
     if (!post) return;
     setDeleting(true);
     try {
-      await deletePost(post.id);
+      await deletePost(post);
       toast.success("Post deleted.");
+      setIsDirty(false);
       navigate({ to: "/admin/posts" });
     } catch {
       toast.error("Couldn't delete the post.");
@@ -136,6 +153,7 @@ export function PostEditor({ post }: { post?: Post }) {
               onChange={(e) => {
                 setSlugTouched(true);
                 setSlug(slugify(e.target.value));
+                setIsDirty(true);
               }}
             />
           </div>
@@ -145,12 +163,21 @@ export function PostEditor({ post }: { post?: Post }) {
               id="category"
               placeholder="Design, Guides, Hardscaping..."
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={(e) => {
+                setCategory(e.target.value);
+                setIsDirty(true);
+              }}
             />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="status">Status</Label>
-            <Select value={status} onValueChange={(v) => setStatus(v as PostStatus)}>
+            <Select
+              value={status}
+              onValueChange={(v) => {
+                setStatus(v as PostStatus);
+                setIsDirty(true);
+              }}
+            >
               <SelectTrigger id="status">
                 <SelectValue />
               </SelectTrigger>
@@ -167,7 +194,10 @@ export function PostEditor({ post }: { post?: Post }) {
               rows={2}
               placeholder="One or two sentences shown on the blog listing card."
               value={excerpt}
-              onChange={(e) => setExcerpt(e.target.value)}
+              onChange={(e) => {
+                setExcerpt(e.target.value);
+                setIsDirty(true);
+              }}
             />
           </div>
         </CardContent>
@@ -192,6 +222,7 @@ export function PostEditor({ post }: { post?: Post }) {
               if (file) handleCoverChange(file);
             }}
           />
+          <p className="text-xs text-muted-foreground">Max 5MB.</p>
           {coverUploading && <p className="text-xs text-muted-foreground">Uploading...</p>}
         </CardContent>
       </Card>
@@ -201,13 +232,16 @@ export function PostEditor({ post }: { post?: Post }) {
           <Label>Content</Label>
           <RichTextEditor
             content={content.json}
-            onChange={(json, html) => setContent({ json, html })}
+            onChange={(json, html) => {
+              setContent({ json, html });
+              setIsDirty(true);
+            }}
           />
         </CardContent>
       </Card>
 
       <div className="sticky bottom-0 -mx-6 flex items-center justify-between border-t border-border bg-background/95 px-6 py-4 backdrop-blur">
-        <div>
+        <div className="flex items-center gap-2">
           {isEditing && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -219,7 +253,8 @@ export function PostEditor({ post }: { post?: Post }) {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Delete this post?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    "{post?.title}" will be permanently removed. This can't be undone.
+                    "{post?.title}" and its images will be permanently removed. This can't be
+                    undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -235,11 +270,64 @@ export function PostEditor({ post }: { post?: Post }) {
               </AlertDialogContent>
             </AlertDialog>
           )}
+          <Button variant="outline" onClick={() => setPreviewOpen(true)}>
+            <Eye className="h-4 w-4" /> Preview
+          </Button>
         </div>
         <Button onClick={handleSave} disabled={saving}>
           {saving ? "Saving..." : "Save post"}
         </Button>
       </div>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-3xl">
+          <DialogTitle className="eyebrow text-muted-foreground">Preview</DialogTitle>
+          {coverUrl ? (
+            <img src={coverUrl} alt="" className="h-56 w-full rounded-md object-cover" />
+          ) : (
+            <div className="flex h-56 w-full items-center justify-center rounded-md bg-muted">
+              <ImageOff className="h-6 w-6 text-muted-foreground" />
+            </div>
+          )}
+          <p className="eyebrow text-sand">
+            {category || "Category"} · {formatDate(new Date())}
+          </p>
+          <h1 className="font-display text-4xl leading-tight text-foreground">
+            {title || "Untitled post"}
+          </h1>
+          <div
+            className="prose prose-neutral max-w-none prose-headings:font-display"
+            dangerouslySetInnerHTML={{
+              __html: content.html || "<p><em>Nothing written yet.</em></p>",
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog
+        open={blocker.status === "blocked"}
+        onOpenChange={(open) => {
+          if (!open) blocker.reset?.();
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Leave without saving?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes to this post. They'll be lost if you leave now.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => blocker.reset?.()}>Keep editing</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => blocker.proceed?.()}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Leave without saving
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

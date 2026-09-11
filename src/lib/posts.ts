@@ -28,6 +28,9 @@ export type PostInput = {
   status: PostStatus;
 };
 
+const STORAGE_BUCKET = "post-covers";
+export const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+
 export async function listPublishedPosts(): Promise<Post[]> {
   const { data, error } = await supabase
     .from("posts")
@@ -77,31 +80,74 @@ export async function createPost(input: PostInput): Promise<Post> {
   return data;
 }
 
-export async function updatePost(id: string, input: PostInput, wasPublished: boolean) {
+export async function updatePost(
+  id: string,
+  input: PostInput,
+  previous: Pick<Post, "status" | "cover_url" | "content_html">,
+): Promise<Post> {
   const { data, error } = await supabase
     .from("posts")
     .update({
       ...input,
       published_at:
-        input.status === "published" ? (wasPublished ? undefined : new Date().toISOString()) : null,
+        input.status === "published"
+          ? previous.status === "published"
+            ? undefined
+            : new Date().toISOString()
+          : null,
     })
     .eq("id", id)
     .select()
     .single();
   if (error) throw error;
+
+  // Best-effort cleanup: images that were dropped from the cover or the
+  // content during this edit are no longer referenced anywhere, so remove
+  // them from Storage instead of letting them pile up.
+  const orphaned = [...collectImageUrls(previous)].filter(
+    (url) => !collectImageUrls(input).has(url),
+  );
+  await removeStorageUrls(orphaned);
+
   return data;
 }
 
-export async function deletePost(id: string) {
-  const { error } = await supabase.from("posts").delete().eq("id", id);
+export async function deletePost(post: Pick<Post, "id" | "cover_url" | "content_html">) {
+  const { error } = await supabase.from("posts").delete().eq("id", post.id);
   if (error) throw error;
+  await removeStorageUrls([...collectImageUrls(post)]);
 }
 
-export async function uploadCoverImage(file: File): Promise<string> {
+export async function uploadImage(file: File): Promise<string> {
+  if (file.size > MAX_IMAGE_SIZE_BYTES) {
+    throw new Error("Images must be 5MB or smaller.");
+  }
   const ext = file.name.split(".").pop();
   const path = `${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage.from("post-covers").upload(path, file);
+  const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(path, file);
   if (error) throw error;
-  const { data } = supabase.storage.from("post-covers").getPublicUrl(path);
+  const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path);
   return data.publicUrl;
+}
+
+function collectImageUrls(post: { cover_url: string | null; content_html: string }): Set<string> {
+  const urls = new Set<string>();
+  if (post.cover_url) urls.add(post.cover_url);
+  for (const match of post.content_html.matchAll(/<img[^>]+src="([^"]+)"/g)) {
+    urls.add(match[1]!);
+  }
+  return urls;
+}
+
+function extractStoragePath(url: string): string | null {
+  const marker = `/storage/v1/object/public/${STORAGE_BUCKET}/`;
+  const index = url.indexOf(marker);
+  if (index === -1) return null;
+  return decodeURIComponent(url.slice(index + marker.length));
+}
+
+async function removeStorageUrls(urls: string[]) {
+  const paths = urls.map(extractStoragePath).filter((path): path is string => Boolean(path));
+  if (paths.length === 0) return;
+  await supabase.storage.from(STORAGE_BUCKET).remove(paths);
 }
