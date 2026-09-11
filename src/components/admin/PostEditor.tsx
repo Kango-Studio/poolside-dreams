@@ -113,7 +113,16 @@ export function PostEditor({ post }: { post?: Post }) {
       } else {
         await createPost(input);
       }
-      toast.success("Post saved.");
+      if (input.status === "published") {
+        toast.success("Post published.", {
+          action: {
+            label: "View post",
+            onClick: () => window.open(`/blog/${input.slug}`, "_blank"),
+          },
+        });
+      } else {
+        toast.success("Post saved.");
+      }
       setIsDirty(false);
       navigate({ to: "/admin/posts" });
     } catch {

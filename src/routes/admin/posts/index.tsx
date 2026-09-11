@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, ImageOff } from "lucide-react";
+import { Plus, ImageOff, ExternalLink } from "lucide-react";
 
 import { listAllPosts, type Post } from "@/lib/posts";
 import { Button } from "@/components/ui/button";
@@ -79,6 +79,18 @@ function AdminPostsIndexPage() {
                   {post.category} · Updated {formatDate(post.updated_at)}
                 </p>
               </div>
+              {post.status === "published" && (
+                <a
+                  href={`/blog/${post.slug}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label="View live post"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              )}
               <Badge
                 variant={post.status === "published" ? "default" : "secondary"}
                 className="shrink-0"
