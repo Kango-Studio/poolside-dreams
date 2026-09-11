@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -15,6 +16,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { slugify } from "@/lib/utils";
 import {
   createPost,
@@ -45,6 +57,7 @@ export function PostEditor({ post }: { post?: Post }) {
     html: post?.content_html ?? "",
   });
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   function handleTitleChange(value: string) {
     setTitle(value);
@@ -96,103 +109,131 @@ export function PostEditor({ post }: { post?: Post }) {
 
   async function handleDelete() {
     if (!post) return;
-    if (!window.confirm("Delete this post? This can't be undone.")) return;
+    setDeleting(true);
     try {
       await deletePost(post.id);
       toast.success("Post deleted.");
       navigate({ to: "/admin/posts" });
     } catch {
       toast.error("Couldn't delete the post.");
+      setDeleting(false);
     }
   }
 
   return (
-    <div className="space-y-6 pb-24">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5">
-          <Label htmlFor="title">Title</Label>
-          <Input id="title" value={title} onChange={(e) => handleTitleChange(e.target.value)} />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="slug">Slug</Label>
+    <div className="space-y-6 pb-28">
+      <Card>
+        <CardContent className="grid gap-4 p-6 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="title">Title</Label>
+            <Input id="title" value={title} onChange={(e) => handleTitleChange(e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="slug">Slug</Label>
+            <Input
+              id="slug"
+              value={slug}
+              onChange={(e) => {
+                setSlugTouched(true);
+                setSlug(slugify(e.target.value));
+              }}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="category">Category</Label>
+            <Input
+              id="category"
+              placeholder="Design, Guides, Hardscaping..."
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="status">Status</Label>
+            <Select value={status} onValueChange={(v) => setStatus(v as PostStatus)}>
+              <SelectTrigger id="status">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label htmlFor="excerpt">Excerpt</Label>
+            <Textarea
+              id="excerpt"
+              rows={2}
+              placeholder="One or two sentences shown on the blog listing card."
+              value={excerpt}
+              onChange={(e) => setExcerpt(e.target.value)}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="space-y-2 p-6">
+          <Label>Cover image</Label>
+          {coverUrl && (
+            <img
+              src={coverUrl}
+              alt="Cover preview"
+              className="mb-2 h-40 w-full max-w-sm rounded-md object-cover"
+            />
+          )}
           <Input
-            id="slug"
-            value={slug}
+            type="file"
+            accept="image/*"
+            disabled={coverUploading}
             onChange={(e) => {
-              setSlugTouched(true);
-              setSlug(slugify(e.target.value));
+              const file = e.target.files?.[0];
+              if (file) handleCoverChange(file);
             }}
           />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="category">Category</Label>
-          <Input
-            id="category"
-            placeholder="Design, Guides, Hardscaping..."
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+          {coverUploading && <p className="text-xs text-muted-foreground">Uploading...</p>}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="space-y-1.5 p-6">
+          <Label>Content</Label>
+          <RichTextEditor
+            content={content.json}
+            onChange={(json, html) => setContent({ json, html })}
           />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="status">Status</Label>
-          <Select value={status} onValueChange={(v) => setStatus(v as PostStatus)}>
-            <SelectTrigger id="status">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="draft">Draft</SelectItem>
-              <SelectItem value="published">Published</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="excerpt">Excerpt</Label>
-        <Textarea
-          id="excerpt"
-          rows={2}
-          placeholder="One or two sentences shown on the blog listing card."
-          value={excerpt}
-          onChange={(e) => setExcerpt(e.target.value)}
-        />
-      </div>
-
-      <div className="space-y-1.5">
-        <Label>Cover image</Label>
-        {coverUrl && (
-          <img
-            src={coverUrl}
-            alt="Cover preview"
-            className="mb-2 h-40 w-full max-w-sm rounded-md object-cover"
-          />
-        )}
-        <Input
-          type="file"
-          accept="image/*"
-          disabled={coverUploading}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) handleCoverChange(file);
-          }}
-        />
-        {coverUploading && <p className="text-xs text-muted-foreground">Uploading...</p>}
-      </div>
-
-      <div className="space-y-1.5">
-        <Label>Content</Label>
-        <RichTextEditor
-          content={content.json}
-          onChange={(json, html) => setContent({ json, html })}
-        />
-      </div>
-
-      <div className="flex items-center justify-between border-t border-border pt-6">
+      <div className="sticky bottom-0 -mx-6 flex items-center justify-between border-t border-border bg-background/95 px-6 py-4 backdrop-blur">
         <div>
           {isEditing && (
-            <Button variant="outline" className="text-destructive" onClick={handleDelete}>
-              <Trash2 className="h-4 w-4" /> Delete
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" className="text-destructive hover:text-destructive">
+                  <Trash2 className="h-4 w-4" /> Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this post?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    "{post?.title}" will be permanently removed. This can't be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    disabled={deleting}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {deleting ? "Deleting..." : "Delete post"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </div>
         <Button onClick={handleSave} disabled={saving}>

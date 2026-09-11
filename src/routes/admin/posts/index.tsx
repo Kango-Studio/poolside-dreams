@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { Plus, ImageOff } from "lucide-react";
 
 import { listAllPosts, type Post } from "@/lib/posts";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,14 @@ import { Badge } from "@/components/ui/badge";
 export const Route = createFileRoute("/admin/posts/")({
   component: AdminPostsIndexPage,
 });
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
 
 function AdminPostsIndexPage() {
   const [posts, setPosts] = useState<Post[] | "loading" | "error">("loading");
@@ -22,7 +30,12 @@ function AdminPostsIndexPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-xl text-foreground">Posts</h2>
+        <div>
+          <h1 className="font-display text-2xl text-foreground">Posts</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {Array.isArray(posts) ? `${posts.length} total` : " "}
+          </p>
+        </div>
         <Button asChild size="sm">
           <Link to="/admin/posts/new">
             <Plus className="h-4 w-4" /> New post
@@ -36,7 +49,14 @@ function AdminPostsIndexPage() {
           <p className="text-sm text-destructive">Couldn't load posts. Try refreshing.</p>
         )}
         {Array.isArray(posts) && posts.length === 0 && (
-          <p className="text-sm text-muted-foreground">No posts yet.</p>
+          <div className="rounded-lg border border-dashed border-border bg-background px-6 py-16 text-center">
+            <p className="text-sm text-muted-foreground">No posts yet.</p>
+            <Button asChild size="sm" className="mt-4">
+              <Link to="/admin/posts/new">
+                <Plus className="h-4 w-4" /> Write your first post
+              </Link>
+            </Button>
+          </div>
         )}
         {Array.isArray(posts) &&
           posts.map((post) => (
@@ -44,13 +64,25 @@ function AdminPostsIndexPage() {
               key={post.id}
               to="/admin/posts/$id"
               params={{ id: post.id }}
-              className="flex items-center justify-between rounded-md border border-border bg-card px-4 py-3 transition-colors hover:bg-muted"
+              className="flex items-center gap-4 rounded-lg border border-border bg-background p-3 transition-colors hover:border-sand/60 hover:bg-muted"
             >
-              <div>
-                <p className="font-medium text-foreground">{post.title}</p>
-                <p className="text-xs text-muted-foreground">{post.category}</p>
+              <div className="flex h-14 w-20 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
+                {post.cover_url ? (
+                  <img src={post.cover_url} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <ImageOff className="h-4 w-4 text-muted-foreground" />
+                )}
               </div>
-              <Badge variant={post.status === "published" ? "default" : "secondary"}>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium text-foreground">{post.title}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {post.category} · Updated {formatDate(post.updated_at)}
+                </p>
+              </div>
+              <Badge
+                variant={post.status === "published" ? "default" : "secondary"}
+                className="shrink-0"
+              >
                 {post.status}
               </Badge>
             </Link>

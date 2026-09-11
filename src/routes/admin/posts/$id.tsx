@@ -27,7 +27,7 @@ function EditPostPage() {
 
   return (
     <div>
-      <h2 className="font-display text-xl text-foreground">Edit post</h2>
+      <h1 className="font-display text-2xl text-foreground">Edit post</h1>
       <div className="mt-6">
         <PostEditor post={post} />
       </div>

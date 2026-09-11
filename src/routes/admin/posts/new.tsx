@@ -9,7 +9,7 @@ export const Route = createFileRoute("/admin/posts/new")({
 function NewPostPage() {
   return (
     <div>
-      <h2 className="font-display text-xl text-foreground">New post</h2>
+      <h1 className="font-display text-2xl text-foreground">New post</h1>
       <div className="mt-6">
         <PostEditor />
       </div>
