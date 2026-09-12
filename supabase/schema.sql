@@ -33,8 +33,30 @@ create trigger posts_set_updated_at
   before update on public.posts
   for each row execute function public.set_updated_at();
 
+-- Once the admin enrolls two-factor authentication, a session that only
+-- completed the password step (aal1) should no longer be able to read or
+-- write anything here — otherwise MFA would just be a UI speed bump, not a
+-- real barrier (a stolen aal1 token would still work against the API
+-- directly). Before enrollment this always returns true, so nothing changes
+-- until MFA is actually turned on.
+create or replace function public.has_verified_mfa()
+returns boolean
+language sql
+security definer
+set search_path = auth, public
+stable
+as $$
+  select exists (
+    select 1 from auth.mfa_factors
+    where user_id = auth.uid() and status = 'verified'
+  );
+$$;
+
+grant execute on function public.has_verified_mfa() to authenticated;
+
 -- Row Level Security: public visitors can only read published posts.
--- The single logged-in admin (any authenticated user) can do everything.
+-- The single logged-in admin (any authenticated user) can do everything,
+-- provided they've completed MFA if it's enabled (see has_verified_mfa above).
 alter table public.posts enable row level security;
 
 drop policy if exists "Public can read published posts" on public.posts;
@@ -47,8 +69,8 @@ drop policy if exists "Authenticated can manage posts" on public.posts;
 create policy "Authenticated can manage posts"
   on public.posts for all
   to authenticated
-  using (true)
-  with check (true);
+  using ( (select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa() )
+  with check ( (select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa() );
 
 -- Defense-in-depth field validation at the database level, independent of
 -- whatever the admin UI happens to validate client-side.
@@ -85,8 +107,8 @@ drop policy if exists "Authenticated can manage categories" on public.categories
 create policy "Authenticated can manage categories"
   on public.categories for all
   to authenticated
-  using (true)
-  with check (true);
+  using ( (select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa() )
+  with check ( (select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa() );
 
 alter table public.categories drop constraint if exists categories_name_not_blank_check;
 alter table public.categories add constraint categories_name_not_blank_check
@@ -118,5 +140,11 @@ drop policy if exists "Authenticated can manage post covers" on storage.objects;
 create policy "Authenticated can manage post covers"
   on storage.objects for all
   to authenticated
-  using (bucket_id = 'post-covers')
-  with check (bucket_id = 'post-covers');
+  using (
+    bucket_id = 'post-covers'
+    and ((select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa())
+  )
+  with check (
+    bucket_id = 'post-covers'
+    and ((select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa())
+  );

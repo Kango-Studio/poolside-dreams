@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import type { Session } from "@supabase/supabase-js";
-import { FileText, Plus, LogOut, ArrowLeft } from "lucide-react";
+import { FileText, Plus, LogOut, ArrowLeft, ShieldCheck } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
+import { needsMfaChallenge } from "@/lib/mfa";
 import { cn } from "@/lib/utils";
 import sjLogo from "@/assets/logos/sj-landscaping-pools-logo-02.png";
 import {
@@ -76,7 +77,18 @@ function AdminPostsLayout() {
   useEffect(() => {
     if (session === null) {
       navigate({ to: "/admin/login" });
+      return;
     }
+    if (session === "loading") return;
+    // A session that hasn't completed its MFA challenge (aal1 when aal2 is
+    // required) can't actually read or write anything under the updated RLS
+    // policies — send it back through login rather than showing a broken
+    // panel.
+    needsMfaChallenge().then((needed) => {
+      if (needed) {
+        supabase.auth.signOut().then(() => navigate({ to: "/admin/login" }));
+      }
+    });
   }, [session, navigate]);
 
   if (session === "loading" || session === null) {
@@ -90,6 +102,7 @@ function AdminPostsLayout() {
   const navItems = [
     { to: "/admin/posts", label: "Posts", icon: FileText, exact: true },
     { to: "/admin/posts/new", label: "New post", icon: Plus, exact: false },
+    { to: "/admin/posts/security", label: "Security", icon: ShieldCheck, exact: false },
   ];
 
   async function handleSignOut() {

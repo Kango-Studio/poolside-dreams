@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import sjLogo from "@/assets/logos/sj-landscaping-pools-logo-02.png";
+import { needsMfaChallenge, getVerifiedTotpFactor, verifyLoginChallenge } from "@/lib/mfa";
 
 export const Route = createFileRoute("/admin/login")({
   head: () => ({
@@ -32,6 +33,9 @@ function AdminLoginPage() {
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const [showPassword, setShowPassword] = useState(false);
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
+  const [mfaCode, setMfaCode] = useState("");
+  const [mfaError, setMfaError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!lockedUntil) return;
@@ -61,7 +65,30 @@ function AdminLoginPage() {
       }
       return;
     }
+
+    if (await needsMfaChallenge()) {
+      const factor = await getVerifiedTotpFactor();
+      if (factor) {
+        setMfaFactorId(factor.id);
+        return;
+      }
+    }
     navigate({ to: "/admin/posts" });
+  }
+
+  async function handleMfaSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (!mfaFactorId) return;
+    setMfaError(null);
+    setLoading(true);
+    try {
+      await verifyLoginChallenge(mfaFactorId, mfaCode.trim());
+      navigate({ to: "/admin/posts" });
+    } catch {
+      setMfaError("Invalid code. Try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -74,49 +101,82 @@ function AdminLoginPage() {
       </Link>
 
       <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-auto w-auto" />
-      <p className="mt-4 text-sm text-muted-foreground">Sign in to write and manage posts.</p>
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-        <div className="space-y-1.5">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            required
-            disabled={isLocked}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="password">Password</Label>
-          <div className="relative">
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              autoComplete="current-password"
-              required
-              disabled={isLocked}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="pr-10"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute inset-y-0 right-0 flex w-9 cursor-pointer items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+      {mfaFactorId ? (
+        <>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Enter the 6-digit code from your authenticator app.
+          </p>
+          <form onSubmit={handleMfaSubmit} className="mt-8 space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="mfa-code">Authentication code</Label>
+              <Input
+                id="mfa-code"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                autoFocus
+                value={mfaCode}
+                onChange={(e) => setMfaCode(e.target.value)}
+              />
+            </div>
+            {mfaError && <p className="text-sm text-destructive">{mfaError}</p>}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading || mfaCode.trim().length < 6}
             >
-              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
-          </div>
-        </div>
-        {error && <p className="text-sm text-destructive">{error}</p>}
-        <Button type="submit" className="w-full" disabled={loading || isLocked}>
-          {isLocked ? `Locked (${secondsLeft}s)` : loading ? "Signing in..." : "Sign in"}
-        </Button>
-      </form>
+              {loading ? "Verifying..." : "Verify"}
+            </Button>
+          </form>
+        </>
+      ) : (
+        <>
+          <p className="mt-4 text-sm text-muted-foreground">Sign in to write and manage posts.</p>
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                required
+                disabled={isLocked}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  required
+                  disabled={isLocked}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute inset-y-0 right-0 flex w-9 cursor-pointer items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <Button type="submit" className="w-full" disabled={loading || isLocked}>
+              {isLocked ? `Locked (${secondsLeft}s)` : loading ? "Signing in..." : "Sign in"}
+            </Button>
+          </form>
+        </>
+      )}
     </div>
   );
 }
