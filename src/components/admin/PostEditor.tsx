@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Trash2, Eye, ImageOff } from "lucide-react";
 
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
+import { CategoryCombobox } from "@/components/admin/CategoryCombobox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -168,12 +169,11 @@ export function PostEditor({ post }: { post?: Post }) {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="category">Category</Label>
-            <Input
+            <CategoryCombobox
               id="category"
-              placeholder="Design, Guides, Hardscaping..."
               value={category}
-              onChange={(e) => {
-                setCategory(e.target.value);
+              onChange={(name) => {
+                setCategory(name);
                 setIsDirty(true);
               }}
             />

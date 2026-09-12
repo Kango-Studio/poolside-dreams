@@ -50,6 +50,26 @@ create policy "Authenticated can manage posts"
   using (true)
   with check (true);
 
+-- Categories: a lightweight, admin-managed list so post categories stay
+-- consistent (no "Design" vs "design" vs "Designs" typos). Posts still store
+-- the category as plain text (see `posts.category` above) — renaming a
+-- category here cascades into every post's `category` column, see the
+-- rename step the app performs alongside `categories` updates.
+create table if not exists public.categories (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  created_at timestamptz not null default now()
+);
+
+alter table public.categories enable row level security;
+
+drop policy if exists "Authenticated can manage categories" on public.categories;
+create policy "Authenticated can manage categories"
+  on public.categories for all
+  to authenticated
+  using (true)
+  with check (true);
+
 -- Storage bucket for post cover images, publicly readable.
 insert into storage.buckets (id, name, public)
 values ('post-covers', 'post-covers', true)
