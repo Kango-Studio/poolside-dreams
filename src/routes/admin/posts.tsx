@@ -95,12 +95,12 @@ function AdminPostsLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-muted/40">
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-border bg-background sm:flex">
-        <div className="flex h-16 items-center border-b border-border px-6">
+    <div className="flex h-screen overflow-hidden bg-muted/40">
+      <aside className="hidden h-full w-60 shrink-0 flex-col border-r border-border bg-background sm:flex">
+        <div className="flex h-16 shrink-0 items-center border-b border-border px-6">
           <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-7 w-auto" />
         </div>
-        <nav className="flex-1 space-y-1 px-3 py-4">
+        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
           {navItems.map((item) => {
             const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
             return (
@@ -118,7 +118,7 @@ function AdminPostsLayout() {
             );
           })}
         </nav>
-        <div className="space-y-1 border-t border-border p-3">
+        <div className="shrink-0 space-y-1 border-t border-border p-3">
           <Link
             to="/"
             target="_blank"
@@ -130,8 +130,8 @@ function AdminPostsLayout() {
         </div>
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 items-center justify-between border-b border-border bg-background px-4 sm:hidden">
+      <div className="flex h-full min-w-0 flex-1 flex-col">
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-background px-4 sm:hidden">
           <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-6 w-auto" />
           <div className="flex items-center gap-1">
             <Link
@@ -143,7 +143,7 @@ function AdminPostsLayout() {
             <SignOutButton onSignOut={handleSignOut} iconOnly />
           </div>
         </header>
-        <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-10">
+        <main className="mx-auto w-full max-w-4xl flex-1 overflow-y-auto px-6 py-10">
           <Outlet />
         </main>
       </div>
