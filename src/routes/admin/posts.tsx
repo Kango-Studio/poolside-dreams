@@ -143,9 +143,11 @@ function AdminPostsLayout() {
             <SignOutButton onSignOut={handleSignOut} iconOnly />
           </div>
         </header>
-        <main className="mx-auto min-h-0 w-full max-w-4xl flex-1 overflow-y-auto px-6 py-10">
-          <Outlet />
-        </main>
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <main className="mx-auto w-full max-w-4xl px-6 py-10">
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
   );
