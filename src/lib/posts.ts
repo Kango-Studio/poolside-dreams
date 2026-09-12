@@ -118,13 +118,25 @@ export async function deletePost(post: Pick<Post, "id" | "cover_url" | "content_
   await removeStorageUrls([...collectImageUrls(post)]);
 }
 
+const ALLOWED_IMAGE_TYPES: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+};
+
 export async function uploadImage(file: File): Promise<string> {
+  const ext = ALLOWED_IMAGE_TYPES[file.type];
+  if (!ext) {
+    throw new Error("Only JPEG, PNG, WEBP or GIF images are allowed.");
+  }
   if (file.size > MAX_IMAGE_SIZE_BYTES) {
     throw new Error("Images must be 5MB or smaller.");
   }
-  const ext = file.name.split(".").pop();
   const path = `${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(path, file);
+  const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(path, file, {
+    contentType: file.type,
+  });
   if (error) throw error;
   const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path);
   return data.publicUrl;

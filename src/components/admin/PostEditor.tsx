@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useBlocker, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import DOMPurify from "dompurify";
 import { Trash2, Eye, ImageOff } from "lucide-react";
 
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
@@ -104,7 +105,10 @@ export function PostEditor({ post }: { post?: Post }) {
       excerpt: excerpt.trim(),
       cover_url: coverUrl,
       content_json: content.json,
-      content_html: content.html,
+      // Sanitized even though only the trusted admin writes this today — if
+      // that account is ever compromised, this stops a malicious post from
+      // running JavaScript in every visitor's browser.
+      content_html: DOMPurify.sanitize(content.html),
       status,
     };
     setSaving(true);
@@ -224,7 +228,7 @@ export function PostEditor({ post }: { post?: Post }) {
           )}
           <Input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif"
             disabled={coverUploading}
             onChange={(e) => {
               const file = e.target.files?.[0];

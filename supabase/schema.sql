@@ -50,6 +50,24 @@ create policy "Authenticated can manage posts"
   using (true)
   with check (true);
 
+-- Defense-in-depth field validation at the database level, independent of
+-- whatever the admin UI happens to validate client-side.
+alter table public.posts drop constraint if exists posts_slug_format_check;
+alter table public.posts add constraint posts_slug_format_check
+  check (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$');
+
+alter table public.posts drop constraint if exists posts_title_not_blank_check;
+alter table public.posts add constraint posts_title_not_blank_check
+  check (length(trim(title)) > 0);
+
+alter table public.posts drop constraint if exists posts_excerpt_not_blank_check;
+alter table public.posts add constraint posts_excerpt_not_blank_check
+  check (length(trim(excerpt)) > 0);
+
+alter table public.posts drop constraint if exists posts_category_not_blank_check;
+alter table public.posts add constraint posts_category_not_blank_check
+  check (length(trim(category)) > 0);
+
 -- Categories: a lightweight, admin-managed list so post categories stay
 -- consistent (no "Design" vs "design" vs "Designs" typos). Posts still store
 -- the category as plain text (see `posts.category` above) — renaming a
@@ -70,10 +88,25 @@ create policy "Authenticated can manage categories"
   using (true)
   with check (true);
 
--- Storage bucket for post cover images, publicly readable.
-insert into storage.buckets (id, name, public)
-values ('post-covers', 'post-covers', true)
-on conflict (id) do nothing;
+alter table public.categories drop constraint if exists categories_name_not_blank_check;
+alter table public.categories add constraint categories_name_not_blank_check
+  check (length(trim(name)) > 0);
+
+-- Storage bucket for post cover images, publicly readable. Restricted to
+-- real image formats (no SVG — it can carry inline <script>) and capped at
+-- 5MB server-side, matching the client-side check in lib/posts.ts so the
+-- limit holds even if a request bypasses the app's own validation.
+insert into storage.buckets (id, name, public, allowed_mime_types, file_size_limit)
+values (
+  'post-covers',
+  'post-covers',
+  true,
+  array['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+  5242880
+)
+on conflict (id) do update set
+  allowed_mime_types = excluded.allowed_mime_types,
+  file_size_limit = excluded.file_size_limit;
 
 drop policy if exists "Public can view post covers" on storage.objects;
 create policy "Public can view post covers"

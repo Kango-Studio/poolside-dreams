@@ -9,6 +9,9 @@ import { Label } from "@/components/ui/label";
 import sjLogo from "@/assets/logos/sj-landscaping-pools-logo-02.png";
 
 export const Route = createFileRoute("/admin/login")({
+  head: () => ({
+    meta: [{ name: "robots", content: "noindex, nofollow" }],
+  }),
   component: AdminLoginPage,
 });
 
