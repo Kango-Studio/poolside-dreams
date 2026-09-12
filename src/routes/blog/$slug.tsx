@@ -37,10 +37,10 @@ export const Route = createFileRoute("/blog/$slug")({
     }
     const { post } = loaderData;
     return pageMeta({
-      title: `${post.title} | SJ Pools & Landscaping Blog`,
-      description: post.excerpt,
+      title: post.seo_title || `${post.title} | SJ Pools & Landscaping Blog`,
+      description: post.seo_description || post.excerpt,
       path: `/blog/${post.slug}`,
-      image: "/og/blog.jpg",
+      image: post.cover_url || "/og/blog.jpg",
     });
   },
   component: BlogPostPage,

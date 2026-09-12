@@ -12,6 +12,8 @@ export type Post = {
   content_json: object;
   content_html: string;
   status: PostStatus;
+  seo_title: string | null;
+  seo_description: string | null;
   published_at: string | null;
   created_at: string;
   updated_at: string;
@@ -26,6 +28,8 @@ export type PostInput = {
   content_json: object;
   content_html: string;
   status: PostStatus;
+  seo_title: string | null;
+  seo_description: string | null;
 };
 
 const STORAGE_BUCKET = "post-covers";

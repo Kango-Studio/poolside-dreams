@@ -16,6 +16,11 @@ create table if not exists public.posts (
   updated_at timestamptz not null default now()
 );
 
+-- Optional per-post overrides for the <title> tag and meta description.
+-- When blank, the public page falls back to `title` and `excerpt`.
+alter table public.posts add column if not exists seo_title text;
+alter table public.posts add column if not exists seo_description text;
+
 create index if not exists posts_status_published_at_idx
   on public.posts (status, published_at desc);
 

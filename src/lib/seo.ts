@@ -25,7 +25,10 @@ type PageSeoInput = {
 
 export function pageMeta({ title, description, path, image }: PageSeoInput) {
   const url = `${SITE_URL}${path}`;
-  const imageUrl = `${SITE_URL}${image}`;
+  // Post covers come back as full Supabase Storage URLs; site OG images are
+  // given as site-relative paths like "/og/blog.jpg" — only the latter needs
+  // SITE_URL prepended.
+  const imageUrl = image.startsWith("http") ? image : `${SITE_URL}${image}`;
 
   return {
     meta: [

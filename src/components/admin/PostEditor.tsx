@@ -30,7 +30,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { slugify } from "@/lib/utils";
+import { cn, slugify } from "@/lib/utils";
 import {
   createPost,
   deletePost,
@@ -56,6 +56,8 @@ export function PostEditor({ post }: { post?: Post }) {
   const [slugTouched, setSlugTouched] = useState(isEditing);
   const [category, setCategory] = useState(post?.category ?? "");
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
+  const [seoTitle, setSeoTitle] = useState(post?.seo_title ?? "");
+  const [seoDescription, setSeoDescription] = useState(post?.seo_description ?? "");
   const [status, setStatus] = useState<PostStatus>(post?.status ?? "draft");
   const [coverUrl, setCoverUrl] = useState<string | null>(post?.cover_url ?? null);
   const [coverUploading, setCoverUploading] = useState(false);
@@ -114,6 +116,8 @@ export function PostEditor({ post }: { post?: Post }) {
       // running JavaScript in every visitor's browser.
       content_html: DOMPurify.sanitize(content.html),
       status,
+      seo_title: seoTitle.trim() || null,
+      seo_description: seoDescription.trim() || null,
     };
     setSaving(true);
     try {
@@ -213,6 +217,63 @@ export function PostEditor({ post }: { post?: Post }) {
               value={excerpt}
               onChange={(e) => {
                 setExcerpt(e.target.value);
+                isDirtyRef.current = true;
+              }}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="space-y-4 p-6">
+          <div>
+            <p className="font-medium text-foreground">SEO</p>
+            <p className="text-xs text-muted-foreground">
+              Controls how this post shows up in Google and when shared on social media. Leave blank
+              to use the title and excerpt above.
+            </p>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="seo-title">SEO title</Label>
+              <span
+                className={cn(
+                  "text-xs",
+                  seoTitle.length > 60 ? "text-destructive" : "text-muted-foreground",
+                )}
+              >
+                {seoTitle.length}/60
+              </span>
+            </div>
+            <Input
+              id="seo-title"
+              placeholder={title || "Falls back to the post title"}
+              value={seoTitle}
+              onChange={(e) => {
+                setSeoTitle(e.target.value);
+                isDirtyRef.current = true;
+              }}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="seo-description">SEO description</Label>
+              <span
+                className={cn(
+                  "text-xs",
+                  seoDescription.length > 160 ? "text-destructive" : "text-muted-foreground",
+                )}
+              >
+                {seoDescription.length}/160
+              </span>
+            </div>
+            <Textarea
+              id="seo-description"
+              rows={2}
+              placeholder={excerpt || "Falls back to the excerpt"}
+              value={seoDescription}
+              onChange={(e) => {
+                setSeoDescription(e.target.value);
                 isDirtyRef.current = true;
               }}
             />
