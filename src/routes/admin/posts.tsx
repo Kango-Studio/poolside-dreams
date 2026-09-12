@@ -100,7 +100,7 @@ function AdminPostsLayout() {
         <div className="flex h-16 shrink-0 items-center border-b border-border px-6">
           <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-7 w-auto" />
         </div>
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+        <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto px-3 py-4">
           {navItems.map((item) => {
             const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
             return (
@@ -143,7 +143,7 @@ function AdminPostsLayout() {
             <SignOutButton onSignOut={handleSignOut} iconOnly />
           </div>
         </header>
-        <main className="mx-auto w-full max-w-4xl flex-1 overflow-y-auto px-6 py-10">
+        <main className="mx-auto min-h-0 w-full max-w-4xl flex-1 overflow-y-auto px-6 py-10">
           <Outlet />
         </main>
       </div>
