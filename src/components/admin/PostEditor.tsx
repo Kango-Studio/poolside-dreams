@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useBlocker, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import DOMPurify from "dompurify";
@@ -65,19 +65,23 @@ export function PostEditor({ post }: { post?: Post }) {
   });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  // A ref, not state: state updates are batched/async, so flipping this via
+  // setState right before navigate() wouldn't be visible yet to the
+  // blocker's shouldBlockFn on that same navigation attempt — the dialog
+  // would flash even on a successful save. The ref mutates immediately.
+  const isDirtyRef = useRef(false);
 
   const blocker = useBlocker({
-    shouldBlockFn: () => isDirty,
-    enableBeforeUnload: () => isDirty,
+    shouldBlockFn: () => isDirtyRef.current,
+    enableBeforeUnload: () => isDirtyRef.current,
     withResolver: true,
   });
 
   function handleTitleChange(value: string) {
     setTitle(value);
     if (!slugTouched) setSlug(slugify(value));
-    setIsDirty(true);
+    isDirtyRef.current = true;
   }
 
   async function handleCoverChange(file: File) {
@@ -85,7 +89,7 @@ export function PostEditor({ post }: { post?: Post }) {
     try {
       const url = await uploadImage(file);
       setCoverUrl(url);
-      setIsDirty(true);
+      isDirtyRef.current = true;
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Couldn't upload the cover image.");
     } finally {
@@ -128,7 +132,7 @@ export function PostEditor({ post }: { post?: Post }) {
       } else {
         toast.success("Post saved.");
       }
-      setIsDirty(false);
+      isDirtyRef.current = false;
       navigate({ to: "/admin/posts" });
     } catch {
       toast.error("Couldn't save the post. Check the slug isn't already taken.");
@@ -143,7 +147,7 @@ export function PostEditor({ post }: { post?: Post }) {
     try {
       await deletePost(post);
       toast.success("Post deleted.");
-      setIsDirty(false);
+      isDirtyRef.current = false;
       navigate({ to: "/admin/posts" });
     } catch {
       toast.error("Couldn't delete the post.");
@@ -167,7 +171,7 @@ export function PostEditor({ post }: { post?: Post }) {
               onChange={(e) => {
                 setSlugTouched(true);
                 setSlug(slugify(e.target.value));
-                setIsDirty(true);
+                isDirtyRef.current = true;
               }}
             />
           </div>
@@ -178,7 +182,7 @@ export function PostEditor({ post }: { post?: Post }) {
               value={category}
               onChange={(name) => {
                 setCategory(name);
-                setIsDirty(true);
+                isDirtyRef.current = true;
               }}
             />
           </div>
@@ -188,7 +192,7 @@ export function PostEditor({ post }: { post?: Post }) {
               value={status}
               onValueChange={(v) => {
                 setStatus(v as PostStatus);
-                setIsDirty(true);
+                isDirtyRef.current = true;
               }}
             >
               <SelectTrigger id="status">
@@ -209,7 +213,7 @@ export function PostEditor({ post }: { post?: Post }) {
               value={excerpt}
               onChange={(e) => {
                 setExcerpt(e.target.value);
-                setIsDirty(true);
+                isDirtyRef.current = true;
               }}
             />
           </div>
@@ -247,7 +251,7 @@ export function PostEditor({ post }: { post?: Post }) {
             content={content.json}
             onChange={(json, html) => {
               setContent({ json, html });
-              setIsDirty(true);
+              isDirtyRef.current = true;
             }}
           />
         </CardContent>
