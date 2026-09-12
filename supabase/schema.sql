@@ -54,9 +54,40 @@ $$;
 
 grant execute on function public.has_verified_mfa() to authenticated;
 
+-- Allowlist of admin accounts. The anon key is public by design (it's meant
+-- to sit in client-side code), which means anyone can call
+-- supabase.auth.signUp() straight from a browser console and mint their own
+-- "authenticated" session. Without this table, a policy that just checks
+-- `to authenticated` would hand that brand-new stranger the exact same
+-- write access as the real admin. RLS is intentionally left off this table
+-- entirely below (no policies at all) so it's only ever readable/writable
+-- from the Supabase SQL editor, never through the API.
+create table if not exists public.admin_users (
+  user_id uuid primary key references auth.users (id) on delete cascade
+);
+
+alter table public.admin_users enable row level security;
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  -- Bootstrap mode: if no admin has been added yet, don't lock everyone out
+  -- of the empty table before the one-time setup step at the bottom of this
+  -- file has run. Add your own row there as soon as you can.
+  select
+    not exists (select 1 from public.admin_users)
+    or exists (select 1 from public.admin_users where user_id = auth.uid());
+$$;
+
+grant execute on function public.is_admin() to authenticated;
+
 -- Row Level Security: public visitors can only read published posts.
--- The single logged-in admin (any authenticated user) can do everything,
--- provided they've completed MFA if it's enabled (see has_verified_mfa above).
+-- Only the allowlisted admin (see admin_users above) can do everything else,
+-- and only once they've completed MFA if it's enabled (has_verified_mfa).
 alter table public.posts enable row level security;
 
 drop policy if exists "Public can read published posts" on public.posts;
@@ -69,8 +100,14 @@ drop policy if exists "Authenticated can manage posts" on public.posts;
 create policy "Authenticated can manage posts"
   on public.posts for all
   to authenticated
-  using ( (select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa() )
-  with check ( (select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa() );
+  using (
+    public.is_admin()
+    and ((select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa())
+  )
+  with check (
+    public.is_admin()
+    and ((select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa())
+  );
 
 -- Defense-in-depth field validation at the database level, independent of
 -- whatever the admin UI happens to validate client-side.
@@ -107,8 +144,14 @@ drop policy if exists "Authenticated can manage categories" on public.categories
 create policy "Authenticated can manage categories"
   on public.categories for all
   to authenticated
-  using ( (select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa() )
-  with check ( (select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa() );
+  using (
+    public.is_admin()
+    and ((select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa())
+  )
+  with check (
+    public.is_admin()
+    and ((select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa())
+  );
 
 alter table public.categories drop constraint if exists categories_name_not_blank_check;
 alter table public.categories add constraint categories_name_not_blank_check
@@ -142,9 +185,25 @@ create policy "Authenticated can manage post covers"
   to authenticated
   using (
     bucket_id = 'post-covers'
+    and public.is_admin()
     and ((select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa())
   )
   with check (
     bucket_id = 'post-covers'
+    and public.is_admin()
     and ((select auth.jwt() ->> 'aal') = 'aal2' or not public.has_verified_mfa())
   );
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- ONE-TIME SETUP — run this once, separately, after everything above.
+-- 1. Find your user id:
+--      select id, email from auth.users;
+-- 2. Copy your id and run (replacing the placeholder):
+--      insert into public.admin_users (user_id)
+--      values ('paste-your-user-id-here')
+--      on conflict (user_id) do nothing;
+-- Until you do this, is_admin() runs in "bootstrap mode" (allows any
+-- authenticated user) — so also disable public sign-ups in the dashboard
+-- (Authentication -> Settings -> Allow new users to sign up) before or
+-- immediately after running the block above.
+-- ─────────────────────────────────────────────────────────────────────────
