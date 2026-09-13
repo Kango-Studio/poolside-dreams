@@ -8,6 +8,7 @@ import { needsMfaChallenge } from "@/lib/mfa";
 import { useAdminTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import sjLogo from "@/assets/logos/sj-landscaping-pools-logo-02.png";
+import sjLogoWhite from "@/assets/logos/sj-landscaping-pools-logo-03.png";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -153,7 +154,11 @@ function AdminPostsLayout() {
     >
       <aside className="hidden h-full w-60 shrink-0 flex-col border-r border-border bg-background sm:flex">
         <div className="flex h-16 shrink-0 items-center border-b border-border px-6">
-          <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-7 w-auto" />
+          <img
+            src={theme === "dark" ? sjLogoWhite : sjLogo}
+            alt="SJ Pools &amp; Landscaping"
+            className="h-7 w-auto"
+          />
         </div>
         <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto px-3 py-4">
           {navItems.map((item) => {
@@ -188,7 +193,11 @@ function AdminPostsLayout() {
 
       <div className="flex h-full min-w-0 flex-1 flex-col">
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-background px-4 sm:hidden">
-          <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-6 w-auto" />
+          <img
+            src={theme === "dark" ? sjLogoWhite : sjLogo}
+            alt="SJ Pools &amp; Landscaping"
+            className="h-6 w-auto"
+          />
           <div className="flex items-center gap-1">
             <Link
               to="/admin/posts/new"

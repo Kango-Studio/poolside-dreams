@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useAdminTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import sjLogo from "@/assets/logos/sj-landscaping-pools-logo-02.png";
+import sjLogoWhite from "@/assets/logos/sj-landscaping-pools-logo-03.png";
 import { needsMfaChallenge, getVerifiedTotpFactor, verifyLoginChallenge } from "@/lib/mfa";
 
 export const Route = createFileRoute("/admin/login")({
@@ -118,7 +119,11 @@ function AdminLoginPage() {
         </button>
       </div>
 
-      <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-auto w-auto" />
+      <img
+        src={theme === "dark" ? sjLogoWhite : sjLogo}
+        alt="SJ Pools &amp; Landscaping"
+        className="h-auto w-auto"
+      />
 
       {mfaFactorId ? (
         <>
