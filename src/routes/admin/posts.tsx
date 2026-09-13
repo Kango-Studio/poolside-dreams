@@ -5,7 +5,7 @@ import { FileText, Plus, LogOut, ArrowLeft, ShieldCheck, Moon, Sun } from "lucid
 
 import { supabase } from "@/lib/supabase";
 import { needsMfaChallenge } from "@/lib/mfa";
-import { useAdminTheme } from "@/lib/theme";
+import { useAdminTheme, type Theme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import sjLogo from "@/assets/logos/sj-landscaping-pools-logo-02.png";
 import sjLogoWhite from "@/assets/logos/sj-landscaping-pools-logo-03.png";
@@ -63,8 +63,15 @@ function SignOutButton({ onSignOut, iconOnly }: { onSignOut: () => void; iconOnl
   );
 }
 
-function ThemeToggleButton({ iconOnly }: { iconOnly?: boolean }) {
-  const { theme, toggle } = useAdminTheme();
+function ThemeToggleButton({
+  theme,
+  toggle,
+  iconOnly,
+}: {
+  theme: Theme;
+  toggle: () => void;
+  iconOnly?: boolean;
+}) {
   const Icon = theme === "dark" ? Sun : Moon;
 
   if (iconOnly) {
@@ -94,7 +101,7 @@ function AdminPostsLayout() {
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null | "loading">("loading");
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { theme } = useAdminTheme();
+  const { theme, toggle: toggleTheme } = useAdminTheme();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -186,7 +193,7 @@ function AdminPostsLayout() {
           >
             <ArrowLeft className="h-4 w-4" /> View site
           </Link>
-          <ThemeToggleButton />
+          <ThemeToggleButton theme={theme} toggle={toggleTheme} />
           <SignOutButton onSignOut={handleSignOut} />
         </div>
       </aside>
@@ -205,7 +212,7 @@ function AdminPostsLayout() {
             >
               <Plus className="h-4 w-4" />
             </Link>
-            <ThemeToggleButton iconOnly />
+            <ThemeToggleButton theme={theme} toggle={toggleTheme} iconOnly />
             <SignOutButton onSignOut={handleSignOut} iconOnly />
           </div>
         </header>
