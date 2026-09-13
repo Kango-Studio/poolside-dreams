@@ -148,7 +148,7 @@ function AdminPostsLayout() {
   return (
     <div
       className={cn(
-        "flex h-screen overflow-hidden bg-muted/40 text-foreground",
+        "flex h-screen overflow-hidden bg-muted text-foreground",
         theme === "dark" && "dark",
       )}
     >
