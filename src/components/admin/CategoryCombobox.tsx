@@ -122,10 +122,10 @@ export function CategoryCombobox({
           />
           <CommandList>
             {loading ? (
-              <p className="py-6 text-center text-sm text-muted-foreground">Loading...</p>
+              <p className="py-6 text-center text-base text-muted-foreground">Loading...</p>
             ) : (
               <>
-                <CommandEmpty className="px-2 py-3 text-sm text-muted-foreground">
+                <CommandEmpty className="px-2 py-3 text-base text-muted-foreground">
                   No categories yet.
                 </CommandEmpty>
                 <CommandGroup>

@@ -101,13 +101,13 @@ function SecurityPage() {
   return (
     <div>
       <h1 className="font-display text-2xl text-foreground">Security</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <p className="mt-1 text-base text-muted-foreground">
         Two-factor authentication (TOTP) using an app like Google Authenticator, Authy or 1Password.
       </p>
 
       <Card className="mt-6">
         <CardContent className="p-6">
-          {factor === "loading" && <p className="text-sm text-muted-foreground">Loading...</p>}
+          {factor === "loading" && <p className="text-base text-muted-foreground">Loading...</p>}
 
           {factor && factor !== "loading" && (
             <div className="flex items-center justify-between">
@@ -115,7 +115,7 @@ function SecurityPage() {
                 <ShieldCheck className="h-5 w-5 text-emerald-600" />
                 <div>
                   <p className="font-medium text-foreground">Two-factor authentication is on</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Enabled on {formatDate(factor.created_at)}
                   </p>
                 </div>
@@ -152,7 +152,7 @@ function SecurityPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium text-foreground">Two-factor authentication is off</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   Add a second step to sign-in using an authenticator app.
                 </p>
               </div>
@@ -164,7 +164,7 @@ function SecurityPage() {
 
           {factor === null && enrollment && (
             <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-base text-muted-foreground">
                 Scan this QR code with your authenticator app, then enter the 6-digit code it shows.
               </p>
               <img src={enrollment.qrCode} alt="Authenticator QR code" className="h-48 w-48" />
@@ -174,7 +174,7 @@ function SecurityPage() {
                   id="totp-secret"
                   readOnly
                   value={enrollment.secret}
-                  className="font-mono text-xs"
+                  className="font-mono text-sm"
                 />
               </div>
               <div className="space-y-1.5">

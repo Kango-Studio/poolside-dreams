@@ -228,7 +228,7 @@ export function PostEditor({ post }: { post?: Post }) {
         <CardContent className="space-y-4 p-6">
           <div>
             <p className="font-medium text-foreground">SEO</p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Controls how this post shows up in Google and when shared on social media. Leave blank
               to use the title and excerpt above.
             </p>
@@ -238,7 +238,7 @@ export function PostEditor({ post }: { post?: Post }) {
               <Label htmlFor="seo-title">SEO title</Label>
               <span
                 className={cn(
-                  "text-xs",
+                  "text-sm",
                   seoTitle.length > 60 ? "text-destructive" : "text-muted-foreground",
                 )}
               >
@@ -260,7 +260,7 @@ export function PostEditor({ post }: { post?: Post }) {
               <Label htmlFor="seo-description">SEO description</Label>
               <span
                 className={cn(
-                  "text-xs",
+                  "text-sm",
                   seoDescription.length > 160 ? "text-destructive" : "text-muted-foreground",
                 )}
               >
@@ -300,8 +300,8 @@ export function PostEditor({ post }: { post?: Post }) {
               if (file) handleCoverChange(file);
             }}
           />
-          <p className="text-xs text-muted-foreground">Max 5MB.</p>
-          {coverUploading && <p className="text-xs text-muted-foreground">Uploading...</p>}
+          <p className="text-sm text-muted-foreground">Max 5MB.</p>
+          {coverUploading && <p className="text-sm text-muted-foreground">Uploading...</p>}
         </CardContent>
       </Card>
 

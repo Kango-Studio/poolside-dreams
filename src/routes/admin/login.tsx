@@ -95,7 +95,7 @@ function AdminLoginPage() {
     <div className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6">
       <Link
         to="/"
-        className="mb-10 inline-flex w-fit items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="mb-10 inline-flex w-fit items-center gap-2 text-base text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" /> Back to home
       </Link>
@@ -104,7 +104,7 @@ function AdminLoginPage() {
 
       {mfaFactorId ? (
         <>
-          <p className="mt-4 text-sm text-muted-foreground">
+          <p className="mt-4 text-base text-muted-foreground">
             Enter the 6-digit code from your authenticator app.
           </p>
           <form onSubmit={handleMfaSubmit} className="mt-8 space-y-4">
@@ -120,7 +120,7 @@ function AdminLoginPage() {
                 onChange={(e) => setMfaCode(e.target.value)}
               />
             </div>
-            {mfaError && <p className="text-sm text-destructive">{mfaError}</p>}
+            {mfaError && <p className="text-base text-destructive">{mfaError}</p>}
             <Button
               type="submit"
               className="w-full"
@@ -132,7 +132,7 @@ function AdminLoginPage() {
         </>
       ) : (
         <>
-          <p className="mt-4 text-sm text-muted-foreground">Sign in to write and manage posts.</p>
+          <p className="mt-4 text-base text-muted-foreground">Sign in to write and manage posts.</p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             <div className="space-y-1.5">
@@ -170,7 +170,7 @@ function AdminLoginPage() {
                 </button>
               </div>
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p className="text-base text-destructive">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading || isLocked}>
               {isLocked ? `Locked (${secondsLeft}s)` : loading ? "Signing in..." : "Sign in"}
             </Button>

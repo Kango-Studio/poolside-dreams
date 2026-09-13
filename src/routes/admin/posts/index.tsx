@@ -32,7 +32,7 @@ function AdminPostsIndexPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl text-foreground">Posts</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-base text-muted-foreground">
             {Array.isArray(posts) ? `${posts.length} total` : " "}
           </p>
         </div>
@@ -44,13 +44,13 @@ function AdminPostsIndexPage() {
       </div>
 
       <div className="mt-6 space-y-2">
-        {posts === "loading" && <p className="text-sm text-muted-foreground">Loading...</p>}
+        {posts === "loading" && <p className="text-base text-muted-foreground">Loading...</p>}
         {posts === "error" && (
-          <p className="text-sm text-destructive">Couldn't load posts. Try refreshing.</p>
+          <p className="text-base text-destructive">Couldn't load posts. Try refreshing.</p>
         )}
         {Array.isArray(posts) && posts.length === 0 && (
           <div className="rounded-lg border border-dashed border-border bg-background px-6 py-16 text-center">
-            <p className="text-sm text-muted-foreground">No posts yet.</p>
+            <p className="text-base text-muted-foreground">No posts yet.</p>
             <Button asChild size="sm" className="mt-4">
               <Link to="/admin/posts/new">
                 <Plus className="h-4 w-4" /> Write your first post
@@ -75,7 +75,7 @@ function AdminPostsIndexPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium text-foreground">{post.title}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">
+                <p className="mt-0.5 text-sm text-muted-foreground">
                   {post.category} · Updated {formatDate(post.updated_at)}
                 </p>
               </div>

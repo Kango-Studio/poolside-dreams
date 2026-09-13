@@ -38,7 +38,7 @@ function SignOutButton({ onSignOut, iconOnly }: { onSignOut: () => void; iconOnl
             <LogOut className="h-4 w-4" />
           </button>
         ) : (
-          <button className="flex w-full cursor-pointer items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+          <button className="flex w-full cursor-pointer items-center gap-2.5 rounded-md px-3 py-2 text-left text-base text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
             <LogOut className="h-4 w-4" /> Sign out
           </button>
         )}
@@ -93,7 +93,7 @@ function AdminPostsLayout() {
 
   if (session === "loading" || session === null) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
+      <div className="flex min-h-screen items-center justify-center text-base text-muted-foreground">
         Loading...
       </div>
     );
@@ -124,7 +124,7 @@ function AdminPostsLayout() {
                 key={item.to}
                 to={item.to}
                 className={cn(
-                  "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+                  "flex items-center gap-2.5 rounded-md px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
                   active && "bg-secondary text-secondary-foreground hover:bg-secondary",
                 )}
               >
@@ -138,7 +138,7 @@ function AdminPostsLayout() {
           <Link
             to="/"
             target="_blank"
-            className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="flex items-center gap-2.5 rounded-md px-3 py-2 text-base text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" /> View site
           </Link>
