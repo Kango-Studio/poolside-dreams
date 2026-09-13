@@ -64,7 +64,7 @@ function AdminPostsIndexPage() {
               key={post.id}
               to="/admin/posts/$id"
               params={{ id: post.id }}
-              className="flex items-center gap-5 rounded-xl border border-border bg-background p-4 transition-colors hover:border-sand/60 hover:bg-muted"
+              className="flex items-center gap-5 rounded-xl border border-border bg-background p-4 transition-colors hover:border-sand/60 hover:bg-muted dark:border-transparent"
             >
               <div className="flex h-20 w-32 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
                 {post.cover_url ? (
