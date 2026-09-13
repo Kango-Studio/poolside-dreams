@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import type { Session } from "@supabase/supabase-js";
-import { FileText, Plus, LogOut, ArrowLeft, ShieldCheck } from "lucide-react";
+import { FileText, Plus, LogOut, ArrowLeft, ShieldCheck, Moon, Sun } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
 import { needsMfaChallenge } from "@/lib/mfa";
+import { useAdminTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import sjLogo from "@/assets/logos/sj-landscaping-pools-logo-02.png";
 import {
@@ -61,10 +62,38 @@ function SignOutButton({ onSignOut, iconOnly }: { onSignOut: () => void; iconOnl
   );
 }
 
+function ThemeToggleButton({ iconOnly }: { iconOnly?: boolean }) {
+  const { theme, toggle } = useAdminTheme();
+  const Icon = theme === "dark" ? Sun : Moon;
+
+  if (iconOnly) {
+    return (
+      <button
+        onClick={toggle}
+        aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+      >
+        <Icon className="h-4 w-4" />
+      </button>
+    );
+  }
+
+  return (
+    <button
+      onClick={toggle}
+      className="flex w-full cursor-pointer items-center gap-2.5 rounded-md px-3 py-2 text-left text-base text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+    >
+      <Icon className="h-4 w-4" />
+      {theme === "dark" ? "Light mode" : "Dark mode"}
+    </button>
+  );
+}
+
 function AdminPostsLayout() {
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null | "loading">("loading");
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { theme } = useAdminTheme();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -93,7 +122,12 @@ function AdminPostsLayout() {
 
   if (session === "loading" || session === null) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-base text-muted-foreground">
+      <div
+        className={cn(
+          "flex min-h-screen items-center justify-center bg-background text-base text-muted-foreground",
+          theme === "dark" && "dark",
+        )}
+      >
         Loading...
       </div>
     );
@@ -111,7 +145,12 @@ function AdminPostsLayout() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-muted/40">
+    <div
+      className={cn(
+        "flex h-screen overflow-hidden bg-muted/40 text-foreground",
+        theme === "dark" && "dark",
+      )}
+    >
       <aside className="hidden h-full w-60 shrink-0 flex-col border-r border-border bg-background sm:flex">
         <div className="flex h-16 shrink-0 items-center border-b border-border px-6">
           <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-7 w-auto" />
@@ -142,6 +181,7 @@ function AdminPostsLayout() {
           >
             <ArrowLeft className="h-4 w-4" /> View site
           </Link>
+          <ThemeToggleButton />
           <SignOutButton onSignOut={handleSignOut} />
         </div>
       </aside>
@@ -156,6 +196,7 @@ function AdminPostsLayout() {
             >
               <Plus className="h-4 w-4" />
             </Link>
+            <ThemeToggleButton iconOnly />
             <SignOutButton onSignOut={handleSignOut} iconOnly />
           </div>
         </header>

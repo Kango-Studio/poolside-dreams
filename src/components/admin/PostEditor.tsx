@@ -376,7 +376,7 @@ export function PostEditor({ post }: { post?: Post }) {
             {title || "Untitled post"}
           </h1>
           <div
-            className="prose prose-neutral max-w-none prose-headings:font-display"
+            className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-display"
             dangerouslySetInnerHTML={{
               __html: content.html || "<p><em>Nothing written yet.</em></p>",
             }}

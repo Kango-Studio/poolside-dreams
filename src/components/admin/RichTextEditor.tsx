@@ -170,7 +170,7 @@ export function RichTextEditor({
     editorProps: {
       attributes: {
         class:
-          "prose prose-neutral max-w-none min-h-[320px] px-4 py-3 focus:outline-none [&_img]:rounded-md",
+          "prose prose-neutral dark:prose-invert max-w-none min-h-[320px] px-4 py-3 focus:outline-none [&_img]:rounded-md",
       },
     },
     onUpdate: ({ editor }) => {

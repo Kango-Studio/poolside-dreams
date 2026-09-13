@@ -1,11 +1,13 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Moon, Sun } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAdminTheme } from "@/lib/theme";
+import { cn } from "@/lib/utils";
 import sjLogo from "@/assets/logos/sj-landscaping-pools-logo-02.png";
 import { needsMfaChallenge, getVerifiedTotpFactor, verifyLoginChallenge } from "@/lib/mfa";
 
@@ -25,6 +27,7 @@ const LOCKOUT_SECONDS = 30;
 
 function AdminLoginPage() {
   const navigate = useNavigate();
+  const { theme, toggle: toggleTheme } = useAdminTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -92,13 +95,28 @@ function AdminLoginPage() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-6">
-      <Link
-        to="/"
-        className="mb-10 inline-flex w-fit items-center gap-2 text-base text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" /> Back to home
-      </Link>
+    <div
+      className={cn(
+        "mx-auto flex min-h-screen max-w-sm flex-col justify-center bg-background px-6 text-foreground",
+        theme === "dark" && "dark",
+      )}
+    >
+      <div className="mb-10 flex items-center justify-between">
+        <Link
+          to="/"
+          className="inline-flex w-fit items-center gap-2 text-base text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to home
+        </Link>
+        <button
+          type="button"
+          onClick={toggleTheme}
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </button>
+      </div>
 
       <img src={sjLogo} alt="SJ Pools &amp; Landscaping" className="h-auto w-auto" />
 
