@@ -98,108 +98,112 @@ function AdminLoginPage() {
   return (
     <div
       className={cn(
-        "mx-auto flex min-h-screen max-w-sm flex-col justify-center bg-background px-6 text-foreground",
+        "flex min-h-screen flex-col justify-center bg-background text-foreground",
         theme === "dark" && "dark",
       )}
     >
-      <div className="mb-10 flex items-center justify-between">
-        <Link
-          to="/"
-          className="inline-flex w-fit items-center gap-2 text-base text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to home
-        </Link>
-        <button
-          type="button"
-          onClick={toggleTheme}
-          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-          className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-        >
-          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-        </button>
-      </div>
+      <div className="mx-auto w-full max-w-sm px-6">
+        <div className="mb-10 flex items-center justify-between">
+          <Link
+            to="/"
+            className="inline-flex w-fit items-center gap-2 text-base text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to home
+          </Link>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+        </div>
 
-      <img
-        src={theme === "dark" ? sjLogoWhite : sjLogo}
-        alt="SJ Pools &amp; Landscaping"
-        className="h-auto w-auto"
-      />
+        <img
+          src={theme === "dark" ? sjLogoWhite : sjLogo}
+          alt="SJ Pools &amp; Landscaping"
+          className="h-auto w-auto"
+        />
 
-      {mfaFactorId ? (
-        <>
-          <p className="mt-4 text-base text-muted-foreground">
-            Enter the 6-digit code from your authenticator app.
-          </p>
-          <form onSubmit={handleMfaSubmit} className="mt-8 space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="mfa-code">Authentication code</Label>
-              <Input
-                id="mfa-code"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                maxLength={6}
-                autoFocus
-                value={mfaCode}
-                onChange={(e) => setMfaCode(e.target.value)}
-              />
-            </div>
-            {mfaError && <p className="text-base text-destructive">{mfaError}</p>}
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={loading || mfaCode.trim().length < 6}
-            >
-              {loading ? "Verifying..." : "Verify"}
-            </Button>
-          </form>
-        </>
-      ) : (
-        <>
-          <p className="mt-4 text-base text-muted-foreground">Sign in to write and manage posts.</p>
-
-          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                required
-                disabled={isLocked}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
+        {mfaFactorId ? (
+          <>
+            <p className="mt-4 text-base text-muted-foreground">
+              Enter the 6-digit code from your authenticator app.
+            </p>
+            <form onSubmit={handleMfaSubmit} className="mt-8 space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="mfa-code">Authentication code</Label>
                 <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
+                  id="mfa-code"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={6}
+                  autoFocus
+                  value={mfaCode}
+                  onChange={(e) => setMfaCode(e.target.value)}
+                />
+              </div>
+              {mfaError && <p className="text-base text-destructive">{mfaError}</p>}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loading || mfaCode.trim().length < 6}
+              >
+                {loading ? "Verifying..." : "Verify"}
+              </Button>
+            </form>
+          </>
+        ) : (
+          <>
+            <p className="mt-4 text-base text-muted-foreground">
+              Sign in to write and manage posts.
+            </p>
+
+            <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
                   required
                   disabled={isLocked}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pr-10"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute inset-y-0 right-0 flex w-9 cursor-pointer items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
               </div>
-            </div>
-            {error && <p className="text-base text-destructive">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading || isLocked}>
-              {isLocked ? `Locked (${secondsLeft}s)` : loading ? "Signing in..." : "Sign in"}
-            </Button>
-          </form>
-        </>
-      )}
+              <div className="space-y-1.5">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    required
+                    disabled={isLocked}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute inset-y-0 right-0 flex w-9 cursor-pointer items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              {error && <p className="text-base text-destructive">{error}</p>}
+              <Button type="submit" className="w-full" disabled={loading || isLocked}>
+                {isLocked ? `Locked (${secondsLeft}s)` : loading ? "Signing in..." : "Sign in"}
+              </Button>
+            </form>
+          </>
+        )}
+      </div>
     </div>
   );
 }
