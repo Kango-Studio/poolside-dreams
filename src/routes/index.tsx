@@ -1,17 +1,19 @@
 import { AchievementsCarousel } from "@/components/AchievementsCarousel";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ImageOff } from "lucide-react";
 
 import { HeroCarousel } from "@/components/HeroCarousel";
 import { Reveal } from "@/components/Reveal";
 import { services, projects, testimonials } from "@/lib/site-data";
 import { getProjectImages } from "@/lib/project-images";
+import { listPublishedPosts } from "@/lib/posts";
 import { pageMeta } from "@/lib/seo";
 import processBackdrop from "@/assets/projects/margo/05.webp";
 import processPhoto from "@/assets/projects/canfield/01.webp";
 import ctaPhoto from "@/assets/projects/tweed/01.webp";
 
 export const Route = createFileRoute("/")({
+  loader: () => listPublishedPosts(),
   head: () =>
     pageMeta({
       title: "SJ Pools & Landscaping | Custom Pool Builder in New Jersey",
@@ -22,6 +24,14 @@ export const Route = createFileRoute("/")({
     }),
   component: Home,
 });
+
+function formatPostDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
 
 /* Indicators temporarily hidden.
 const stats = [
@@ -35,13 +45,18 @@ const stats = [
 const featuredServices = ["pools-patios", "landscaping", "3d-design", "commercial"];
 
 function Home() {
+  const latestPosts = Route.useLoaderData().slice(0, 3);
+
   return (
     <>
       <HeroCarousel />
 
       {/* Positioning */}
       <section className="relative overflow-hidden bg-offwhite">
-        <div className="pointer-events-none absolute -right-10 top-8 select-none font-display text-[30vw] leading-none text-navy/[0.025]" aria-hidden="true">
+        <div
+          className="pointer-events-none absolute -right-10 top-8 select-none font-display text-[30vw] leading-none text-navy/[0.025]"
+          aria-hidden="true"
+        >
           SJ
         </div>
         <div className="relative mx-auto max-w-[1600px] px-6 py-28 lg:px-12 lg:py-44">
@@ -53,20 +68,26 @@ function Home() {
                 <span className="mt-2 block text-muted-foreground">It’s a lifestyle.</span>
               </h2>
             </Reveal>
-            <Reveal delay={120} className="flex flex-col justify-end border-l border-border pl-8 lg:pl-12">
+            <Reveal
+              delay={120}
+              className="flex flex-col justify-end border-l border-border pl-8 lg:pl-12"
+            >
               <p className="max-w-xl text-lg leading-[1.8] text-muted-foreground">
                 SJ Pools & Landscaping is a full-service outdoor living design-build firm, creating
                 custom pools and landscapes as one seamless vision. From the initial site survey and
                 3D design to construction, masonry, lighting, water features and final landscaping,
-                every detail is thoughtfully coordinated by one team — ensuring the space you envision
-                is the space we bring to life.
+                every detail is thoughtfully coordinated by one team — ensuring the space you
+                envision is the space we bring to life.
               </p>
               <Link
                 to="/about"
                 className="eyebrow group mt-10 inline-flex w-fit items-center gap-4 border-b border-navy/30 pb-3 transition-colors duration-200 hover:border-sand hover:text-sand"
               >
                 Discover our story
-                <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1" strokeWidth={1.4} />
+                <ArrowUpRight
+                  className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1"
+                  strokeWidth={1.4}
+                />
               </Link>
             </Reveal>
           </div>
@@ -95,7 +116,6 @@ function Home() {
             <div>
               <p className="eyebrow text-sand">What we build</p>
             </div>
-            
           </Reveal>
 
           <div className="mt-8 grid gap-x-12 md:grid-cols-2 lg:gap-x-16">
@@ -108,7 +128,9 @@ function Home() {
                     to="/services"
                     className="service-preview group grid h-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-5 border-t border-offwhite/20 py-6"
                   >
-                    <span className="eyebrow text-sand">{String(serviceIndex + 1).padStart(2, "0")}</span>
+                    <span className="eyebrow text-sand">
+                      {String(serviceIndex + 1).padStart(2, "0")}
+                    </span>
                     <h3 className="font-display text-4xl leading-none transition-colors duration-200 group-hover:text-sand lg:text-5xl">
                       {service.title}
                     </h3>
@@ -123,7 +145,10 @@ function Home() {
                       )}
                     </div>
                     <span className="col-start-3 row-start-1 grid h-10 w-10 place-items-center border border-offwhite/25 transition-[background-color,border-color,color] duration-200 group-hover:border-sand group-hover:bg-sand group-hover:text-navy-deep">
-                      <ArrowUpRight className="h-5 w-5 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1" strokeWidth={1.4} />
+                      <ArrowUpRight
+                        className="h-5 w-5 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1"
+                        strokeWidth={1.4}
+                      />
                     </span>
                   </Link>
                 </Reveal>
@@ -132,7 +157,10 @@ function Home() {
           </div>
 
           <Reveal delay={120} className="mt-12 flex justify-end">
-            <Link to="/services" className="eyebrow link-underline inline-flex items-center gap-4 text-sand">
+            <Link
+              to="/services"
+              className="eyebrow link-underline inline-flex items-center gap-4 text-sand"
+            >
               Explore all services <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
             </Link>
           </Reveal>
@@ -154,7 +182,10 @@ function Home() {
               className="eyebrow group inline-flex items-center gap-4 border-b border-navy/30 pb-3 transition-colors duration-200 hover:border-sand hover:text-sand"
             >
               View every project
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1" strokeWidth={1.4} />
+              <ArrowUpRight
+                className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1"
+                strokeWidth={1.4}
+              />
             </Link>
           </Reveal>
 
@@ -188,10 +219,17 @@ function Home() {
                     <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(3,13,24,0.92)_0%,rgba(3,13,24,0.05)_65%)] transition-colors duration-500 group-hover:bg-[linear-gradient(to_top,rgba(3,13,24,0.96)_0%,rgba(3,13,24,0.12)_70%)]" />
                     <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 p-7 text-offwhite lg:p-9">
                       <div>
-                        <p className="eyebrow text-sand">{project.year} · {project.place}</p>
-                        <h3 className="mt-3 font-display text-3xl leading-none lg:text-4xl">{project.title}</h3>
+                        <p className="eyebrow text-sand">
+                          {project.year} · {project.place}
+                        </p>
+                        <h3 className="mt-3 font-display text-3xl leading-none lg:text-4xl">
+                          {project.title}
+                        </h3>
                       </div>
-                      <ArrowUpRight className="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1" strokeWidth={1.4} />
+                      <ArrowUpRight
+                        className="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1"
+                        strokeWidth={1.4}
+                      />
                     </div>
                   </Link>
                 </Reveal>
@@ -205,7 +243,10 @@ function Home() {
               className="eyebrow group inline-flex items-center gap-5 bg-navy-deep px-9 py-5 text-offwhite transition-colors duration-200 hover:bg-sand hover:text-navy-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand focus-visible:ring-offset-4"
             >
               Explore all projects
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1" strokeWidth={1.4} />
+              <ArrowUpRight
+                className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1"
+                strokeWidth={1.4}
+              />
             </Link>
           </Reveal>
         </div>
@@ -331,6 +372,75 @@ function Home() {
 
       <AchievementsCarousel />
 
+      {/* From the blog */}
+      {latestPosts.length > 0 && (
+        <section className="bg-navy-deep text-offwhite">
+          <div className="mx-auto max-w-[1600px] px-6 py-28 lg:px-12 lg:py-44">
+            <Reveal className="flex flex-wrap items-end justify-between gap-10">
+              <div>
+                <p className="eyebrow text-sand">From the blog</p>
+                <h2 className="mt-7 max-w-[14ch] font-display text-5xl leading-[0.98] tracking-[-0.02em] md:text-7xl">
+                  Stories for life outdoors.
+                </h2>
+              </div>
+              <Link
+                to="/blog"
+                className="eyebrow group inline-flex items-center gap-4 border-b border-offwhite/30 pb-3 transition-colors duration-200 hover:border-sand hover:text-sand"
+              >
+                View all posts
+                <ArrowUpRight
+                  className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1"
+                  strokeWidth={1.4}
+                />
+              </Link>
+            </Reveal>
+
+            <div className="mt-20 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {latestPosts.map((post, postIndex) => (
+                <Reveal key={post.id} delay={(postIndex % 3) * 80}>
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: post.slug }}
+                    className="group relative block aspect-[3/4] overflow-hidden bg-offwhite/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand focus-visible:ring-offset-4 focus-visible:ring-offset-navy-deep"
+                  >
+                    {post.cover_url ? (
+                      <img
+                        src={post.cover_url}
+                        alt={post.title}
+                        loading="lazy"
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center bg-navy-deep">
+                        <ImageOff className="h-6 w-6 text-offwhite/30" />
+                      </div>
+                    )}
+                    <div className="veil absolute inset-0 opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
+                    <span className="eyebrow absolute left-6 top-6 text-offwhite/70">
+                      {post.category}
+                    </span>
+                    <div className="absolute inset-x-0 bottom-0 p-6 lg:p-8">
+                      <p className="eyebrow text-sand">
+                        {post.published_at && formatPostDate(post.published_at)}
+                      </p>
+                      <h3 className="mt-3 font-display text-2xl text-offwhite lg:text-3xl">
+                        {post.title}
+                      </h3>
+                      <p className="mt-2 max-w-xs text-sm leading-relaxed text-silver line-clamp-2">
+                        {post.excerpt}
+                      </p>
+                      <span className="eyebrow mt-6 inline-flex items-center gap-2 text-offwhite/60 opacity-0 transition-all duration-500 group-hover:translate-x-1 group-hover:opacity-100">
+                        Read story <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
+                      </span>
+                    </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Testimonials */}
       <section className="overflow-hidden bg-sand text-navy-deep">
         <div className="mx-auto max-w-[1600px] px-6 py-28 lg:px-12 lg:py-44">
@@ -365,7 +475,9 @@ function Home() {
                   className="border-b border-navy-deep/25 py-10 md:border-r md:px-10 md:first:pl-0 md:last:border-r-0"
                 >
                   <blockquote className="flex h-full flex-col justify-between">
-                    <p className="font-display text-2xl leading-snug">&ldquo;{testimonial.quote}&rdquo;</p>
+                    <p className="font-display text-2xl leading-snug">
+                      &ldquo;{testimonial.quote}&rdquo;
+                    </p>
                     <footer className="mt-10">
                       <p className="eyebrow">{testimonial.name}</p>
                       <p className="mt-2 text-sm text-navy-deep/65">{testimonial.place}</p>
@@ -396,8 +508,8 @@ export function CtaBand({ immersive = false }: { immersive?: boolean } = {}) {
               way you live at home?
             </h2>
             <p className="mt-7 max-w-2xl leading-relaxed text-silver">
-              From custom pools to complete outdoor environments, we bring your vision to life through
-              thoughtful design, craftsmanship and one seamless process.
+              From custom pools to complete outdoor environments, we bring your vision to life
+              through thoughtful design, craftsmanship and one seamless process.
             </p>
           </Reveal>
           <Reveal delay={120}>
@@ -432,8 +544,8 @@ export function CtaBand({ immersive = false }: { immersive?: boolean } = {}) {
               way you live at home?
             </h2>
             <p className="mt-7 max-w-2xl text-lg leading-relaxed text-silver">
-              From custom pools to complete outdoor environments, we bring your vision to life through
-              thoughtful design, craftsmanship and one seamless process.
+              From custom pools to complete outdoor environments, we bring your vision to life
+              through thoughtful design, craftsmanship and one seamless process.
             </p>
           </div>
           <Link
