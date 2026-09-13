@@ -93,8 +93,8 @@
   --muted-foreground: oklch(0.68 0.015 253);
   --destructive: oklch(0.5 0.2 27.325);
   --destructive-foreground: var(--offwhite);
-  --border: oklch(0.32 0.025 254);
-  --input: oklch(0.32 0.025 254);
+  --border: oklch(0.26 0.02 254);
+  --input: oklch(0.26 0.02 254);
 }
 
 @layer base {

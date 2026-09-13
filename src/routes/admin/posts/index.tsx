@@ -43,7 +43,7 @@ function AdminPostsIndexPage() {
         </Button>
       </div>
 
-      <div className="mt-6 space-y-2">
+      <div className="mt-6 space-y-3">
         {posts === "loading" && <p className="text-base text-muted-foreground">Loading...</p>}
         {posts === "error" && (
           <p className="text-base text-destructive">Couldn't load posts. Try refreshing.</p>
@@ -64,18 +64,18 @@ function AdminPostsIndexPage() {
               key={post.id}
               to="/admin/posts/$id"
               params={{ id: post.id }}
-              className="flex items-center gap-4 rounded-lg border border-border bg-background p-3 transition-colors hover:border-sand/60 hover:bg-muted"
+              className="flex items-center gap-5 rounded-xl border border-border bg-background p-4 transition-colors hover:border-sand/60 hover:bg-muted"
             >
-              <div className="flex h-14 w-20 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
+              <div className="flex h-20 w-32 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
                 {post.cover_url ? (
                   <img src={post.cover_url} alt="" className="h-full w-full object-cover" />
                 ) : (
-                  <ImageOff className="h-4 w-4 text-muted-foreground" />
+                  <ImageOff className="h-5 w-5 text-muted-foreground" />
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium text-foreground">{post.title}</p>
-                <p className="mt-0.5 text-sm text-muted-foreground">
+                <p className="truncate text-lg font-medium text-foreground">{post.title}</p>
+                <p className="mt-1 text-base text-muted-foreground">
                   {post.category} · Updated {formatDate(post.updated_at)}
                 </p>
               </div>
@@ -86,7 +86,7 @@ function AdminPostsIndexPage() {
                   rel="noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   aria-label="View live post"
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 >
                   <ExternalLink className="h-4 w-4" />
                 </a>
