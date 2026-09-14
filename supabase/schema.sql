@@ -21,6 +21,15 @@ create table if not exists public.posts (
 alter table public.posts add column if not exists seo_title text;
 alter table public.posts add column if not exists seo_description text;
 
+-- Up to 3 hand-picked related posts, admin-ordered. Not a foreign key array
+-- (Postgres can't do that) — the app filters out ids that no longer exist or
+-- aren't published when rendering the public page, and falls back to the
+-- prev/next nav when this is empty.
+alter table public.posts add column if not exists related_post_ids uuid[] not null default '{}';
+alter table public.posts drop constraint if exists posts_related_post_ids_max_three;
+alter table public.posts add constraint posts_related_post_ids_max_three
+  check (array_length(related_post_ids, 1) is null or array_length(related_post_ids, 1) <= 3);
+
 create index if not exists posts_status_published_at_idx
   on public.posts (status, published_at desc);
 

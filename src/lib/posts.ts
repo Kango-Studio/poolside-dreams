@@ -14,6 +14,7 @@ export type Post = {
   status: PostStatus;
   seo_title: string | null;
   seo_description: string | null;
+  related_post_ids: string[];
   published_at: string | null;
   created_at: string;
   updated_at: string;
@@ -30,6 +31,7 @@ export type PostInput = {
   status: PostStatus;
   seo_title: string | null;
   seo_description: string | null;
+  related_post_ids: string[];
 };
 
 const STORAGE_BUCKET = "post-covers";
@@ -54,6 +56,21 @@ export async function getPublishedPost(slug: string): Promise<Post | null> {
     .maybeSingle();
   if (error) throw error;
   return data;
+}
+
+export async function getPublishedPostsByIds(ids: string[]): Promise<Post[]> {
+  if (ids.length === 0) return [];
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("status", "published")
+    .in("id", ids);
+  if (error) throw error;
+  // Preserve the admin's chosen order — .in() doesn't guarantee it, and a
+  // ref to a deleted/unpublished post is silently dropped here.
+  return ids
+    .map((id) => data.find((post) => post.id === id))
+    .filter((post): post is Post => Boolean(post));
 }
 
 export async function listAllPosts(): Promise<Post[]> {

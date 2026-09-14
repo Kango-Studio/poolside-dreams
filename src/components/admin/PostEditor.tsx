@@ -6,6 +6,7 @@ import { Trash2, Eye, ImageOff } from "lucide-react";
 
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { CategoryCombobox } from "@/components/admin/CategoryCombobox";
+import { RelatedPostsCombobox } from "@/components/admin/RelatedPostsCombobox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -58,6 +59,7 @@ export function PostEditor({ post }: { post?: Post }) {
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
   const [seoTitle, setSeoTitle] = useState(post?.seo_title ?? "");
   const [seoDescription, setSeoDescription] = useState(post?.seo_description ?? "");
+  const [relatedPostIds, setRelatedPostIds] = useState<string[]>(post?.related_post_ids ?? []);
   const [status, setStatus] = useState<PostStatus>(post?.status ?? "draft");
   const [coverUrl, setCoverUrl] = useState<string | null>(post?.cover_url ?? null);
   const [coverUploading, setCoverUploading] = useState(false);
@@ -118,6 +120,7 @@ export function PostEditor({ post }: { post?: Post }) {
       status,
       seo_title: seoTitle.trim() || null,
       seo_description: seoDescription.trim() || null,
+      related_post_ids: relatedPostIds,
     };
     setSaving(true);
     try {
@@ -278,6 +281,26 @@ export function PostEditor({ post }: { post?: Post }) {
               }}
             />
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="space-y-2 p-6">
+          <div>
+            <p className="font-medium text-foreground">Related posts</p>
+            <p className="text-sm text-muted-foreground">
+              Pick up to 3 posts to feature at the end of this one. Leave empty to show the
+              previous/next navigation instead.
+            </p>
+          </div>
+          <RelatedPostsCombobox
+            value={relatedPostIds}
+            onChange={(ids) => {
+              setRelatedPostIds(ids);
+              isDirtyRef.current = true;
+            }}
+            excludeId={post?.id}
+          />
         </CardContent>
       </Card>
 
