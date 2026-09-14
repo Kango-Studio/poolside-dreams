@@ -26,7 +26,7 @@ export function FloatingPromoCard() {
 
   return (
     <>
-      <div className="fixed bottom-6 left-6 z-40 w-[calc(100vw-3rem)] max-w-sm rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-lift">
+      <div className="fixed bottom-6 left-6 z-40 w-[calc(100vw-3rem)] max-w-xs rounded-2xl border border-border bg-card p-4 text-card-foreground shadow-lift">
         <div className="flex items-center gap-2.5">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary/60 text-navy-deep">
             <Waves className="h-4 w-4" strokeWidth={1.4} />
@@ -34,7 +34,7 @@ export function FloatingPromoCard() {
           <p className="font-display text-lg leading-none">Get a Quote</p>
         </div>
 
-        <Link to="/get-a-quote" className="group mt-4 block">
+        <Link to="/get-a-quote" className="group mt-3 block">
           <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-navy-deep">
             {previewImage && (
               <img
@@ -50,12 +50,7 @@ export function FloatingPromoCard() {
           </div>
         </Link>
 
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-          Sketch your pool and get real-time pricing with our interactive planner — no commitment
-          needed.
-        </p>
-
-        <div className="mt-4 flex gap-2">
+        <div className="mt-3 flex gap-2">
           <button
             type="button"
             onClick={handleClose}
