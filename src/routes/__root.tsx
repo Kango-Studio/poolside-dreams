@@ -13,6 +13,7 @@ import { type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
+import { FloatingPromoCard } from "../components/FloatingPromoCard";
 import { Toaster } from "@/components/ui/sonner";
 import { SITE_NAME, localBusinessSchema } from "../lib/seo";
 
@@ -123,6 +124,7 @@ function RootComponent() {
         <Outlet />
       </main>
       {!isAdmin && <SiteFooter />}
+      {!isAdmin && <FloatingPromoCard />}
       <Toaster />
     </QueryClientProvider>
   );
