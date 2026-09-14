@@ -1,12 +1,9 @@
-import { getProjectImages } from "@/lib/project-images";
-import { FramedHero } from "@/components/FramedHero";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Mail, MapPin, Phone } from "lucide-react";
 
 import { Reveal } from "@/components/Reveal";
 import { pageMeta } from "@/lib/seo";
-const hero1 = getProjectImages("canfield")[0];
 
 export const Route = createFileRoute("/contact")({
   head: () =>
@@ -33,20 +30,17 @@ function ContactPage() {
 
   return (
     <>
-      <FramedHero src={hero1} alt="Canfield outdoor living project">
-
-        <div className="relative mx-auto w-full max-w-[1600px] px-6 pb-16 lg:px-12">
-          <p className="eyebrow text-sand">Let's talk</p>
-          <h1 className="mt-5 font-display text-5xl text-offwhite md:text-7xl">Contact</h1>
-        </div>
-      </FramedHero>
+      {/* Solid band to keep the fixed transparent header legible without a
+          hero image behind it. */}
+      <div className="h-28 bg-navy-deep" aria-hidden="true" />
 
       <section className="mx-auto max-w-[1600px] px-6 py-24 lg:px-12 lg:py-32">
         <div className="grid gap-20 lg:grid-cols-[1fr_0.7fr]">
           <Reveal>
-            <h2 className="font-display text-4xl leading-[1.05] md:text-5xl">
+            <p className="eyebrow text-muted-foreground">Let's talk</p>
+            <h1 className="mt-5 font-display text-4xl leading-[1.05] md:text-5xl">
               Tell us about the property
-            </h2>
+            </h1>
             <p className="mt-5 max-w-lg text-muted-foreground">
               Share a few details and we'll schedule a site visit within a week.
             </p>
