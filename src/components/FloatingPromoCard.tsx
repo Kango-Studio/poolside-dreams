@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Camera, Maximize2, X, ArrowUpRight } from "lucide-react";
+import { Maximize2, Waves, X, ArrowUpRight } from "lucide-react";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { PoolPlansEmbed } from "@/components/PoolPlansEmbed";
 import { getProjectImages } from "@/lib/project-images";
 
 const DISMISS_KEY = "promo-widget-dismissed";
-
-const thumbs = [getProjectImages("miles")[0], getProjectImages("church")[0]];
-const modalImages = [
-  getProjectImages("miles")[0],
-  getProjectImages("church")[0],
-  getProjectImages("canfield")[0],
-];
+const previewImage = getProjectImages("kinnelon")[0];
 
 export function FloatingPromoCard() {
   const [dismissed, setDismissed] = useState(true);
@@ -34,27 +29,30 @@ export function FloatingPromoCard() {
       <div className="fixed bottom-6 left-6 z-40 w-[calc(100vw-3rem)] max-w-sm rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-lift">
         <div className="flex items-center gap-2.5">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary/60 text-navy-deep">
-            <Camera className="h-4 w-4" strokeWidth={1.4} />
+            <Waves className="h-4 w-4" strokeWidth={1.4} />
           </span>
-          <p className="font-display text-lg leading-none">Conheça a SJ Pools</p>
+          <p className="font-display text-lg leading-none">Get a Quote</p>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          {thumbs.map(
-            (src, i) =>
-              src && (
-                <img
-                  key={i}
-                  src={src}
-                  alt=""
-                  className="aspect-video w-full rounded-lg object-cover"
-                />
-              ),
-          )}
-        </div>
+        <Link to="/get-a-quote" className="group mt-4 block">
+          <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-navy-deep">
+            {previewImage && (
+              <img
+                src={previewImage}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            )}
+            <div className="absolute inset-0 bg-navy-deep/45" />
+            <span className="eyebrow absolute bottom-3 left-3 inline-flex items-center gap-2 text-offwhite">
+              Design your pool <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.4} />
+            </span>
+          </div>
+        </Link>
 
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-          Descubra as piscinas, terraços e paisagens que já criamos para famílias em Nova Jersey.
+          Sketch your pool and get real-time pricing with our interactive planner — no commitment
+          needed.
         </p>
 
         <div className="mt-4 flex gap-2">
@@ -76,31 +74,19 @@ export function FloatingPromoCard() {
       </div>
 
       <Dialog open={expanded} onOpenChange={setExpanded}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogTitle className="font-display text-3xl">Conheça a SJ Pools</DialogTitle>
-          <div className="grid grid-cols-3 gap-2">
-            {modalImages.map(
-              (src, i) =>
-                src && (
-                  <img
-                    key={i}
-                    src={src}
-                    alt=""
-                    className="aspect-square w-full rounded-lg object-cover"
-                  />
-                ),
-            )}
-          </div>
-          <p className="text-muted-foreground">
-            Da terraplanagem ao paisagismo final, cuidamos de cada etapa do seu projeto de piscina e
-            área externa com uma única equipe — do primeiro rascunho ao primeiro mergulho.
-          </p>
+        <DialogContent className="sm:max-w-3xl">
+          <DialogTitle className="font-display text-3xl">Get a Quote</DialogTitle>
+          {expanded && (
+            <div className="overflow-hidden rounded-lg border border-border">
+              <PoolPlansEmbed backgroundSrc={previewImage} />
+            </div>
+          )}
           <Link
-            to="/projects"
+            to="/get-a-quote"
             onClick={() => setExpanded(false)}
             className="eyebrow inline-flex w-fit items-center gap-3 bg-navy-deep px-8 py-4 text-offwhite transition-colors hover:bg-sand hover:text-navy-deep"
           >
-            Ver projetos <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
+            Ver página completa <ArrowUpRight className="h-4 w-4" strokeWidth={1.4} />
           </Link>
         </DialogContent>
       </Dialog>
