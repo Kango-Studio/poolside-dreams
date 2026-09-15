@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Maximize2, Waves, X, ArrowUpRight } from "lucide-react";
+import { Maximize2, X, ArrowUpRight } from "lucide-react";
+import sjIcon from "@/assets/logos/sj-landscaping-pools-icon.png";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { PoolPlansEmbed } from "@/components/PoolPlansEmbed";
@@ -28,8 +29,18 @@ export function FloatingPromoCard() {
     <>
       <div className="fixed bottom-6 left-6 z-40 w-[calc(100vw-3rem)] max-w-xs rounded-2xl border border-border bg-card p-4 text-card-foreground shadow-lift">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary/60 text-navy-deep">
-            <Waves className="h-4 w-4" strokeWidth={1.4} />
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary/60">
+            <span
+              role="img"
+              aria-label="SJ Pools & Landscaping"
+              className="h-7 w-7 bg-navy-deep"
+              style={{
+                maskImage: `url(${sjIcon})`,
+                maskSize: "contain",
+                maskPosition: "center",
+                maskRepeat: "no-repeat",
+              }}
+            />
           </span>
           <p className="font-display text-lg leading-none">Get a Quote</p>
         </div>

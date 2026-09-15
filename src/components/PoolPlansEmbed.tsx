@@ -19,7 +19,26 @@ const EMBED_DOCUMENT = `<!doctype html>
     </style>
   </head>
   <body>
-    <script src="${EMBED_SCRIPT_SRC}" data-width="${EMBED_WIDTH}px" data-height="${EMBED_HEIGHT}px"></script>
+    <script>
+      // srcdoc has an about:srcdoc URL, whose location.origin is "null".
+      // Target the parent origin so the completion message is delivered.
+      const notify = (status) => parent.postMessage({ type: "poolplans-status", status }, parent.location.origin);
+      new MutationObserver((records, observer) => {
+        for (const record of records) {
+          for (const node of record.addedNodes) {
+            if (node.nodeName === "IFRAME") {
+              node.addEventListener("load", () => notify("ready"), { once: true });
+              observer.disconnect();
+            } else if (node.nodeName === "DIV") {
+              // The vendor inserts a message here when access validation fails.
+              notify("ready");
+              observer.disconnect();
+            }
+          }
+        }
+      }).observe(document.body, { childList: true });
+    </script>
+    <script onerror="notify('error')" src="${EMBED_SCRIPT_SRC}" data-width="${EMBED_WIDTH}px" data-height="${EMBED_HEIGHT}px"></script>
   </body>
 </html>`;
 
@@ -29,7 +48,26 @@ export function PoolPlansEmbed({ backgroundSrc }: { backgroundSrc?: string | und
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [layout, setLayout] = useState<Layout | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [attempt, setAttempt] = useState(0);
+  const iframeLoaded = status === "ready";
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setStatus("error"), 45000);
+    const handleMessage = (event: MessageEvent) => {
+      if (event.source !== iframeRef.current?.contentWindow || event.origin !== window.location.origin) return;
+      if (event.data?.type !== "poolplans-status") return;
+      if (event.data.status !== "ready" && event.data.status !== "error") return;
+      window.clearTimeout(timeout);
+      setStatus(event.data.status);
+    };
+    window.addEventListener("message", handleMessage);
+    return () => {
+      window.clearTimeout(timeout);
+      window.removeEventListener("message", handleMessage);
+    };
+  }, [attempt]);
 
   const updateScale = useCallback(() => {
     const wrapper = wrapperRef.current;
@@ -87,6 +125,7 @@ export function PoolPlansEmbed({ backgroundSrc }: { backgroundSrc?: string | und
   return (
     <div
       ref={wrapperRef}
+      aria-busy={status === "loading"}
       className={
         isFullscreen
           ? "relative h-full w-full bg-navy-deep"
@@ -127,9 +166,10 @@ export function PoolPlansEmbed({ backgroundSrc }: { backgroundSrc?: string | und
 
       {layout && (
         <iframe
+          key={attempt}
+          ref={iframeRef}
           title="Interactive pool designer and instant quote"
           srcDoc={EMBED_DOCUMENT}
-          onLoad={() => setIframeLoaded(true)}
           className="absolute border-0"
           style={{
             left: layout.offsetX,
@@ -144,20 +184,34 @@ export function PoolPlansEmbed({ backgroundSrc }: { backgroundSrc?: string | und
 
       <div
         aria-hidden={iframeLoaded}
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-navy-deep/45 backdrop-blur-sm transition-opacity duration-700"
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-navy-deep/90 backdrop-blur-sm transition-opacity duration-300 motion-reduce:transition-none"
         style={{
           opacity: iframeLoaded ? 0 : 1,
           pointerEvents: iframeLoaded ? "none" : "auto",
         }}
       >
         <div className="relative flex h-16 w-16 items-center justify-center">
-          <span className="absolute h-16 w-16 animate-ping rounded-full bg-sand/30 animation-duration-[2.2s]" />
-          <span className="absolute h-11 w-11 animate-ping rounded-full bg-sand/50 [animation-delay:0.4s] animation-duration-[2.2s]" />
+          <span className="absolute h-16 w-16 animate-ping motion-reduce:animate-none rounded-full bg-sand/30 animation-duration-[2.2s]" />
+          <span className="absolute h-11 w-11 animate-ping motion-reduce:animate-none rounded-full bg-sand/50 [animation-delay:0.4s] animation-duration-[2.2s]" />
           <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-sand/90">
             <Waves className="h-4 w-4 text-navy-deep" strokeWidth={1.8} />
           </span>
         </div>
-        <p className="eyebrow text-offwhite/85">Loading pool designer…</p>
+        <p role="status" className="text-sm text-offwhite">
+          {status === "error" ? "The pool designer couldn’t load." : "Loading pool designer…"}
+        </p>
+        {status === "error" && (
+          <button
+            type="button"
+            onClick={() => {
+              setStatus("loading");
+              setAttempt((value) => value + 1);
+            }}
+            className="cursor-pointer bg-sand px-5 py-3 text-sm text-navy-deep focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sand"
+          >
+            Try again
+          </button>
+        )}
       </div>
     </div>
   );
