@@ -1,5 +1,6 @@
-import { Maximize2, Minimize2, Waves } from "lucide-react";
+import { Maximize2, Minimize2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import sjIcon from "@/assets/logos/sj-landscaping-pools-icon.png";
 
 // PoolPlans' embed script renders a fixed-size widget and has no responsive
 // mode of its own. We isolate it inside a same-size sandboxed iframe (safe
@@ -194,7 +195,16 @@ export function PoolPlansEmbed({ backgroundSrc }: { backgroundSrc?: string | und
           <span className="absolute h-16 w-16 animate-ping motion-reduce:animate-none rounded-full bg-sand/30 animation-duration-[2.2s]" />
           <span className="absolute h-11 w-11 animate-ping motion-reduce:animate-none rounded-full bg-sand/50 [animation-delay:0.4s] animation-duration-[2.2s]" />
           <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-sand/90">
-            <Waves className="h-4 w-4 text-navy-deep" strokeWidth={1.8} />
+            <span
+              aria-hidden="true"
+              className="h-7 w-7 bg-navy-deep"
+              style={{
+                maskImage: `url(${sjIcon})`,
+                maskSize: "contain",
+                maskPosition: "center",
+                maskRepeat: "no-repeat",
+              }}
+            />
           </span>
         </div>
         <p role="status" className="text-sm text-offwhite">
