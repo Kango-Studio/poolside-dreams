@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -75,6 +76,25 @@
     color-mix(in oklab, var(--navy-deep) 45%, transparent) 45%,
     transparent 100%
   );
+}
+
+/* Scoped to the admin panel only (see useAdminTheme) — the public site has
+   no dark mode, so this class never appears outside /admin. */
+.dark {
+  --background: oklch(0.16 0.025 254);
+  --foreground: var(--offwhite);
+  --card: oklch(0.21 0.03 254);
+  --card-foreground: var(--offwhite);
+  --popover: oklch(0.21 0.03 254);
+  --popover-foreground: var(--offwhite);
+  --primary: var(--sand);
+  --primary-foreground: var(--navy-deep);
+  --muted: oklch(0.24 0.025 254);
+  --muted-foreground: oklch(0.68 0.015 253);
+  --destructive: oklch(0.5 0.2 27.325);
+  --destructive-foreground: var(--offwhite);
+  --border: oklch(0.26 0.02 254);
+  --input: oklch(0.26 0.02 254);
 }
 
 @layer base {

@@ -4,6 +4,7 @@ import {
   Outlet,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -12,6 +13,8 @@ import { type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
+import { FloatingPromoCard } from "../components/FloatingPromoCard";
+import { Toaster } from "@/components/ui/sonner";
 import { SITE_NAME, localBusinessSchema } from "../lib/seo";
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
@@ -109,15 +112,20 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const isAdmin = useRouterState({
+    select: (s) => s.location.pathname.startsWith("/admin"),
+  });
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SiteHeader />
+      {!isAdmin && <SiteHeader />}
       <main>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </main>
-      <SiteFooter />
+      {!isAdmin && <SiteFooter />}
+      {!isAdmin && <FloatingPromoCard />}
+      <Toaster />
     </QueryClientProvider>
   );
 }
