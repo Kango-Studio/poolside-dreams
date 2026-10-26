@@ -18,7 +18,7 @@ import { FloatingPromoCard } from "../components/FloatingPromoCard";
 import { Toaster } from "@/components/ui/sonner";
 import { SITE_NAME, localBusinessSchema } from "../lib/seo";
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
 

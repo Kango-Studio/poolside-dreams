@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 export type PostStatus = "draft" | "published";
 
@@ -37,18 +37,20 @@ export type PostInput = {
 const STORAGE_BUCKET = "post-covers";
 export const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 
-export async function listPublishedPosts(): Promise<Post[]> {
-  const { data, error } = await supabase
+export async function listPublishedPosts(signal?: AbortSignal): Promise<Post[]> {
+  const query = getSupabase()
     .from("posts")
     .select("*")
     .eq("status", "published")
     .order("published_at", { ascending: false });
+  if (signal) query.abortSignal(signal);
+  const { data, error } = await query;
   if (error) throw error;
   return data;
 }
 
 export async function getPublishedPost(slug: string): Promise<Post | null> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("posts")
     .select("*")
     .eq("status", "published")
@@ -60,7 +62,7 @@ export async function getPublishedPost(slug: string): Promise<Post | null> {
 
 export async function getPublishedPostsByIds(ids: string[]): Promise<Post[]> {
   if (ids.length === 0) return [];
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("posts")
     .select("*")
     .eq("status", "published")
@@ -74,7 +76,7 @@ export async function getPublishedPostsByIds(ids: string[]): Promise<Post[]> {
 }
 
 export async function listAllPosts(): Promise<Post[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("posts")
     .select("*")
     .order("updated_at", { ascending: false });
@@ -83,13 +85,13 @@ export async function listAllPosts(): Promise<Post[]> {
 }
 
 export async function getPostById(id: string): Promise<Post | null> {
-  const { data, error } = await supabase.from("posts").select("*").eq("id", id).maybeSingle();
+  const { data, error } = await getSupabase().from("posts").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
   return data;
 }
 
 export async function createPost(input: PostInput): Promise<Post> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("posts")
     .insert({
       ...input,
@@ -106,7 +108,7 @@ export async function updatePost(
   input: PostInput,
   previous: Pick<Post, "status" | "cover_url" | "content_html">,
 ): Promise<Post> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("posts")
     .update({
       ...input,
@@ -134,7 +136,7 @@ export async function updatePost(
 }
 
 export async function deletePost(post: Pick<Post, "id" | "cover_url" | "content_html">) {
-  const { error } = await supabase.from("posts").delete().eq("id", post.id);
+  const { error } = await getSupabase().from("posts").delete().eq("id", post.id);
   if (error) throw error;
   await removeStorageUrls([...collectImageUrls(post)]);
 }
@@ -155,11 +157,11 @@ export async function uploadImage(file: File): Promise<string> {
     throw new Error("Images must be 5MB or smaller.");
   }
   const path = `${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(path, file, {
+  const { error } = await getSupabase().storage.from(STORAGE_BUCKET).upload(path, file, {
     contentType: file.type,
   });
   if (error) throw error;
-  const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+  const { data } = getSupabase().storage.from(STORAGE_BUCKET).getPublicUrl(path);
   return data.publicUrl;
 }
 
@@ -182,5 +184,5 @@ function extractStoragePath(url: string): string | null {
 async function removeStorageUrls(urls: string[]) {
   const paths = urls.map(extractStoragePath).filter((path): path is string => Boolean(path));
   if (paths.length === 0) return;
-  await supabase.storage.from(STORAGE_BUCKET).remove(paths);
+  await getSupabase().storage.from(STORAGE_BUCKET).remove(paths);
 }

@@ -15,7 +15,7 @@ import ctaPhoto from "@/assets/projects/tweed/01.webp";
 export const Route = createFileRoute("/")({
   loader: async () => {
     try {
-      return await listPublishedPosts();
+      return await listPublishedPosts(AbortSignal.timeout(3000));
     } catch (error) {
       // Blog availability must not prevent the rest of the home from rendering.
       console.error("Unable to load home blog posts:", error);

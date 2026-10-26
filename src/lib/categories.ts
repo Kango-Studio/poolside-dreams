@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 export type Category = {
   id: string;
@@ -7,13 +7,13 @@ export type Category = {
 };
 
 export async function listCategories(): Promise<Category[]> {
-  const { data, error } = await supabase.from("categories").select("*").order("name");
+  const { data, error } = await getSupabase().from("categories").select("*").order("name");
   if (error) throw error;
   return data;
 }
 
 export async function createCategory(name: string): Promise<Category> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("categories")
     .insert({ name: name.trim() })
     .select()
@@ -24,11 +24,11 @@ export async function createCategory(name: string): Promise<Category> {
 
 export async function renameCategory(id: string, oldName: string, newName: string): Promise<void> {
   const trimmed = newName.trim();
-  const { error } = await supabase.from("categories").update({ name: trimmed }).eq("id", id);
+  const { error } = await getSupabase().from("categories").update({ name: trimmed }).eq("id", id);
   if (error) throw error;
 
   // Keep every post using the old name in sync with the rename.
-  const { error: postsError } = await supabase
+  const { error: postsError } = await getSupabase()
     .from("posts")
     .update({ category: trimmed })
     .eq("category", oldName);
@@ -36,7 +36,7 @@ export async function renameCategory(id: string, oldName: string, newName: strin
 }
 
 export async function deleteCategory(id: string, name: string): Promise<void> {
-  const { count, error: countError } = await supabase
+  const { count, error: countError } = await getSupabase()
     .from("posts")
     .select("id", { count: "exact", head: true })
     .eq("category", name);
@@ -47,6 +47,6 @@ export async function deleteCategory(id: string, name: string): Promise<void> {
     );
   }
 
-  const { error } = await supabase.from("categories").delete().eq("id", id);
+  const { error } = await getSupabase().from("categories").delete().eq("id", id);
   if (error) throw error;
 }

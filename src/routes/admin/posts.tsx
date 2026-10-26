@@ -3,7 +3,7 @@ import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tan
 import type { Session } from "@supabase/supabase-js";
 import { FileText, Plus, LogOut, ArrowLeft, ShieldCheck, Moon, Sun } from "lucide-react";
 
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 import { needsMfaChallenge } from "@/lib/mfa";
 import { useAdminTheme, type Theme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
@@ -104,8 +104,10 @@ function AdminPostsLayout() {
   const { theme, toggle: toggleTheme } = useAdminTheme();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    getSupabase()
+      .auth.getSession()
+      .then(({ data }) => setSession(data.session));
+    const { data: subscription } = getSupabase().auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
     });
     return () => subscription.subscription.unsubscribe();
@@ -123,7 +125,9 @@ function AdminPostsLayout() {
     // panel.
     needsMfaChallenge().then((needed) => {
       if (needed) {
-        supabase.auth.signOut().then(() => navigate({ to: "/admin/login" }));
+        getSupabase()
+          .auth.signOut()
+          .then(() => navigate({ to: "/admin/login" }));
       }
     });
   }, [session, navigate]);
@@ -148,7 +152,7 @@ function AdminPostsLayout() {
   ];
 
   async function handleSignOut() {
-    await supabase.auth.signOut();
+    await getSupabase().auth.signOut();
     navigate({ to: "/admin/login" });
   }
 
