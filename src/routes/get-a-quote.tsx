@@ -1,6 +1,6 @@
 import { getProjectImages } from "@/lib/project-images";
 import { FramedHero } from "@/components/FramedHero";
-import { PoolPlansEmbed } from "@/components/PoolPlansEmbed";
+import { QuoteConfigurator } from "@/components/quote/QuoteConfigurator";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Mail, Phone } from "lucide-react";
 
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/get-a-quote")({
 const steps = [
   {
     title: "Build your design",
-    text: "Sketch the shape, size and features of your pool right in the tool below — no account or commitment needed.",
+    text: "Pick your yard size, pool size and extras in the tool below — no account or commitment needed.",
   },
   {
     title: "See real-time pricing",
@@ -79,19 +79,19 @@ function GetAQuotePage() {
       <section className="bg-muted">
         <div className="mx-auto max-w-[1600px] px-6 py-24 lg:px-12 lg:py-32">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="eyebrow text-muted-foreground">Interactive designer</p>
+            <p className="eyebrow text-muted-foreground">Quote builder</p>
             <h2 className="mt-5 font-display text-4xl leading-[1.05] md:text-5xl">
               Build your pool below.
             </h2>
             <p className="mt-6 leading-relaxed text-muted-foreground">
-              Drag, resize and customize your pool shape to see how it fits your space and your
-              budget. It takes a couple of minutes.
+              Choose your yard, pool size and extras to see an estimated range as you go. It takes
+              about two minutes.
             </p>
           </Reveal>
 
           <Reveal delay={120} className="mt-14">
-            <div className="mx-auto max-w-[1440px] overflow-hidden border border-border bg-background shadow-[0_40px_90px_-35px_rgba(0,0,0,0.35)]">
-              <PoolPlansEmbed backgroundSrc={hero1} />
+            <div className="w-full border border-border bg-background p-6 shadow-[0_40px_90px_-35px_rgba(0,0,0,0.35)] md:p-12 lg:p-16">
+              <QuoteConfigurator />
             </div>
           </Reveal>
         </div>

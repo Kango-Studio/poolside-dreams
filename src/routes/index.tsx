@@ -13,7 +13,15 @@ import processPhoto from "@/assets/projects/canfield/01.webp";
 import ctaPhoto from "@/assets/projects/tweed/01.webp";
 
 export const Route = createFileRoute("/")({
-  loader: () => listPublishedPosts(),
+  loader: async () => {
+    try {
+      return await listPublishedPosts();
+    } catch (error) {
+      // Blog availability must not prevent the rest of the home from rendering.
+      console.error("Unable to load home blog posts:", error);
+      return [];
+    }
+  },
   head: () =>
     pageMeta({
       title: "SJ Pools & Landscaping | Custom Pool Builder in New Jersey",
