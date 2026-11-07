@@ -1,61 +1,58 @@
-import { getProjectImages } from "@/lib/project-images";
-
 // -----------------------------------------------------------------------------
-// Quote configurator catalog + pricing
+// Quote configurator — shared types and pricing.
 //
-// !! PLACEHOLDER DATA !! Every label, description and price below is a stand-in
-// so the UI can be built and reviewed. The real catalog and price table come
-// from the office secretary. In the next phase this object is replaced by rows
-// loaded from Supabase (editable in the admin panel) — the shape below is the
-// contract, so `QuoteConfigurator` and `calculateQuote` won't change.
+// The catalog (steps, options, prices) lives in Supabase and is edited from the
+// admin panel (Quote builder). This file is the contract between the database,
+// the public configurator and the admin preview, plus the pure pricing
+// function. The server-side submit function (next phase) must reuse
+// `calculateQuote` and recompute from the database — never trust a browser total.
 // -----------------------------------------------------------------------------
 
-export type YardOption = {
+export type QuoteInputType = "cards" | "select" | "multi" | "toggle";
+
+export const QUOTE_INPUT_TYPES: { value: QuoteInputType; label: string; hint: string }[] = [
+  { value: "cards", label: "Image cards", hint: "Visitors pick one card with an image." },
+  { value: "select", label: "Dropdown", hint: "Visitors pick one option from a list." },
+  {
+    value: "multi",
+    label: "Multiple choice",
+    hint: "Visitors can tick as many options as they like.",
+  },
+  { value: "toggle", label: "Yes / No", hint: "A single item the visitor adds or skips." },
+];
+
+export type QuoteOption = {
   id: string;
   label: string;
   description: string;
-  image: string;
-  /** Multiplies the pool base price (excavation, access, landscaping scope). */
-  factor: number;
-};
-
-export type PoolOption = {
-  id: string;
-  label: string;
-  description: string;
-  basePrice: number;
-};
-
-export type ToggleOption = {
-  label: string;
-  description: string;
+  imageUrl: string | null;
+  /** Added to the estimate when this option is selected. */
   price: number;
+  /** Raises (+) or lowers (−) the whole estimate by this percentage. */
+  percent: number;
 };
 
-export type FeatureOption = {
+export type QuoteStep = {
   id: string;
+  title: string;
+  /** Short name used in the progress bar and the summary. */
   label: string;
   description: string;
-  price: number;
+  inputType: QuoteInputType;
+  required: boolean;
+  options: QuoteOption[];
 };
 
 export type QuoteCatalog = {
-  yards: YardOption[];
-  pools: PoolOption[];
-  spa: ToggleOption;
-  raised: ToggleOption;
-  features: FeatureOption[];
-  /** Half-width of the displayed range, e.g. 0.12 → total ±12%. */
-  spread: number;
+  steps: QuoteStep[];
+  /** Half-width of the displayed range: 12 means total ±12%. */
+  spreadPercent: number;
+  currency: string;
+  disclaimer: string;
 };
 
-export type QuoteSelection = {
-  yardId: string | null;
-  poolId: string | null;
-  spa: boolean;
-  raised: boolean;
-  featureIds: string[];
-};
+/** Selected option ids per step id. Single-choice steps hold at most one id. */
+export type QuoteSelection = Record<string, string[]>;
 
 export type QuoteResult = {
   total: number;
@@ -63,156 +60,84 @@ export type QuoteResult = {
   high: number;
 };
 
-function imageOf(slug: string): string {
-  return getProjectImages(slug)[0] ?? "";
-}
-
-export const DEFAULT_QUOTE_CATALOG: QuoteCatalog = {
-  yards: [
-    {
-      id: "yard-compact",
-      label: "Compact yard",
-      description: "Up to ~5,000 sq ft. Intimate, tightly planned outdoor space.",
-      image: imageOf("canfield"),
-      factor: 0.92,
-    },
-    {
-      id: "yard-standard",
-      label: "Standard yard",
-      description: "~5,000 to 10,000 sq ft. Room for a pool, patio and planting.",
-      image: imageOf("miles"),
-      factor: 1,
-    },
-    {
-      id: "yard-estate",
-      label: "Estate yard",
-      description: "10,000+ sq ft. Space for full outdoor-living environments.",
-      image: imageOf("tweed"),
-      factor: 1.15,
-    },
-  ],
-  pools: [
-    {
-      id: "pool-compact",
-      label: "Compact — 12 × 24 ft",
-      description: "A refined plunge-style pool, ideal for smaller footprints.",
-      basePrice: 55000,
-    },
-    {
-      id: "pool-standard",
-      label: "Standard — 16 × 32 ft",
-      description: "The most popular size: room for lounging, swimming and play.",
-      basePrice: 78000,
-    },
-    {
-      id: "pool-large",
-      label: "Large — 20 × 40 ft",
-      description: "Generous proportions for entertaining and lap swimming.",
-      basePrice: 105000,
-    },
-  ],
-  spa: {
-    label: "Spa",
-    description: "An attached hot tub with its own jets and heating.",
-    price: 18000,
-  },
-  raised: {
-    label: "Raised pool",
-    description: "An elevated pool wall with a feature face, seating ledge or spillway.",
-    price: 14000,
-  },
-  features: [
-    {
-      id: "fountain",
-      label: "Fountain",
-      description: "Sculptural water features that add movement and sound.",
-      price: 4500,
-    },
-    {
-      id: "auto-cover",
-      label: "Automatic cover",
-      description: "A motorized safety cover that opens and closes at the push of a button.",
-      price: 12000,
-    },
-    {
-      id: "lighting",
-      label: "LED lighting",
-      description: "Color-changing underwater and perimeter lighting.",
-      price: 3500,
-    },
-    {
-      id: "heating",
-      label: "Pool heating",
-      description: "Extend your swim season with a high-efficiency heater.",
-      price: 6500,
-    },
-  ],
-  spread: 0.12,
+export type SummaryRow = {
+  key: string;
+  label: string;
+  value: string | null;
+  stepIndex: number;
 };
 
+/** Only single-choice steps can block progress; yes/no and multi are optional. */
+export function isStepRequired(step: QuoteStep): boolean {
+  return (step.inputType === "cards" || step.inputType === "select") && step.required;
+}
+
+export function isStepAnswered(step: QuoteStep, selection: QuoteSelection): boolean {
+  return (selection[step.id]?.length ?? 0) > 0;
+}
+
 /**
- * Pure price calculation, shared by the UI now and by the server-side
- * `submitQuote` function later (the server must recompute — never trust a
- * total sent by the browser).
+ * estimate = sum(selected prices) × (1 + sum(selected percents) / 100)
+ * Returns null until every required step has an answer.
  */
 export function calculateQuote(
   selection: QuoteSelection,
-  catalog: QuoteCatalog = DEFAULT_QUOTE_CATALOG,
+  catalog: QuoteCatalog,
 ): QuoteResult | null {
-  const yard = catalog.yards.find((y) => y.id === selection.yardId);
-  const pool = catalog.pools.find((p) => p.id === selection.poolId);
-  if (!yard || !pool) return null;
+  if (catalog.steps.length === 0) return null;
 
-  let total = pool.basePrice * yard.factor;
-  if (selection.spa) total += catalog.spa.price;
-  if (selection.raised) total += catalog.raised.price;
-  for (const feature of catalog.features) {
-    if (selection.featureIds.includes(feature.id)) total += feature.price;
+  let subtotal = 0;
+  let percent = 0;
+  for (const step of catalog.steps) {
+    const chosen = selection[step.id] ?? [];
+    if (isStepRequired(step) && chosen.length === 0) return null;
+    for (const option of step.options) {
+      if (chosen.includes(option.id)) {
+        subtotal += option.price;
+        percent += option.percent;
+      }
+    }
   }
 
+  const total = Math.max(0, subtotal * (1 + percent / 100));
+  const spread = Math.max(0, catalog.spreadPercent) / 100;
   const roundTo = (n: number) => Math.round(n / 1000) * 1000;
   return {
     total: roundTo(total),
-    low: roundTo(total * (1 - catalog.spread)),
-    high: roundTo(total * (1 + catalog.spread)),
+    low: roundTo(total * (1 - spread)),
+    high: roundTo(total * (1 + spread)),
   };
 }
 
-export function formatQuoteRange(result: QuoteResult): string {
-  const k = (n: number) => `$${Math.round(n / 1000)}k`;
-  return `${k(result.low)} – ${k(result.high)}`;
+function formatCompact(amount: number, currency: string): string {
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      notation: "compact",
+      maximumFractionDigits: 1,
+    }).format(amount);
+  } catch {
+    return `$${Math.round(amount / 1000)}K`;
+  }
 }
 
-export type SummaryRow = { key: string; label: string; value: string | null; stepIndex: number };
+export function formatQuoteRange(result: QuoteResult, currency: string): string {
+  return `${formatCompact(result.low, currency)} – ${formatCompact(result.high, currency)}`;
+}
 
-/** The human-readable list of choices, shared by the sidebar and the review step. */
 export function buildSummaryRows(catalog: QuoteCatalog, selection: QuoteSelection): SummaryRow[] {
-  const yard = catalog.yards.find((y) => y.id === selection.yardId);
-  const pool = catalog.pools.find((p) => p.id === selection.poolId);
-  const features = catalog.features
-    .filter((f) => selection.featureIds.includes(f.id))
-    .map((f) => f.label);
+  return catalog.steps.map((step, index) => {
+    const chosen = step.options
+      .filter((option) => selection[step.id]?.includes(option.id))
+      .map((option) => option.label);
 
-  return [
-    { key: "yard", label: "Yard size", value: yard?.label ?? null, stepIndex: 0 },
-    { key: "pool", label: "Pool size", value: pool?.label ?? null, stepIndex: 1 },
-    {
-      key: "spa",
-      label: catalog.spa.label,
-      value: selection.spa ? "Included" : "No",
-      stepIndex: 2,
-    },
-    {
-      key: "raised",
-      label: catalog.raised.label,
-      value: selection.raised ? "Elevated" : "No",
-      stepIndex: 2,
-    },
-    {
-      key: "features",
-      label: "Features",
-      value: features.length > 0 ? features.join(", ") : "None selected",
-      stepIndex: 2,
-    },
-  ];
+    let value: string | null;
+    if (step.inputType === "toggle") value = chosen.length > 0 ? "Yes" : "No";
+    else if (step.inputType === "multi")
+      value = chosen.length > 0 ? chosen.join(", ") : "None selected";
+    else value = chosen[0] ?? null;
+
+    return { key: step.id, label: step.label || step.title, value, stepIndex: index };
+  });
 }
