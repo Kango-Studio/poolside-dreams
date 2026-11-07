@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Mail, Phone } from "lucide-react";
 
 import { QuoteRange, QuoteSummary } from "@/components/quote/QuoteSummary";
 import {
@@ -10,37 +10,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  DEFAULT_QUOTE_CATALOG,
   buildSummaryRows,
   calculateQuote,
   formatQuoteRange,
+  isStepAnswered,
+  isStepRequired,
   type QuoteCatalog,
   type QuoteSelection,
+  type QuoteStep,
 } from "@/lib/quote-catalog";
+import { useQuoteCatalog } from "@/lib/quote-api";
 import { cn } from "@/lib/utils";
 
-const STEPS = [
-  { id: "yard", label: "Yard" },
-  { id: "pool", label: "Pool" },
-  { id: "extras", label: "Extras" },
-  { id: "review", label: "Review" },
-  { id: "contact", label: "Contact" },
-] as const;
-
-type StepId = (typeof STEPS)[number]["id"];
-
-const INITIAL_SELECTION: QuoteSelection = {
-  yardId: null,
-  poolId: null,
-  spa: false,
-  raised: false,
-  featureIds: [],
-};
+type FlowStep = { kind: "question"; step: QuoteStep } | { kind: "review" } | { kind: "contact" };
 
 type ContactDetails = { name: string; email: string; phone: string; notes: string };
 type ContactErrors = { name?: string; email?: string };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMPTY_CONTACT: ContactDetails = { name: "", email: "", phone: "", notes: "" };
 
 function validateContact(contact: ContactDetails): ContactErrors {
   const errors: ContactErrors = {};
@@ -61,15 +49,15 @@ async function submitQuote(payload: {
   console.info("[quote] submitted (stub, nothing was sent)", payload);
 }
 
-const inputClass =
-  "w-full border-b border-border bg-transparent py-4 text-base outline-none transition-colors placeholder:text-muted-foreground focus:border-sand";
+const fieldClass =
+  "w-full rounded-md bg-muted/60 px-5 py-4 text-base outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-sand";
 
 const cardBase =
-  "relative cursor-pointer border text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand";
+  "relative cursor-pointer rounded-md text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand";
 
 function SelectedBadge() {
   return (
-    <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center bg-sand text-navy-deep">
+    <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-sand text-navy-deep">
       <Check className="h-4 w-4" strokeWidth={2} />
     </span>
   );
@@ -80,83 +68,145 @@ function StepHeading({ eyebrow, title, text }: { eyebrow: string; title: string;
     <div className="max-w-2xl">
       <p className="eyebrow text-muted-foreground">{eyebrow}</p>
       <h3 className="mt-4 font-display text-3xl leading-[1.08] md:text-5xl">{title}</h3>
-      <p className="mt-4 leading-relaxed text-muted-foreground">{text}</p>
+      {text && <p className="mt-4 leading-relaxed text-muted-foreground">{text}</p>}
     </div>
   );
 }
 
-function YesNo({
-  label,
-  description,
-  price,
-  value,
-  onChange,
-}: {
-  label: string;
-  description: string;
-  price: number;
-  value: boolean;
-  onChange: (value: boolean) => void;
-}) {
+function ConfiguratorSkeleton() {
   return (
-    <div className="flex flex-col gap-5 border border-border p-6 sm:flex-row sm:items-center sm:justify-between">
-      <div className="max-w-md">
-        <p className="font-display text-xl">{label}</p>
-        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{description}</p>
+    <div className="animate-pulse" aria-busy="true" aria-label="Loading the quote builder">
+      <div className="mb-10 flex gap-2">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <div key={i} className="h-1 flex-1 rounded-full bg-muted" />
+        ))}
       </div>
-      <div
-        role="radiogroup"
-        aria-label={label}
-        className="flex shrink-0 border border-border"
-        data-price={price}
-      >
-        {([false, true] as const).map((option) => (
-          <button
-            key={String(option)}
-            type="button"
-            role="radio"
-            aria-checked={value === option}
-            onClick={() => onChange(option)}
-            className={cn(
-              "eyebrow min-w-20 cursor-pointer px-6 py-3 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand",
-              value === option
-                ? "bg-navy text-offwhite"
-                : "bg-transparent text-muted-foreground hover:text-foreground",
-            )}
-          >
-            {option ? "Yes" : "No"}
-          </button>
+      <div className="h-4 w-24 rounded bg-muted" />
+      <div className="mt-5 h-10 w-2/3 rounded bg-muted" />
+      <div className="mt-10 grid gap-5 md:grid-cols-3">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="aspect-[4/5] rounded-md bg-muted/70" />
         ))}
       </div>
     </div>
   );
 }
 
+function Unavailable() {
+  return (
+    <div className="mx-auto max-w-xl py-10 text-center">
+      <p className="eyebrow text-muted-foreground">Quote builder</p>
+      <h3 className="mt-4 font-display text-3xl leading-tight md:text-4xl">
+        The quote builder is taking a break.
+      </h3>
+      <p className="mt-5 leading-relaxed text-muted-foreground">
+        We couldn't load it right now. Call or email us and we'll put your estimate together
+        directly.
+      </p>
+      <div className="mt-8 flex flex-wrap justify-center gap-4">
+        <a
+          href="tel:+12012659555"
+          className="eyebrow inline-flex items-center gap-3 rounded-md bg-muted/70 px-6 py-4 transition-colors hover:bg-muted"
+        >
+          <Phone className="h-4 w-4 text-sand" strokeWidth={1.4} /> (201) 265-9555
+        </a>
+        <a
+          href="mailto:office@sjpoolsandlandscaping.com"
+          className="eyebrow inline-flex items-center gap-3 rounded-md bg-muted/70 px-6 py-4 transition-colors hover:bg-muted"
+        >
+          <Mail className="h-4 w-4 text-sand" strokeWidth={1.4} /> Email us
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function YesNo({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: boolean;
+  onChange: (value: boolean) => void;
+}) {
+  return (
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className="inline-flex shrink-0 rounded-full bg-muted p-1"
+    >
+      {([false, true] as const).map((option) => (
+        <button
+          key={String(option)}
+          type="button"
+          role="radio"
+          aria-checked={value === option}
+          onClick={() => onChange(option)}
+          className={cn(
+            "eyebrow min-w-20 cursor-pointer rounded-full px-6 py-3 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand",
+            value === option
+              ? "bg-navy text-offwhite"
+              : "bg-transparent text-muted-foreground hover:text-foreground",
+          )}
+        >
+          {option ? "Yes" : "No"}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** Loads the catalog from Supabase (or uses the one passed in) and renders the flow. */
 export function QuoteConfigurator({
-  catalog = DEFAULT_QUOTE_CATALOG,
+  catalog: provided,
   variant = "page",
 }: {
   catalog?: QuoteCatalog;
   variant?: "page" | "modal";
 }) {
+  const query = useQuoteCatalog(!provided);
+  const catalog = provided ?? query.data;
+
+  if (!catalog) {
+    return query.isError ? <Unavailable /> : <ConfiguratorSkeleton />;
+  }
+  if (catalog.steps.length === 0) return <Unavailable />;
+  return <ConfiguratorBody catalog={catalog} variant={variant} />;
+}
+
+function ConfiguratorBody({
+  catalog,
+  variant,
+}: {
+  catalog: QuoteCatalog;
+  variant: "page" | "modal";
+}) {
   const isModal = variant === "modal";
   const [stepIndex, setStepIndex] = useState(0);
   const [maxReached, setMaxReached] = useState(0);
-  const [selection, setSelection] = useState<QuoteSelection>(INITIAL_SELECTION);
-  const [contact, setContact] = useState<ContactDetails>({
-    name: "",
-    email: "",
-    phone: "",
-    notes: "",
-  });
+  const [selection, setSelection] = useState<QuoteSelection>({});
+  const [contact, setContact] = useState<ContactDetails>(EMPTY_CONTACT);
   const [errors, setErrors] = useState<ContactErrors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
 
   const rootRef = useRef<HTMLDivElement>(null);
   const isFirstRender = useRef(true);
 
+  const flow = useMemo<FlowStep[]>(
+    () => [
+      ...catalog.steps.map((step): FlowStep => ({ kind: "question", step })),
+      { kind: "review" },
+      { kind: "contact" },
+    ],
+    [catalog],
+  );
+  const lastIndex = flow.length - 1;
+  const index = Math.min(stepIndex, lastIndex);
+  const current = flow[index] ?? { kind: "review" as const };
+
   const result = useMemo(() => calculateQuote(selection, catalog), [selection, catalog]);
-  const step = STEPS[stepIndex]?.id ?? "yard";
+  const range = result ? formatQuoteRange(result, catalog.currency) : "";
 
   // Bring the configurator back into view when moving between steps.
   useEffect(() => {
@@ -165,27 +215,29 @@ export function QuoteConfigurator({
       return;
     }
     rootRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [stepIndex, status]);
+  }, [index, status]);
 
-  function canContinue(current: StepId): boolean {
-    if (current === "yard") return selection.yardId !== null;
-    if (current === "pool") return selection.poolId !== null;
-    return true;
+  function canContinue(): boolean {
+    if (current.kind !== "question") return true;
+    return !isStepRequired(current.step) || isStepAnswered(current.step, selection);
   }
 
-  function goTo(index: number) {
-    if (index < 0 || index >= STEPS.length) return;
-    setStepIndex(index);
-    setMaxReached((m) => Math.max(m, index));
+  function goTo(next: number) {
+    if (next < 0 || next > lastIndex) return;
+    setStepIndex(next);
+    setMaxReached((m) => Math.max(m, next));
   }
 
-  function toggleFeature(id: string) {
-    setSelection((s) => ({
-      ...s,
-      featureIds: s.featureIds.includes(id)
-        ? s.featureIds.filter((f) => f !== id)
-        : [...s.featureIds, id],
-    }));
+  function setChoice(stepId: string, optionIds: string[]) {
+    setSelection((s) => ({ ...s, [stepId]: optionIds }));
+  }
+
+  function toggleMulti(step: QuoteStep, optionId: string) {
+    const chosen = selection[step.id] ?? [];
+    setChoice(
+      step.id,
+      chosen.includes(optionId) ? chosen.filter((id) => id !== optionId) : [...chosen, optionId],
+    );
   }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -195,18 +247,16 @@ export function QuoteConfigurator({
     if (Object.keys(found).length > 0 || !result) return;
 
     setStatus("sending");
-    await submitQuote({ selection, contact, range: formatQuoteRange(result) });
+    await submitQuote({ selection, contact, range });
     setStatus("sent");
   }
-
-  const selectedPool = catalog.pools.find((p) => p.id === selection.poolId);
 
   if (status === "sent") {
     return (
       <div
         ref={rootRef}
         className={cn(
-          "border border-sand bg-background p-10 md:p-16",
+          "rounded-md bg-muted/50 p-10 md:p-16",
           isModal ? "scroll-mt-4" : "scroll-mt-28",
         )}
       >
@@ -215,21 +265,20 @@ export function QuoteConfigurator({
           Thank you{contact.name.trim() ? `, ${contact.name.trim().split(" ")[0]}` : ""}.
         </h3>
         <p className="mt-6 max-w-xl leading-relaxed text-muted-foreground">
-          Your build and estimated range of{" "}
-          <span className="text-foreground">{result ? formatQuoteRange(result) : ""}</span> have
+          Your build and estimated range of <span className="text-foreground">{range}</span> have
           been sent to our team. We'll reach out within one business day to schedule your free site
           visit.
         </p>
         <button
           type="button"
           onClick={() => {
-            setSelection(INITIAL_SELECTION);
-            setContact({ name: "", email: "", phone: "", notes: "" });
+            setSelection({});
+            setContact(EMPTY_CONTACT);
             setStatus("idle");
             setStepIndex(0);
             setMaxReached(0);
           }}
-          className="eyebrow mt-10 cursor-pointer border border-border px-8 py-4 transition-colors hover:border-sand hover:text-sand"
+          className="eyebrow mt-10 cursor-pointer rounded-md bg-background px-8 py-4 transition-colors hover:text-sand"
         >
           Start a new build
         </button>
@@ -237,39 +286,52 @@ export function QuoteConfigurator({
     );
   }
 
+  const eyebrow = `Step ${index + 1} of ${flow.length}`;
+
   return (
     <div ref={rootRef} className={isModal ? "scroll-mt-4" : "scroll-mt-28"}>
       {/* Progress */}
-      <ol className="mb-10 flex flex-wrap gap-x-8 gap-y-3 border-b border-border pb-5">
-        {STEPS.map((s, i) => {
+      <ol className="mb-10 flex gap-2 md:gap-3">
+        {flow.map((item, i) => {
           const reachable = i <= maxReached;
-          const active = i === stepIndex;
-          const done = i < stepIndex;
+          const active = i === index;
+          const label =
+            item.kind === "question"
+              ? item.step.label || item.step.title
+              : item.kind === "review"
+                ? "Review"
+                : "Contact";
           return (
-            <li key={s.id}>
+            <li
+              key={item.kind === "question" ? item.step.id : item.kind}
+              className="min-w-0 flex-1"
+            >
               <button
                 type="button"
                 disabled={!reachable}
                 onClick={() => goTo(i)}
                 aria-current={active ? "step" : undefined}
+                aria-label={`${label}, step ${i + 1} of ${flow.length}`}
                 className={cn(
-                  "eyebrow flex items-center gap-3 transition-colors",
-                  reachable ? "cursor-pointer" : "cursor-not-allowed",
-                  active ? "text-foreground" : "text-muted-foreground",
-                  reachable && !active && "hover:text-foreground",
+                  "group block w-full text-left",
+                  reachable ? "cursor-pointer" : "cursor-default",
                 )}
               >
                 <span
                   className={cn(
-                    "flex h-6 w-6 items-center justify-center border text-[11px]",
-                    active && "border-sand bg-sand text-navy-deep",
-                    done && "border-sand text-sand",
-                    !active && !done && "border-border",
+                    "block h-1 w-full rounded-full transition-colors duration-500",
+                    i <= index ? "bg-sand" : reachable ? "bg-sand/40" : "bg-muted",
+                  )}
+                />
+                <span
+                  className={cn(
+                    "eyebrow mt-3 hidden truncate transition-colors md:block",
+                    active ? "text-foreground" : "text-muted-foreground",
+                    reachable && !active && "group-hover:text-foreground",
                   )}
                 >
-                  {done ? <Check className="h-3.5 w-3.5" strokeWidth={2} /> : i + 1}
+                  {label}
                 </span>
-                {s.label}
               </button>
             </li>
           );
@@ -283,198 +345,60 @@ export function QuoteConfigurator({
         )}
       >
         <div className={cn("min-w-0", !isModal && "lg:min-h-[620px]")}>
-          {/* STEP 1 — yard */}
-          {step === "yard" && (
-            <section>
-              <StepHeading
-                eyebrow="Step 1 of 5"
-                title="How big is your yard?"
-                text="Pick the option closest to your property. We'll confirm exact dimensions during the site visit."
-              />
-              <div
-                role="radiogroup"
-                aria-label="Yard size"
-                className="mt-10 grid gap-5 md:grid-cols-3"
-              >
-                {catalog.yards.map((yard) => {
-                  const selected = selection.yardId === yard.id;
-                  return (
-                    <button
-                      key={yard.id}
-                      type="button"
-                      role="radio"
-                      aria-checked={selected}
-                      onClick={() => setSelection((s) => ({ ...s, yardId: yard.id }))}
-                      className={cn(
-                        cardBase,
-                        "overflow-hidden",
-                        selected
-                          ? "border-sand shadow-[0_24px_60px_-30px_rgba(0,0,0,0.5)]"
-                          : "border-border hover:border-sand/60",
-                      )}
-                    >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                        {yard.image && (
-                          <img
-                            src={yard.image}
-                            alt=""
-                            loading="lazy"
-                            className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                          />
-                        )}
-                        {selected && <SelectedBadge />}
-                      </div>
-                      <div className="p-5">
-                        <p className="font-display text-xl">{yard.label}</p>
-                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                          {yard.description}
-                        </p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
+          {current.kind === "question" && (
+            <QuestionStep
+              step={current.step}
+              eyebrow={eyebrow}
+              selected={selection[current.step.id] ?? []}
+              onChoose={(ids) => setChoice(current.step.id, ids)}
+              onToggle={(optionId) => toggleMulti(current.step, optionId)}
+            />
           )}
 
-          {/* STEP 2 — pool */}
-          {step === "pool" && (
+          {current.kind === "review" && (
             <section>
               <StepHeading
-                eyebrow="Step 2 of 5"
-                title="Choose your pool size."
-                text="Start with a size that fits how you'll use it. Everything can be customized later in design."
-              />
-              <div className="mt-10 max-w-xl">
-                <span className="eyebrow text-muted-foreground">Pool size</span>
-                <Select
-                  value={selection.poolId ?? ""}
-                  onValueChange={(value) => setSelection((s) => ({ ...s, poolId: value }))}
-                >
-                  <SelectTrigger
-                    aria-label="Pool size"
-                    className="h-auto cursor-pointer rounded-none border-0 border-b border-border bg-transparent px-0 py-4 text-base shadow-none focus:ring-0 focus:ring-offset-0 data-[state=open]:border-sand"
-                  >
-                    <SelectValue placeholder="Select a pool size" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {catalog.pools.map((pool) => (
-                      <SelectItem key={pool.id} value={pool.id} className="cursor-pointer">
-                        {pool.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {selectedPool && (
-                  <p className="mt-6 border-l-2 border-sand pl-5 leading-relaxed text-muted-foreground">
-                    {selectedPool.description}
-                  </p>
-                )}
-              </div>
-            </section>
-          )}
-
-          {/* STEP 3 — extras */}
-          {step === "extras" && (
-            <section>
-              <StepHeading
-                eyebrow="Step 3 of 5"
-                title="Make it yours."
-                text="Add a spa, raise the pool, and pick the features that turn a pool into a destination."
-              />
-              <div className="mt-10 space-y-5">
-                <YesNo
-                  label={catalog.spa.label}
-                  description={catalog.spa.description}
-                  price={catalog.spa.price}
-                  value={selection.spa}
-                  onChange={(spa) => setSelection((s) => ({ ...s, spa }))}
-                />
-                <YesNo
-                  label={catalog.raised.label}
-                  description={catalog.raised.description}
-                  price={catalog.raised.price}
-                  value={selection.raised}
-                  onChange={(raised) => setSelection((s) => ({ ...s, raised }))}
-                />
-              </div>
-
-              <p className="eyebrow mt-12 text-muted-foreground">Features</p>
-              <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                {catalog.features.map((feature) => {
-                  const selected = selection.featureIds.includes(feature.id);
-                  return (
-                    <button
-                      key={feature.id}
-                      type="button"
-                      role="checkbox"
-                      aria-checked={selected}
-                      onClick={() => toggleFeature(feature.id)}
-                      className={cn(
-                        cardBase,
-                        "p-6 pr-14",
-                        selected
-                          ? "border-sand bg-secondary/40"
-                          : "border-border hover:border-sand/60",
-                      )}
-                    >
-                      <p className="font-display text-xl">{feature.label}</p>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                        {feature.description}
-                      </p>
-                      {selected && <SelectedBadge />}
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
-          )}
-
-          {/* STEP 4 — review */}
-          {step === "review" && (
-            <section>
-              <StepHeading
-                eyebrow="Step 4 of 5"
+                eyebrow={eyebrow}
                 title="Review your build."
                 text="Here's everything you've selected. Change anything before we send it to the team."
               />
-              <div className="mt-10 grid gap-8 md:grid-cols-[1fr_auto] md:items-start">
-                <dl className="divide-y divide-border border-y border-border">
-                  {buildSummaryRows(catalog, selection).map((row) => (
-                    <div key={row.key} className="flex items-start justify-between gap-6 py-5">
-                      <div>
-                        <dt className="eyebrow text-muted-foreground">{row.label}</dt>
-                        <dd className="mt-2 text-lg leading-snug">
-                          {row.value ?? "Not selected yet"}
-                        </dd>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => goTo(row.stepIndex)}
-                        className="eyebrow cursor-pointer text-sand transition-colors hover:text-foreground"
-                      >
-                        Edit
-                      </button>
+              <dl className="mt-10 space-y-3">
+                {buildSummaryRows(catalog, selection).map((row) => (
+                  <div
+                    key={row.key}
+                    className="flex items-start justify-between gap-6 rounded-md bg-muted/50 px-6 py-5"
+                  >
+                    <div className="min-w-0">
+                      <dt className="eyebrow text-muted-foreground">{row.label}</dt>
+                      <dd className="mt-2 text-lg leading-snug">
+                        {row.value ?? "Not selected yet"}
+                      </dd>
                     </div>
-                  ))}
-                </dl>
-                <div className="md:min-w-64">
-                  <QuoteRange result={result} />
-                </div>
+                    <button
+                      type="button"
+                      onClick={() => goTo(row.stepIndex)}
+                      className="eyebrow shrink-0 cursor-pointer pt-0.5 text-sand transition-colors hover:text-foreground"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                ))}
+              </dl>
+              <div className="mt-8">
+                <QuoteRange result={result} currency={catalog.currency} />
               </div>
             </section>
           )}
 
-          {/* STEP 5 — contact */}
-          {step === "contact" && (
+          {current.kind === "contact" && (
             <section>
               <StepHeading
-                eyebrow="Step 5 of 5"
+                eyebrow={eyebrow}
                 title="Where should we send it?"
                 text="We'll email you the build and range, and our team will follow up to schedule your site visit."
               />
-              <form onSubmit={onSubmit} noValidate className="mt-10 space-y-10">
-                <div className="grid gap-10 md:grid-cols-2">
+              <form onSubmit={onSubmit} noValidate className="mt-10 space-y-8">
+                <div className="grid gap-8 md:grid-cols-2">
                   <label className="block">
                     <span className="eyebrow text-muted-foreground">Full name</span>
                     <input
@@ -484,7 +408,7 @@ export function QuoteConfigurator({
                       value={contact.name}
                       onChange={(e) => setContact((c) => ({ ...c, name: e.target.value }))}
                       aria-invalid={errors.name ? true : undefined}
-                      className={inputClass}
+                      className={cn(fieldClass, "mt-3")}
                     />
                     {errors.name && (
                       <span className="mt-2 block text-sm text-destructive">{errors.name}</span>
@@ -500,7 +424,7 @@ export function QuoteConfigurator({
                       value={contact.email}
                       onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))}
                       aria-invalid={errors.email ? true : undefined}
-                      className={inputClass}
+                      className={cn(fieldClass, "mt-3")}
                     />
                     {errors.email && (
                       <span className="mt-2 block text-sm text-destructive">{errors.email}</span>
@@ -515,7 +439,7 @@ export function QuoteConfigurator({
                       placeholder="(201) 000-0000"
                       value={contact.phone}
                       onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))}
-                      className={inputClass}
+                      className={cn(fieldClass, "mt-3")}
                     />
                   </label>
                 </div>
@@ -529,13 +453,13 @@ export function QuoteConfigurator({
                     placeholder="Timeline, budget, inspiration…"
                     value={contact.notes}
                     onChange={(e) => setContact((c) => ({ ...c, notes: e.target.value }))}
-                    className={`${inputClass} resize-none`}
+                    className={cn(fieldClass, "mt-3 resize-none")}
                   />
                 </label>
                 <button
                   type="submit"
                   disabled={status === "sending"}
-                  className="eyebrow cursor-pointer bg-navy px-10 py-5 text-offwhite transition-all duration-500 hover:bg-sand hover:text-navy-deep disabled:cursor-wait disabled:opacity-60"
+                  className="eyebrow cursor-pointer rounded-md bg-navy px-10 py-5 text-offwhite transition-all duration-500 hover:bg-sand hover:text-navy-deep disabled:cursor-wait disabled:opacity-60"
                 >
                   {status === "sending" ? "Sending…" : "Send my estimate"}
                 </button>
@@ -544,23 +468,23 @@ export function QuoteConfigurator({
           )}
 
           {/* Navigation */}
-          <div className="mt-12 flex items-center justify-between gap-4 border-t border-border pt-8">
+          <div className="mt-12 flex items-center justify-between gap-4">
             <button
               type="button"
-              onClick={() => goTo(stepIndex - 1)}
-              disabled={stepIndex === 0}
+              onClick={() => goTo(index - 1)}
+              disabled={index === 0}
               className="eyebrow flex cursor-pointer items-center gap-3 text-muted-foreground transition-colors hover:text-foreground disabled:invisible"
             >
               <ArrowLeft className="h-4 w-4" strokeWidth={1.4} /> Back
             </button>
-            {step !== "contact" && (
+            {current.kind !== "contact" && (
               <button
                 type="button"
-                onClick={() => goTo(stepIndex + 1)}
-                disabled={!canContinue(step)}
-                className="eyebrow inline-flex cursor-pointer items-center gap-3 bg-navy px-8 py-4 text-offwhite transition-all duration-500 hover:bg-sand hover:text-navy-deep disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-navy disabled:hover:text-offwhite"
+                onClick={() => goTo(index + 1)}
+                disabled={!canContinue()}
+                className="eyebrow inline-flex cursor-pointer items-center gap-3 rounded-md bg-navy px-8 py-4 text-offwhite transition-all duration-500 hover:bg-sand hover:text-navy-deep disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-navy disabled:hover:text-offwhite"
               >
-                {step === "review" ? "Looks good" : "Continue"}
+                {current.kind === "review" ? "Looks good" : "Continue"}
                 <ArrowRight className="h-4 w-4" strokeWidth={1.4} />
               </button>
             )}
@@ -576,9 +500,171 @@ export function QuoteConfigurator({
       </div>
 
       {/* Compact summary bar (mobile) */}
-      <div className="sticky bottom-0 mt-10 border-t border-border bg-background py-4 shadow-[0_-12px_30px_-20px_rgba(0,0,0,0.4)] lg:hidden">
-        <QuoteRange result={result} size="sm" />
+      <div className="sticky bottom-0 mt-10 bg-background/95 py-4 shadow-[0_-12px_30px_-20px_rgba(0,0,0,0.4)] backdrop-blur lg:hidden">
+        <QuoteRange result={result} currency={catalog.currency} size="sm" />
       </div>
     </div>
+  );
+}
+
+function QuestionStep({
+  step,
+  eyebrow,
+  selected,
+  onChoose,
+  onToggle,
+}: {
+  step: QuoteStep;
+  eyebrow: string;
+  selected: string[];
+  onChoose: (ids: string[]) => void;
+  onToggle: (optionId: string) => void;
+}) {
+  const heading = <StepHeading eyebrow={eyebrow} title={step.title} text={step.description} />;
+
+  if (step.inputType === "cards") {
+    return (
+      <section>
+        {heading}
+        <div
+          role="radiogroup"
+          aria-label={step.title}
+          className="mt-10 grid gap-5 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]"
+        >
+          {step.options.map((option) => {
+            const isSelected = selected.includes(option.id);
+            return (
+              <button
+                key={option.id}
+                type="button"
+                role="radio"
+                aria-checked={isSelected}
+                onClick={() => onChoose([option.id])}
+                className={cn(
+                  cardBase,
+                  "group overflow-hidden",
+                  isSelected
+                    ? "bg-background shadow-[0_24px_60px_-28px_rgba(0,0,0,0.5)] ring-2 ring-sand"
+                    : "bg-muted/50 hover:bg-muted",
+                )}
+              >
+                {option.imageUrl && (
+                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                    <img
+                      src={option.imageUrl}
+                      alt=""
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    {isSelected && <SelectedBadge />}
+                  </div>
+                )}
+                <div className="p-5">
+                  <p className="font-display text-xl">{option.label}</p>
+                  {option.description && (
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {option.description}
+                    </p>
+                  )}
+                </div>
+                {!option.imageUrl && isSelected && <SelectedBadge />}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+    );
+  }
+
+  if (step.inputType === "select") {
+    const chosen = step.options.find((option) => option.id === selected[0]);
+    return (
+      <section>
+        {heading}
+        <div className="mt-10 max-w-xl">
+          <span className="eyebrow text-muted-foreground">{step.label || step.title}</span>
+          <Select value={selected[0] ?? ""} onValueChange={(value) => onChoose([value])}>
+            <SelectTrigger
+              aria-label={step.title}
+              className="mt-3 h-auto w-full cursor-pointer rounded-md border-0 bg-muted/60 px-5 py-4 text-base shadow-none focus:ring-2 focus:ring-sand focus:ring-offset-0 data-[state=open]:ring-2 data-[state=open]:ring-sand"
+            >
+              <SelectValue placeholder="Select an option" />
+            </SelectTrigger>
+            <SelectContent>
+              {step.options.map((option) => (
+                <SelectItem key={option.id} value={option.id} className="cursor-pointer">
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {chosen?.description && (
+            <p className="mt-6 leading-relaxed text-muted-foreground">{chosen.description}</p>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  if (step.inputType === "multi") {
+    return (
+      <section>
+        {heading}
+        <div className="mt-10 grid gap-5 sm:grid-cols-2">
+          {step.options.map((option) => {
+            const isSelected = selected.includes(option.id);
+            return (
+              <button
+                key={option.id}
+                type="button"
+                role="checkbox"
+                aria-checked={isSelected}
+                onClick={() => onToggle(option.id)}
+                className={cn(
+                  cardBase,
+                  "p-6 pr-14",
+                  isSelected
+                    ? "bg-background shadow-[0_24px_60px_-28px_rgba(0,0,0,0.45)] ring-2 ring-sand"
+                    : "bg-muted/50 hover:bg-muted",
+                )}
+              >
+                <p className="font-display text-xl">{option.label}</p>
+                {option.description && (
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {option.description}
+                  </p>
+                )}
+                {isSelected && <SelectedBadge />}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+    );
+  }
+
+  // toggle: a single yes/no item
+  const option = step.options[0];
+  return (
+    <section>
+      {heading}
+      {option && (
+        <div className="mt-10 flex flex-col gap-6 rounded-md bg-muted/50 p-7 sm:flex-row sm:items-center sm:justify-between">
+          <div className="max-w-md">
+            <p className="font-display text-2xl">{option.label}</p>
+            {option.description && (
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {option.description}
+              </p>
+            )}
+          </div>
+          <YesNo
+            label={step.title}
+            value={selected.includes(option.id)}
+            onChange={(yes) => onChoose(yes ? [option.id] : [])}
+          />
+        </div>
+      )}
+    </section>
   );
 }

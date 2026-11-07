@@ -90,7 +90,7 @@ function GetAQuotePage() {
           </Reveal>
 
           <Reveal delay={120} className="mt-14">
-            <div className="w-full border border-border bg-background p-6 shadow-[0_40px_90px_-35px_rgba(0,0,0,0.35)] md:p-12 lg:p-16">
+            <div className="w-full rounded-md bg-background p-6 shadow-[0_40px_90px_-35px_rgba(0,0,0,0.3)] md:p-12 lg:p-16">
               <QuoteConfigurator />
             </div>
           </Reveal>
