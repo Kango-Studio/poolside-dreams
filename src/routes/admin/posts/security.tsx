@@ -25,6 +25,7 @@ import {
   confirmTotpEnrollment,
   removeFactor,
 } from "@/lib/mfa";
+import { TotpCodeInput, TOTP_LENGTH } from "@/components/admin/TotpCodeInput";
 
 type Enrollment = { id: string; qrCode: string; secret: string };
 
@@ -68,17 +69,18 @@ function SecurityPage() {
     }
   }
 
-  async function handleConfirm() {
-    if (!enrollment) return;
+  async function handleConfirm(value: string = code) {
+    if (!enrollment || busy || value.length < TOTP_LENGTH) return;
     setBusy(true);
     try {
-      await confirmTotpEnrollment(enrollment.id, code.trim());
+      await confirmTotpEnrollment(enrollment.id, value);
       toast.success("Two-factor authentication enabled.");
       setEnrollment(null);
       setCode("");
       refresh();
     } catch {
       toast.error("Invalid code. Check your authenticator app and try again.");
+      setCode("");
     } finally {
       setBusy(false);
     }
@@ -179,17 +181,18 @@ function SecurityPage() {
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="totp-code">6-digit code</Label>
-                <Input
+                <TotpCodeInput
                   id="totp-code"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  maxLength={6}
                   value={code}
-                  onChange={(e) => setCode(e.target.value)}
+                  onChange={setCode}
+                  onComplete={(value) => void handleConfirm(value)}
                 />
               </div>
               <div className="flex gap-2">
-                <Button onClick={handleConfirm} disabled={busy || code.trim().length < 6}>
+                <Button
+                  onClick={() => void handleConfirm()}
+                  disabled={busy || code.length < TOTP_LENGTH}
+                >
                   Verify and enable
                 </Button>
                 <Button

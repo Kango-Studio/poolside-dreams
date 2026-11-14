@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import sjLogo from "@/assets/logos/sj-landscaping-pools-logo-02.png";
 import sjLogoWhite from "@/assets/logos/sj-landscaping-pools-logo-03.png";
 import { needsMfaChallenge, getVerifiedTotpFactor, verifyLoginChallenge } from "@/lib/mfa";
+import { TotpCodeInput, TOTP_LENGTH } from "@/components/admin/TotpCodeInput";
 
 export const Route = createFileRoute("/admin/login")({
   head: () => ({
@@ -80,19 +81,25 @@ function AdminLoginPage() {
     navigate({ to: "/admin/posts" });
   }
 
-  async function handleMfaSubmit(e: FormEvent) {
-    e.preventDefault();
-    if (!mfaFactorId) return;
+  async function verifyMfaCode(code: string) {
+    if (!mfaFactorId || loading || code.length < TOTP_LENGTH) return;
     setMfaError(null);
     setLoading(true);
     try {
-      await verifyLoginChallenge(mfaFactorId, mfaCode.trim());
+      await verifyLoginChallenge(mfaFactorId, code);
       navigate({ to: "/admin/posts" });
     } catch {
       setMfaError("Invalid code. Try again.");
+      // Clear so the next code can be typed straight away.
+      setMfaCode("");
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleMfaSubmit(e: FormEvent) {
+    e.preventDefault();
+    void verifyMfaCode(mfaCode);
   }
 
   return (
@@ -134,21 +141,23 @@ function AdminLoginPage() {
             <form onSubmit={handleMfaSubmit} className="mt-8 space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="mfa-code">Authentication code</Label>
-                <Input
+                <TotpCodeInput
                   id="mfa-code"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  maxLength={6}
                   autoFocus
                   value={mfaCode}
-                  onChange={(e) => setMfaCode(e.target.value)}
+                  invalid={Boolean(mfaError)}
+                  onChange={(value) => {
+                    setMfaCode(value);
+                    if (mfaError) setMfaError(null);
+                  }}
+                  onComplete={(value) => void verifyMfaCode(value)}
                 />
               </div>
               {mfaError && <p className="text-base text-destructive">{mfaError}</p>}
               <Button
                 type="submit"
                 className="w-full"
-                disabled={loading || mfaCode.trim().length < 6}
+                disabled={loading || mfaCode.length < TOTP_LENGTH}
               >
                 {loading ? "Verifying..." : "Verify"}
               </Button>
