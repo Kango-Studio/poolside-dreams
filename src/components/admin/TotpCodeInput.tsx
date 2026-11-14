@@ -1,6 +1,7 @@
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { cn } from "@/lib/utils";
 
 export const TOTP_LENGTH = 6;
 
@@ -33,6 +34,7 @@ export function TotpCodeInput({
       {...(id ? { id } : {})}
       {...(onComplete ? { onComplete } : {})}
       {...(invalid ? { "aria-invalid": true } : {})}
+      containerClassName="w-full"
       maxLength={TOTP_LENGTH}
       pattern={REGEXP_ONLY_DIGITS}
       inputMode="numeric"
@@ -42,12 +44,15 @@ export function TotpCodeInput({
       value={value}
       onChange={onChange}
     >
-      <InputOTPGroup>
+      <InputOTPGroup className="w-full gap-2">
         {Array.from({ length: TOTP_LENGTH }, (_, index) => (
           <InputOTPSlot
             key={index}
             index={index}
-            className={invalid ? "h-11 w-11 border-destructive text-lg" : "h-11 w-11 text-lg"}
+            className={cn(
+              "h-12 w-auto flex-1 rounded-md border bg-background font-mono text-lg shadow-none",
+              invalid && "border-destructive",
+            )}
           />
         ))}
       </InputOTPGroup>
