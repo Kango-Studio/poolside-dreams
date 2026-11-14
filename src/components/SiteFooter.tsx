@@ -66,10 +66,10 @@ export function SiteFooter() {
             </p>
             <p>
               <a
-                href="mailto:office@sjpoolsandlandscaping.com"
+                href="mailto:admin@sjpoolsandlandscaping.com"
                 className="link-underline hover:text-sand"
               >
-                office@sjpoolsandlandscaping.com
+                admin@sjpoolsandlandscaping.com
               </a>
             </p>
           </address>

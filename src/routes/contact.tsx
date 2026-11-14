@@ -108,8 +108,8 @@ function ContactPage() {
               {
                 icon: Mail,
                 label: "Email",
-                value: "office@sjpoolsandlandscaping.com",
-                href: "mailto:office@sjpoolsandlandscaping.com",
+                value: "admin@sjpoolsandlandscaping.com",
+                href: "mailto:admin@sjpoolsandlandscaping.com",
               },
             ].map((item) => (
               <div key={item.label} className="border-t border-border pt-6">

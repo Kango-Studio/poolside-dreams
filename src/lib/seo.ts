@@ -2,7 +2,7 @@ export const SITE_URL = "https://sjpoolsandlandscaping.com";
 export const SITE_NAME = "SJ Pools & Landscaping";
 export const BUSINESS_PHONE_DISPLAY = "(201) 265-9555";
 export const BUSINESS_PHONE_TEL = "+12012659555";
-export const BUSINESS_EMAIL = "office@sjpoolsandlandscaping.com";
+export const BUSINESS_EMAIL = "admin@sjpoolsandlandscaping.com";
 export const BUSINESS_ADDRESS = {
   street: "700 Kinderkamack Rd, Ste 310",
   city: "Oradell",

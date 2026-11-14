@@ -111,7 +111,7 @@ function Unavailable() {
           <Phone className="h-4 w-4 text-sand" strokeWidth={1.4} /> (201) 265-9555
         </a>
         <a
-          href="mailto:office@sjpoolsandlandscaping.com"
+          href="mailto:admin@sjpoolsandlandscaping.com"
           className="eyebrow inline-flex items-center gap-3 rounded-md bg-muted/70 px-6 py-4 transition-colors hover:bg-muted"
         >
           <Mail className="h-4 w-4 text-sand" strokeWidth={1.4} /> Email us

@@ -114,7 +114,7 @@ function GetAQuotePage() {
               (201) 265-9555
             </a>
             <a
-              href="mailto:office@sjpoolsandlandscaping.com"
+              href="mailto:admin@sjpoolsandlandscaping.com"
               className="link-underline flex items-center gap-3 font-display text-2xl"
             >
               <Mail className="h-4 w-4 text-sand" strokeWidth={1.4} />
